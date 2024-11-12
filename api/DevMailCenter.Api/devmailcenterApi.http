@@ -1,6 +1,6 @@
 @devmailcenterApi_HostAddress = http://localhost:5125
 
-GET {{devmailcenterApi_HostAddress}}/software/
+GET {{devmailcenterApi_HostAddress}}/mailserver/
 Accept: application/json
 
 ###

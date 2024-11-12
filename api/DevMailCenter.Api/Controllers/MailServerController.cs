@@ -6,9 +6,9 @@ namespace devmailcenterApi.Controllers
     [Route("mailserver")]
     public class MailServerController : ControllerBase
     {
-        private readonly ILogger<SoftwareController> _logger;
+        private readonly ILogger<MailServerController> _logger;
 
-        public MailServerController(ILogger<SoftwareController> logger)
+        public MailServerController(ILogger<MailServerController> logger)
         {
             _logger = logger;
         }
