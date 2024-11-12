@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("devmailcenterApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+00fa840c2e0b8ced5c46e4a3e49f0179c3068487")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a897168b8fec4d83665e98f98e00f41174185678")]
 [assembly: System.Reflection.AssemblyProductAttribute("devmailcenterApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("devmailcenterApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
