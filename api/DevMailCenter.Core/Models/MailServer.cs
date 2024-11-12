@@ -2,8 +2,13 @@
 
 public class MailServer
 {
+    public MailServer(string? name)
+    {
+        Name = name;
+    }
+
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public MailServerType Type { get; set; }
     public bool Active { get; set; }
     public DateTime Created { get; set; }
