@@ -1,6 +1,6 @@
 @devmailcenterApi_HostAddress = http://localhost:5125
 
-GET {{devmailcenterApi_HostAddress}}/weatherforecast/
+GET {{devmailcenterApi_HostAddress}}/software/
 Accept: application/json
 
 ###
