@@ -10,7 +10,6 @@ public class DmcContext : DbContext
 
     public DmcContext(DbContextOptions<DmcContext> options) : base(options)
     {
-        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,8 +26,8 @@ public class DmcContext : DbContext
             entity.Property(e => e.Type).HasColumnName("ServerType").IsRequired();
             entity.Property(e => e.Active).HasColumnName("ServerActive").IsRequired().HasDefaultValue(true);
             entity.Property(e => e.Created).HasColumnName("ServerCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
-            entity.Property(e => e.Modified).HasColumnName("ServerModified");
-            entity.Property(e => e.LastUsed).HasColumnName("ServerLastUsed");
+            entity.Property(e => e.Modified).HasColumnName("ServerModified").IsRequired(false).HasDefaultValue(null);
+            entity.Property(e => e.LastUsed).HasColumnName("ServerLastUsed").IsRequired(false).HasDefaultValue(null);
 
             entity.HasMany(e => e.Settings).WithOne().HasForeignKey(e => e.ServerId);
         });

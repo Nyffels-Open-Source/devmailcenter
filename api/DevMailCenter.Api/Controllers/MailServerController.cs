@@ -10,13 +10,11 @@ namespace devmailcenterApi.Controllers
     public class MailServerController : ControllerBase
     {
         private readonly ILogger<MailServerController> _logger;
-        private readonly IMailServerLogic _mailServerLogic;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        public readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public MailServerController(ILogger<MailServerController> logger, MailServerLogic mailServerLogic, IServiceScopeFactory serviceScopeFactory)
+        public MailServerController(ILogger<MailServerController> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
-            _mailServerLogic = mailServerLogic;
             _serviceScopeFactory = serviceScopeFactory;
         }
 
@@ -26,15 +24,42 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMailServer([FromRoute] Guid guid)
         {
-            var mailServerRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetService<IMailServerRepository>();
-            var mailServer = mailServerRepository.Get(guid);
+            var mailServer = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>().Get(guid);
 
             if (mailServer == null)
             {
                 return NotFound();
             }
-            
+
             return Ok(mailServer);
+        }
+
+        [HttpPost]
+        [Route("")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> CreateMailServer([FromBody] MailServerCreate mailServer)
+        {
+            try
+            {
+                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerLogic>().CreateMailServer(mailServer);
+
+                if (mailServerResult == null)
+                {
+                    return BadRequest("Something whent wrong. No data has been returned after creation.");
+                }
+
+                return Ok(mailServerResult);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    "Duplicate mail server name" => Conflict(ex.Message),
+                    _ => BadRequest(ex.Message)
+                };
+            }
         }
     }
 }

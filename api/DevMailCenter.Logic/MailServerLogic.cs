@@ -1,17 +1,35 @@
-﻿using DevMailCenter.Repository;
+﻿using DevMailCenter.Models;
+using DevMailCenter.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Logic;
 
 public interface IMailServerLogic
 {
+    Guid CreateMailServer(MailServerCreate mailServer);
 }
 
 public class MailServerLogic : IMailServerLogic
 {
-    private readonly MailServerRepository mailServerRepository;
+    private readonly ILogger<IMailServerLogic> _logger;
+    public readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public MailServerLogic(MailServerRepository _mailServerRepository)
+    public MailServerLogic(ILogger<MailServerLogic> logger, IServiceScopeFactory serviceScopeFactory)
     {
-        mailServerRepository = _mailServerRepository;
+        _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
+    }
+
+    public Guid CreateMailServer(MailServerCreate mailServer)
+    {
+        var mailServerRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>();
+        var duplicateMailService = mailServerRepository.GetByName(mailServer.Name);
+        if (duplicateMailService != null)
+        {
+            throw new Exception("Duplicate mail server name");
+        }
+
+        return mailServerRepository.Create(mailServer);
     }
 }

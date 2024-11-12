@@ -13,8 +13,8 @@ builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
     builder.Configuration.GetConnectionString("db"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
 
 builder.Services
-    .AddScoped<IMailServerRepository, MailServerRepository>();
-// .AddScoped<IMailServerLogic, MailServerLogic>();
+    .AddScoped<IMailServerRepository, MailServerRepository>()
+    .AddScoped<IMailServerLogic, MailServerLogic>();
 
 var app = builder.Build();
 
