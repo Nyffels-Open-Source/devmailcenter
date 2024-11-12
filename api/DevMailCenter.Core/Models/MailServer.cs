@@ -14,6 +14,8 @@ public class MailServer
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
     public DateTime LastUsed { get; set; }
+
+    public virtual IEnumerable<MailServerSettings> Settings { get; set; }
 }
 
 public enum MailServerType
