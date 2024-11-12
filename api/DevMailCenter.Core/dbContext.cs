@@ -33,7 +33,7 @@ public class DmcContext: DbContext
             entity.Property(e => e.Modified).HasColumnName("ServerModified");
             entity.Property(e => e.LastUsed).HasColumnName("ServerLastUsed");
         });
-
+        
         modelBuilder.Entity<MailServerSettings>(entity =>
         {
             entity.ToTable("DmcMailServerSettings");
