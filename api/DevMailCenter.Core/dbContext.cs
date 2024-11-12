@@ -13,7 +13,7 @@ public class DmcContext: DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // TODO Add connectionstring from settings
-        optionsBuilder.UseMySQL("server=localhost;database=library;user=user;password=password");
+        optionsBuilder.UseMySQL("server=localhost;database=devmailcenter;user=root;password=DevDevMailCenter!MySQL");
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
