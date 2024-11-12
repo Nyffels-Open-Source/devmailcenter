@@ -1,0 +1,13 @@
+{
+  "name": "devmailcenter",
+  "private": true,
+  "author": {
+    "email": "chesney@nyffels.be",
+    "name": "Nyffels BV",
+    "url": "https://nyffels.be"
+  },
+  "scripts": {
+    "docker-dev-up":"cd ./env/dev && docker-compose -f dev-docker-compose.yml up -d",
+    "docker-dev-down":"cd ./env/dev && docker-compose -f dev-docker-compose.yml down"
+  }
+}

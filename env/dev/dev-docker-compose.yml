@@ -1,0 +1,18 @@
+name: devmailcenter
+services:
+  db:
+    image: mysql
+    container_name: devmailcenter_mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=DevDevMailCenter!MySQL
+      - MYSQL_DATABASE=devmailcenter
+    ports:
+      - 3306:3306
+      - 33060:33060
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local
