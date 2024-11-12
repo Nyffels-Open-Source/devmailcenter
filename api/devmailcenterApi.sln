@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmailcenterApi", "devmailcenterApi\devmailcenterApi.csproj", "{A96DE2F2-6E6A-4F5C-B443-B8D4BE6D9355}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevMailCenter.Api", "DevMailCenter.Api\DevMailCenter.Api.csproj", "{A96DE2F2-6E6A-4F5C-B443-B8D4BE6D9355}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevMailCenter.DbContext", "DevMailCenter.DbContext\DevMailCenter.DbContext.csproj", "{8431A042-17BE-4FB4-9A2D-61BF89E1044D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A96DE2F2-6E6A-4F5C-B443-B8D4BE6D9355}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A96DE2F2-6E6A-4F5C-B443-B8D4BE6D9355}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A96DE2F2-6E6A-4F5C-B443-B8D4BE6D9355}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8431A042-17BE-4FB4-9A2D-61BF89E1044D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8431A042-17BE-4FB4-9A2D-61BF89E1044D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8431A042-17BE-4FB4-9A2D-61BF89E1044D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8431A042-17BE-4FB4-9A2D-61BF89E1044D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
