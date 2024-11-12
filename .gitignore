@@ -1,2 +1,2 @@
-/api/devmailcenterApi/bin
-/api/devmailcenterApi/obj
+**/bin/**
+**/obj/**
