@@ -1,8 +1,20 @@
+using System.Text.Json.Serialization;
+using devmailcenter.db;
+using DevMailCenter.Logic;
+using DevMailCenter.Repository;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
+    builder.Configuration.GetConnectionString("db"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
+
+builder.Services
+    .AddScoped<IMailServerRepository, MailServerRepository>();
+// .AddScoped<IMailServerLogic, MailServerLogic>();
 
 var app = builder.Build();
 

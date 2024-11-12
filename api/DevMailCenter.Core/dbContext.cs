@@ -8,14 +8,9 @@ public class DmcContext : DbContext
     public DbSet<MailServer> MailServers { get; set; }
     public DbSet<MailServerSettings> MailServerSettings { get; set; }
 
-    public DmcContext()
+    public DmcContext(DbContextOptions<DmcContext> options) : base(options)
     {
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // TODO Add connectionstring from settings
-        optionsBuilder.UseMySQL("server=localhost;database=devmailcenter;user=root;password=DevDevMailCenter!MySQL");
+        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
