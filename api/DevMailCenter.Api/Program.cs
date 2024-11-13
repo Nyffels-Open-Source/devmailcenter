@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using DevMailCenter.Core;
-using DevMailCenter.Logic;
 using DevMailCenter.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,8 +12,7 @@ builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
     builder.Configuration.GetConnectionString("db"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
 
 builder.Services
-    .AddScoped<IMailServerRepository, MailServerRepository>()
-    .AddScoped<IMailServerLogic, MailServerLogic>();
+    .AddScoped<IMailServerRepository, MailServerRepository>();
 
 var app = builder.Build();
 

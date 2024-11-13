@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DevMailCenter.Core\DevMailCenter.Core.csproj" />
-    <ProjectReference Include="..\DevMailCenter.Logic\DevMailCenter.Logic.csproj" />
     <ProjectReference Include="..\DevMailCenter.Repository\DevMailCenter.Repository.csproj" />
   </ItemGroup>
 

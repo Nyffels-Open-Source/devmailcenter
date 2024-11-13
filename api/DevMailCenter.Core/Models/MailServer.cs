@@ -37,6 +37,17 @@ public class MailServerCreate
     public MailServerType Type { get; set; }
 }
 
+public class MailServerUpdate
+{
+    public MailServerUpdate(string name)
+    {
+        Name = name;
+    }
+
+    public string Name { get; set; }
+    public bool Active { get; set; }
+}
+
 public enum MailServerType
 {
     Smtp,

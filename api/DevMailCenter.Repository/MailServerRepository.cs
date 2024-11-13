@@ -7,9 +7,9 @@ namespace DevMailCenter.Repository;
 public interface IMailServerRepository
 {
     MailServer Get(Guid id);
-    MailServer GetByName(string name);
     Guid Create(MailServerCreate mailServer);
     int Delete(Guid guid);
+    void Update(Guid id, MailServerUpdate mailServer);
 }
 
 public class MailServerRepository : IMailServerRepository
@@ -23,12 +23,7 @@ public class MailServerRepository : IMailServerRepository
 
     public MailServer? Get(Guid id)
     {
-        return _dbContext.MailServers.Where(e => e.Id == id).FirstOrDefault();
-    }
-
-    public MailServer GetByName(string name)
-    {
-        return _dbContext.MailServers.Where(e => e.Name == name).FirstOrDefault();
+        return _dbContext.MailServers.FirstOrDefault(e => e.Id == id);
     }
 
     public Guid Create(MailServerCreate mailServer)
@@ -38,6 +33,21 @@ public class MailServerRepository : IMailServerRepository
         _dbContext.SaveChanges();
 
         return newMailServer.Id;
+    }
+
+    public void Update(Guid id, MailServerUpdate mailServer)
+    {
+        var entry = _dbContext.MailServers.FirstOrDefault(e => e.Id == id);
+        if (entry == null) 
+        {
+            throw new Exception("Mailserver not found");
+        }
+        
+        entry.Name = mailServer.Name;
+        entry.Active = mailServer.Active;
+        entry.Modified = DateTime.UtcNow;;
+
+        _dbContext.SaveChanges();
     }
 
     public int Delete(Guid guid)

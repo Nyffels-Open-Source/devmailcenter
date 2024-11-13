@@ -1,5 +1,4 @@
-﻿using DevMailCenter.Logic;
-using DevMailCenter.Models;
+﻿using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +18,14 @@ namespace devmailcenterApi.Controllers
         }
 
         [HttpGet]
-        [Route("{guid}")]
+        [Route("{id}")]
         [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetMailServer([FromRoute] Guid guid)
+        [EndpointDescription("Retrieve an email server by its ID.")]
+        public IActionResult GetMailServer([FromRoute] Guid id)
         {
-            var mailServer = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>().Get(guid);
+            var mailServer = _serviceScopeFactory.CreateScope().ServiceProvider
+                .GetRequiredService<IMailServerRepository>().Get(id);
 
             if (mailServer == null)
             {
@@ -33,17 +34,19 @@ namespace devmailcenterApi.Controllers
 
             return Ok(mailServer);
         }
-
+        
         [HttpPost]
         [Route("")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> CreateMailServer([FromBody] MailServerCreate mailServer)
+        [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
+        public IActionResult CreateMailServer([FromBody] MailServerCreate mailServer)
         {
             try
             {
-                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerLogic>().CreateMailServer(mailServer);
+                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider
+                    .GetRequiredService<IMailServerRepository>().Create(mailServer);
 
                 if (mailServerResult == null)
                 {
@@ -61,16 +64,43 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-
-        [HttpDelete]
-        [Route("{guid}")]
+        
+        [HttpPut]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteMailServer([FromRoute] Guid guid)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [EndpointDescription("Update an existing email server.")]
+        public IActionResult UpdateMailServer([FromRoute] Guid id, [FromBody] MailServerUpdate mailServer)
         {
             try
             {
                 _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
-                    .Delete(guid);
+                    .Update(id, mailServer);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    "Mailserver not found" => NotFound(ex.Message),
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
+        
+        [HttpDelete]
+        [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [EndpointDescription("Delete an existinge email server.")]
+        public IActionResult DeleteMailServer([FromRoute] Guid id)
+        {
+            try
+            {
+                _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
+                    .Delete(id);
 
                 return NoContent();
             }

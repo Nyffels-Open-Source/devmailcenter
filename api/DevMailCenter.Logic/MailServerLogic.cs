@@ -8,6 +8,7 @@ namespace DevMailCenter.Logic;
 public interface IMailServerLogic
 {
     Guid CreateMailServer(MailServerCreate mailServer);
+    void UpdateMailServer(Guid id, MailServerUpdate mailServer);
 }
 
 public class MailServerLogic : IMailServerLogic
