@@ -29,7 +29,7 @@ public class DmcContext : DbContext
             entity.Property(e => e.Modified).HasColumnName("ServerModified").IsRequired(false).HasDefaultValue(null);
             entity.Property(e => e.LastUsed).HasColumnName("ServerLastUsed").IsRequired(false).HasDefaultValue(null);
 
-            entity.HasMany(e => e.Settings).WithOne().HasForeignKey(e => e.ServerId);
+            entity.HasMany(e => e.MailServerSettings).WithOne().HasForeignKey(e => e.ServerId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<MailServerSettings>(entity =>
@@ -37,15 +37,13 @@ public class DmcContext : DbContext
             entity.ToTable("DmcMailServerSettings");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Id).IsUnique();
-            entity.HasIndex(e => e.ServerId, "ix_DmcMailServer");
+            entity.HasIndex(e => e.ServerId);
             entity.Property(e => e.Id).HasColumnName("MailServerSettingsId").IsRequired();
             entity.Property(e => e.ServerId).HasColumnName("MailServerSettingsServerId").IsRequired();
             entity.Property(e => e.Key).HasColumnName("MailServerSettingsKey").IsRequired();
             entity.Property(e => e.Value).HasColumnName("MailServerSettingsValue").IsRequired();
             entity.Property(e => e.Created).HasColumnName("MailServerSettingsCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
-            entity.Property(e => e.Modified).HasColumnName("MailServerSettingsModified");
-
-            entity.HasOne(e => e.server).WithMany().HasForeignKey(e => e.ServerId);
+            entity.Property(e => e.Modified).HasColumnName("MailServerSettingsModified").IsRequired(false).HasDefaultValue(null);
         });
     }
 }

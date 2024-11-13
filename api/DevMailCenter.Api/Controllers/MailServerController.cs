@@ -22,10 +22,10 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email server by its ID.")]
-        public IActionResult GetMailServer([FromRoute] Guid id)
+        public IActionResult GetMailServer([FromRoute] Guid id, [FromQuery] bool includeSettings = false)
         {
             var mailServer = _serviceScopeFactory.CreateScope().ServiceProvider
-                .GetRequiredService<IMailServerRepository>().Get(id);
+                .GetRequiredService<IMailServerRepository>().Get(id, includeSettings);
 
             if (mailServer == null)
             {
@@ -33,6 +33,18 @@ namespace devmailcenterApi.Controllers
             }
 
             return Ok(mailServer);
+        }
+        
+        [HttpGet]
+        [Route("list")]
+        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
+        [EndpointDescription("Retrieve all email servers.")]
+        public IActionResult ListMailServer([FromQuery] bool includeSettings = false)
+        {
+            var mailServers = _serviceScopeFactory.CreateScope().ServiceProvider
+                .GetRequiredService<IMailServerRepository>().List(includeSettings);
+
+            return Ok(mailServers);
         }
         
         [HttpPost]

@@ -22,7 +22,7 @@ public class MailServer
     public DateTime? Modified { get; set; }
     public DateTime? LastUsed { get; set; }
 
-    public virtual IEnumerable<MailServerSettings> Settings { get; set; }
+    public ICollection<MailServerSettings> MailServerSettings { get; set; }
 }
 
 public class MailServerCreate
@@ -31,10 +31,12 @@ public class MailServerCreate
     {
         Type = type;
         Name = name;
+        Settings = new List<MailServerSettingsMutation>();
     }
 
     public string Name { get; set; }
     public MailServerType Type { get; set; }
+    public List<MailServerSettingsMutation> Settings { get; set; }
 }
 
 public class MailServerUpdate
@@ -46,6 +48,7 @@ public class MailServerUpdate
 
     public string Name { get; set; }
     public bool Active { get; set; }
+    public List<MailServerSettingsMutation> Settings { get; set; }
 }
 
 public enum MailServerType

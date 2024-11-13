@@ -3,6 +3,7 @@ using System;
 using DevMailCenter.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
-    partial class DmcContextModelSnapshot : ModelSnapshot
+    [Migration("20241113151232_FixedRelationBetweenServers")]
+    partial class FixedRelationBetweenServers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 13, 15, 17, 17, 812, DateTimeKind.Utc).AddTicks(5604))
+                        .HasDefaultValue(new DateTime(2024, 11, 13, 15, 12, 32, 412, DateTimeKind.Utc).AddTicks(8641))
                         .HasColumnName("ServerCreated");
 
                     b.Property<DateTime?>("LastUsed")
@@ -73,7 +76,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 13, 15, 17, 17, 812, DateTimeKind.Utc).AddTicks(8819))
+                        .HasDefaultValue(new DateTime(2024, 11, 13, 15, 12, 32, 413, DateTimeKind.Utc).AddTicks(1475))
                         .HasColumnName("MailServerSettingsCreated");
 
                     b.Property<string>("Key")
@@ -106,11 +109,13 @@ namespace DevMailCenter.Core.Migrations
 
             modelBuilder.Entity("DevMailCenter.Models.MailServerSettings", b =>
                 {
-                    b.HasOne("DevMailCenter.Models.MailServer", null)
+                    b.HasOne("DevMailCenter.Models.MailServer", "MailServer")
                         .WithMany("MailServerSettings")
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MailServer");
                 });
 
             modelBuilder.Entity("DevMailCenter.Models.MailServer", b =>
