@@ -61,5 +61,26 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
+
+        [HttpDelete]
+        [Route("{guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteMailServer([FromRoute] Guid guid)
+        {
+            try
+            {
+                _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
+                    .Delete(guid);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DevMailCenter.Core;
 using DevMailCenter.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevMailCenter.Repository;
 
@@ -8,6 +9,7 @@ public interface IMailServerRepository
     MailServer Get(Guid id);
     MailServer GetByName(string name);
     Guid Create(MailServerCreate mailServer);
+    int Delete(Guid guid);
 }
 
 public class MailServerRepository : IMailServerRepository
@@ -36,5 +38,10 @@ public class MailServerRepository : IMailServerRepository
         _dbContext.SaveChanges();
 
         return newMailServer.Id;
+    }
+
+    public int Delete(Guid guid)
+    {
+        return _dbContext.MailServers.Where(e => e.Id == guid).ExecuteDelete();
     }
 }
