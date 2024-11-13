@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using devmailcenter.db;
+using DevMailCenter.Core;
 
 #nullable disable
 
-namespace devmailcenter.db.Migrations
+namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
     partial class DmcContextModelSnapshot : ModelSnapshot

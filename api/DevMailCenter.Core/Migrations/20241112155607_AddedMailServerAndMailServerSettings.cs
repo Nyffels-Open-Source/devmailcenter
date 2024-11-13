@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace devmailcenter.db.Migrations
+namespace DevMailCenter.Core.Migrations
 {
     /// <inheritdoc />
     public partial class AddedMailServerAndMailServerSettings : Migration

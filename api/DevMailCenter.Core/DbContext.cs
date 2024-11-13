@@ -1,7 +1,7 @@
 ﻿using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace devmailcenter.db;
+namespace DevMailCenter.Core;
 
 public class DmcContext : DbContext
 {

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using devmailcenter.db;
+using DevMailCenter.Core;
 
 #nullable disable
 
-namespace devmailcenter.db.Migrations
+namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
     [Migration("20241112211043_MailServerSettingsAndMailServerLink")]

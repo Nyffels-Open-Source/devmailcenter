@@ -4143,26 +4143,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\chesn\\.nuget\\packages\\": {},
-    "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages": {},
+    "C:\\Users\\chesney.nyffels\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Api\\DevMailCenter.Api.csproj",
+      "projectUniqueName": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Api\\DevMailCenter.Api.csproj",
       "projectName": "DevMailCenter.Api",
-      "projectPath": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Api\\DevMailCenter.Api.csproj",
-      "packagesPath": "C:\\Users\\chesn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Api\\obj\\",
+      "projectPath": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Api\\DevMailCenter.Api.csproj",
+      "packagesPath": "C:\\Users\\chesney.nyffels\\.nuget\\packages\\",
+      "outputPath": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\chesn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.1.config",
+        "C:\\Users\\chesney.nyffels\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4170,7 +4167,7 @@
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files\\DevExpress 23.1\\Components\\System\\Components\\Packages": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -4178,14 +4175,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Core\\DevMailCenter.Core.csproj": {
-              "projectPath": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Core\\DevMailCenter.Core.csproj"
+            "C:\\cd\\devmailcenter\\api\\DevMailCenter.Core\\DevMailCenter.Core.csproj": {
+              "projectPath": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Core\\DevMailCenter.Core.csproj"
             },
-            "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Logic\\DevMailCenter.Logic.csproj": {
-              "projectPath": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Logic\\DevMailCenter.Logic.csproj"
+            "C:\\cd\\devmailcenter\\api\\DevMailCenter.Logic\\DevMailCenter.Logic.csproj": {
+              "projectPath": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Logic\\DevMailCenter.Logic.csproj"
             },
-            "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Repository\\DevMailCenter.Repository.csproj": {
-              "projectPath": "C:\\Users\\chesn\\Documents\\Code\\devmailcenter\\api\\DevMailCenter.Repository\\DevMailCenter.Repository.csproj"
+            "C:\\cd\\devmailcenter\\api\\DevMailCenter.Repository\\DevMailCenter.Repository.csproj": {
+              "projectPath": "C:\\cd\\devmailcenter\\api\\DevMailCenter.Repository\\DevMailCenter.Repository.csproj"
             }
           }
         }
@@ -4194,6 +4191,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -4238,7 +4240,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

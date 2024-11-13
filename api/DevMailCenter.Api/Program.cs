@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using devmailcenter.db;
+using DevMailCenter.Core;
 using DevMailCenter.Logic;
 using DevMailCenter.Repository;
 using Microsoft.EntityFrameworkCore;

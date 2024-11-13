@@ -1,4 +1,4 @@
-﻿using devmailcenter.db;
+﻿using DevMailCenter.Core;
 using DevMailCenter.Models;
 
 namespace DevMailCenter.Repository;

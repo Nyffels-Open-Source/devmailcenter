@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace devmailcenter.db.Migrations
+namespace DevMailCenter.Core.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
