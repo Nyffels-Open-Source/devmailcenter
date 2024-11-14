@@ -45,7 +45,7 @@ public class SmtpLogic : ISmtpLogic
         smtpClient.Host = settings.Host;
         smtpClient.Port = settings.Port;
         smtpClient.UseDefaultCredentials = false;
-        smtpClient.Credentials = new System.Net.NetworkCredential(settings.Email, settings.Password);
+        smtpClient.Credentials = new System.Net.NetworkCredential(settings.User, settings.Password);
         smtpClient.EnableSsl = true;
 
         try
