@@ -26,19 +26,19 @@ public class SmtpLogic : ISmtpLogic
     {
         var mm = new MimeMessage();
 
-        mm.From.Add(new MailboxAddress(settings.Email, settings.Email)); // TODO name of email?
+        mm.From.Add(new MailboxAddress(settings.Name, settings.Email));
         foreach (var receiver in email.Receivers)
         {
             switch (receiver.Type)
             {
                 case EmailReceiverType.To:
-                    mm.To.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    mm.To.Add(new MailboxAddress(receiver.ReceiverName, receiver.ReceiverEmail)); 
                     break;
                 case EmailReceiverType.CC:
-                    mm.Cc.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    mm.Cc.Add(new MailboxAddress(receiver.ReceiverName, receiver.ReceiverEmail));
                     break;
                 case EmailReceiverType.BCC:
-                    mm.Bcc.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    mm.Bcc.Add(new MailboxAddress(receiver.ReceiverName, receiver.ReceiverEmail));
                     break;
             }
         }

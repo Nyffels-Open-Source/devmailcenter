@@ -62,6 +62,7 @@ public class EmailRepository : IEmailRepository
             {
                 Type = receiver.Type,
                 Id = Guid.NewGuid(),
+                ReceiverName = receiver.ReceiverName,
                 ReceiverEmail = receiver.ReceiverEmail,
                 EmailId = newEmailId
             }).ToList(),
@@ -113,6 +114,7 @@ public class EmailRepository : IEmailRepository
                 entry.Receivers.Add(new EmailReceiver
                 {
                     Type = receiver.Type,
+                    ReceiverName = receiver.ReceiverName,
                     ReceiverEmail = receiver.ReceiverEmail,
                     EmailId = id,
                     Id = Guid.NewGuid(),

@@ -55,36 +55,14 @@ public class MailServerRepository : IMailServerRepository
         {
             case MailServerType.Smtp:
             {
-                var smtpValues = new List<string>() { "host", "port", "ssl", "email", "user", "password" };
+                var smtpValues = new List<string>() { "host", "port", "ssl", "email", "user", "password", "name" };
 
-                if (!keys.Contains("host"))
+                foreach (var value in smtpValues)
                 {
-                    settingsMissing.Add("host");
-                }
-
-                if (!keys.Contains("port"))
-                {
-                    settingsMissing.Add("port");
-                }
-
-                if (!keys.Contains("ssl"))
-                {
-                    settingsMissing.Add("ssl");
-                }
-
-                if (!keys.Contains("email"))
-                {
-                    settingsMissing.Add("email");
-                }
-
-                if (!keys.Contains("user"))
-                {
-                    settingsMissing.Add("user");
-                }
-
-                if (!keys.Contains("password"))
-                {
-                    settingsMissing.Add("password");
+                    if (!keys.Contains(value))
+                    {
+                        settingsMissing.Add(value);
+                    }
                 }
 
                 mailServer.Settings = mailServer.Settings.Where(e => smtpValues.Contains(e.Key)).ToList();

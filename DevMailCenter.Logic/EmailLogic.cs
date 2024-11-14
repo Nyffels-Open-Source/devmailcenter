@@ -60,7 +60,8 @@ public class EmailLogic : IEmailLogic
             Host = mailServer.MailServerSettings.First(e => e.Key == "host").Value,
             Password = mailServer.MailServerSettings.First(e => e.Key == "password").Value,
             Port = int.Parse(mailServer.MailServerSettings.First(e => e.Key == "port").Value),
-            User = mailServer.MailServerSettings.First(e => e.Key == "user").Value
+            User = mailServer.MailServerSettings.First(e => e.Key == "user").Value,
+            Name = mailServer.MailServerSettings.First(e => e.Key == "name").Value
         };
     }
 }
