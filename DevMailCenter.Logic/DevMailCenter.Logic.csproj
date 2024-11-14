@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DevMailCenter.Core\DevMailCenter.Core.csproj" />
+      <ProjectReference Include="..\DevMailCenter.Repository\DevMailCenter.Repository.csproj" />
     </ItemGroup>
 
 </Project>

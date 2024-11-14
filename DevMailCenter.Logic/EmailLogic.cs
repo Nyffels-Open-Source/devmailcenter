@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DevMailCenter.Models;
+using DevMailCenter.Repository;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Logic;
@@ -21,6 +23,12 @@ public class EmailLogic : IEmailLogic
 
     public Guid Send(Guid emailId)
     {
+        var email = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>().Get(emailId);
+        if (email is null)
+        {
+            throw new Exception("Email not found");
+        }
+        
         // TODO
         return Guid.NewGuid();
     }

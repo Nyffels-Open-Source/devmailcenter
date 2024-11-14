@@ -33,7 +33,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 447, DateTimeKind.Utc).AddTicks(4614))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 10, 17, 14, 938, DateTimeKind.Utc).AddTicks(1869))
                         .HasColumnName("EmailCreated");
 
                     b.Property<string>("Message")
@@ -41,9 +41,9 @@ namespace DevMailCenter.Core.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("EmailMessage");
 
-                    b.Property<string>("RawServerResponse")
-                        .HasColumnType("longtext")
-                        .HasColumnName("EmailRawServerResponse");
+                    b.Property<DateTime?>("Modified")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("EmailModified");
 
                     b.Property<DateTime?>("SendRequested")
                         .HasColumnType("datetime(6)")
@@ -120,7 +120,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 446, DateTimeKind.Utc).AddTicks(9383))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 10, 17, 14, 937, DateTimeKind.Utc).AddTicks(6094))
                         .HasColumnName("ServerCreated");
 
                     b.Property<DateTime?>("LastUsed")
@@ -158,7 +158,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 447, DateTimeKind.Utc).AddTicks(3557))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 10, 17, 14, 938, DateTimeKind.Utc).AddTicks(735))
                         .HasColumnName("MailServerSettingsCreated");
 
                     b.Property<string>("Key")

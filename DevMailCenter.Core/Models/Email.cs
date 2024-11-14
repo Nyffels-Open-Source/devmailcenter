@@ -11,7 +11,6 @@ public class Email
     public DateTime? SendRequested { get; set; }
     public DateTime? Completed { get; set; }
     public required EmailStatus Status { get; set; }
-    public string? RawServerResponse { get; set; }
     
     public ICollection<EmailReceiver> Receivers { get; set; }
 }

@@ -63,7 +63,6 @@ public class DmcContext : DbContext
             entity.Property(e => e.Modified).HasColumnName("EmailModified").HasDefaultValue(null);
             entity.Property(e => e.SendRequested).HasColumnName("EmailSendRequested").HasDefaultValue(null);
             entity.Property(e => e.Completed).HasColumnName("EmailCompleted").HasDefaultValue(null);
-            entity.Property(e => e.RawServerResponse).HasColumnName("EmailRawServerResponse").HasDefaultValue(null);
             entity.Property(e => e.ServerId).HasColumnName("EmailServerSettingsServerId").IsRequired();
             
             entity.HasMany(e => e.Receivers).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
