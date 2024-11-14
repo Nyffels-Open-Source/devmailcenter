@@ -52,10 +52,8 @@ namespace devmailcenterApi.Controllers
         [Route("{serverId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
-        public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId, [FromQuery] bool send = false)
+        public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
         {
             try
             {
@@ -66,13 +64,7 @@ namespace devmailcenterApi.Controllers
                 {
                     return BadRequest("Something whent wrong. No data has been returned after creation.");
                 }
-
-                if (send == true)
-                {
-                    _serviceScopeFactory.CreateScope().ServiceProvider
-                        .GetRequiredService<IEmailLogic>().Send(emailResult);
-                }
-
+                
                 return Ok(emailResult);
             }
             catch (Exception ex)
