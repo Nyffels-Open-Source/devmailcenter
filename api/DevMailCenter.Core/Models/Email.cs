@@ -19,6 +19,7 @@ public class EmailCreate
 {
     public required string Subject { get; set; }
     public required string Message { get; set; }
+    public required List<EmailReceiverCreate> Receivers { get; set; }
 }
 
 public class EmailUpdate
