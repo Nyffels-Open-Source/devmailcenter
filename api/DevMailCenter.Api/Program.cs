@@ -14,7 +14,9 @@ builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
 
 builder.Services
     .AddScoped<IMailServerRepository, MailServerRepository>()
-    .AddScoped<IEmailRepository, EmailRepository>();
+    .AddScoped<IEmailRepository, EmailRepository>()
+    .AddScoped<IEmailLogic, EmailLogic>()
+    .AddScoped<ISmtpLogic, SmtpLogic>();
 
 var app = builder.Build();
 

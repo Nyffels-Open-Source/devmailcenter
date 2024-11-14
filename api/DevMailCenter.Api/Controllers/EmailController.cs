@@ -1,4 +1,5 @@
-﻿using DevMailCenter.Models;
+﻿using DevMailCenter.Logic;
+using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,7 +68,8 @@ namespace devmailcenterApi.Controllers
 
                 if (send == true)
                 {
-                    // TODO Send email also
+                    _serviceScopeFactory.CreateScope().ServiceProvider
+                        .GetRequiredService<IEmailLogic>().Send(emailResult);
                 }
 
                 return Ok(emailResult);
