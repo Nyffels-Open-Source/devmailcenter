@@ -10,6 +10,7 @@ public class DmcContext : DbContext
     public DbSet<MailServerSettings> MailServerSettings { get; set; }
     public DbSet<Email> Emails { get; set; }
     public DbSet<EmailReceiver> EmailReceivers { get; set; }
+    public DbSet<EmailTransaction> EmailTransactions { get; set; }
 
     public DmcContext(DbContextOptions<DmcContext> options) : base(options)
     {
@@ -68,6 +69,7 @@ public class DmcContext : DbContext
             entity.Property(e => e.Priority).HasColumnName("EmailPriority").IsRequired().HasDefaultValue(MailPriority.Normal);
             
             entity.HasMany(e => e.Receivers).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Transactions).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailReceiver>(entity =>
@@ -80,6 +82,18 @@ public class DmcContext : DbContext
             entity.Property(e => e.EmailId).HasColumnName("EmailReceiverEmailId").IsRequired();
             entity.Property(e => e.ReceiverEmail).HasColumnName("EmailReceiverReceiverEmail").IsRequired();
             entity.Property(e => e.Type).HasColumnName("EmailReceiverType").IsRequired();
+        });
+
+        modelBuilder.Entity<EmailTransaction>(entity =>
+        {
+            entity.ToTable("DmcEmailTransaction");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Id).IsUnique();
+            entity.HasIndex(e => e.EmailId);
+            entity.Property(e => e.Id).HasColumnName("EmailTransactionId").IsRequired();
+            entity.Property(e => e.EmailId).HasColumnName("EmailTransactionEmailId").IsRequired();
+            entity.Property(e => e.RawResponse).HasColumnName("EmailTransactionRawResponse").IsRequired();
+            entity.Property(e => e.Created).HasColumnName("EmailTransactionCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
         });
     }
 }

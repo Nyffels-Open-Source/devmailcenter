@@ -16,7 +16,8 @@ builder.Services
     .AddScoped<IMailServerRepository, MailServerRepository>()
     .AddScoped<IEmailRepository, EmailRepository>()
     .AddScoped<IEmailLogic, EmailLogic>()
-    .AddScoped<ISmtpLogic, SmtpLogic>();
+    .AddScoped<ISmtpLogic, SmtpLogic>()
+    .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>();
 
 var app = builder.Build();
 

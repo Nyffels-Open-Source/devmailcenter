@@ -16,6 +16,7 @@ public class Email
     public required EmailStatus Status { get; set; }
     
     public ICollection<EmailReceiver> Receivers { get; set; }
+    public ICollection<EmailTransaction> Transactions { get; set; }
 }
 
 public class EmailCreate
