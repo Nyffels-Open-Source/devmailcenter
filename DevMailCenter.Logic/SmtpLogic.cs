@@ -1,7 +1,8 @@
 ﻿using DevMailCenter.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace DevMailCenter.Logic;
 
@@ -23,34 +24,39 @@ public class SmtpLogic : ISmtpLogic
 
     public Guid Send(SmtpSettings settings, Email email)
     {
-        /* Create the message */
-        MailMessage mailMessage = new MailMessage();
-        mailMessage.Body = email.Message;
-        mailMessage.Subject = email.Subject;
-        mailMessage.IsBodyHtml = true;
-        mailMessage.Priority = email.Priority;
-        email.Receivers.Where(receiver => receiver.Type == EmailReceiverType.To)
-            .Select(receiver => new MailAddress(receiver.ReceiverEmail)).ToList()
-            .ForEach(receiver => mailMessage.To.Add(receiver));
-        email.Receivers.Where(receiver => receiver.Type == EmailReceiverType.CC)
-            .Select(receiver => new MailAddress(receiver.ReceiverEmail)).ToList()
-            .ForEach(receiver => mailMessage.CC.Add(receiver));
-        email.Receivers.Where(receiver => receiver.Type == EmailReceiverType.BCC)
-            .Select(receiver => new MailAddress(receiver.ReceiverEmail)).ToList()
-            .ForEach(receiver => mailMessage.Bcc.Add(receiver));
-        mailMessage.Sender = new MailAddress(settings.Email);
+        var mm = new MimeMessage();
 
-        /* Create the SMTP Client */
-        SmtpClient smtpClient = new SmtpClient();
-        smtpClient.Host = settings.Host;
-        smtpClient.Port = settings.Port;
-        smtpClient.UseDefaultCredentials = false;
-        smtpClient.Credentials = new System.Net.NetworkCredential(settings.User, settings.Password);
-        smtpClient.EnableSsl = true;
+        mm.From.Add(new MailboxAddress(settings.Email, settings.Email)); // TODO name of email?
+        foreach (var receiver in email.Receivers)
+        {
+            switch (receiver.Type)
+            {
+                case EmailReceiverType.To:
+                    mm.To.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    break;
+                case EmailReceiverType.CC:
+                    mm.Cc.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    break;
+                case EmailReceiverType.BCC:
+                    mm.Bcc.Add(new MailboxAddress(receiver.ReceiverEmail, receiver.ReceiverEmail)); // TODO name of email?
+                    break;
+            }
+        }
+
+        mm.Subject = email.Subject;
+        mm.Body = new TextPart(MimeKit.Text.TextFormat.Html) { 
+            Text = email.Message
+        };
 
         try
         {
-            smtpClient.Send(mailMessage);
+            var client = new SmtpClient();
+            client.Connect(settings.Host, settings.Port, settings.ssl);
+            client.Authenticate(settings.User, settings.Password);
+            
+            var rawServerResponse = client.Send(mm);
+            client.Disconnect(true);
+     
             Console.WriteLine("Email sent Successfully"); // TODO
             // TODO Save Transaction properties and return transaction id.
             // TODO Set email status
