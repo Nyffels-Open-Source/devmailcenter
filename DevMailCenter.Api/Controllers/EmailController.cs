@@ -125,5 +125,40 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
+        
+        [HttpPost]
+        [Route("{emailId}/send")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status501NotImplemented)]
+        [EndpointDescription("Send a e-mail. Be aware, only concept e-mails can be send.")]
+        public IActionResult SendEmail([FromRoute] Guid emailId)
+        {
+            try
+            {
+                var transactionId = _serviceScopeFactory.CreateScope().ServiceProvider
+                    .GetRequiredService<IEmailLogic>().Send(emailId);
+
+                if (transactionId == null)
+                {
+                    return BadRequest("Something whent wrong. No data has been returned after creation.");
+                }
+                
+                return Ok(transactionId);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    "Receivers are required to send the e-mail" => UnprocessableEntity(ex.Message),
+                    "Email is not in 'concept' status." => Conflict(ex.Message),
+                    "Email not found" => NotFound(ex.Message),
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
     }
 }

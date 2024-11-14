@@ -25,9 +25,15 @@ public class EmailLogic : IEmailLogic
     {
         var email = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>()
             .Get(emailId, true);
+        
         if (email is null)
         {
             throw new Exception("Email not found");
+        }
+
+        if (email.Status != EmailStatus.Concept)
+        {
+            throw new Exception("Email is not in 'concept' status.");
         }
 
         if (email.Receivers == null || email.Receivers.Count <= 0)
