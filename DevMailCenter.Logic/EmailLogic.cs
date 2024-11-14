@@ -34,9 +34,22 @@ public class EmailLogic : IEmailLogic
             .Get(email.ServerId);
         return server.Type switch
         {
-            MailServerType.Smtp => throw new NotImplementedException("Sending email is not implemented yet for this mail server type."),
+            MailServerType.Smtp => _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ISmtpLogic>().Send(GetSmtpSettingsFromMailServer(server), email),
             MailServerType.MicrosoftExchange => throw new NotImplementedException("Sending email is not implemented yet for this mail server type."),
             _ => throw new NotImplementedException("Sending email is not implemented yet for this mail server type.")
+        };
+    }
+
+    private SmtpSettings GetSmtpSettingsFromMailServer(MailServer mailServer)
+    {
+        return new SmtpSettings
+        {
+            ssl = mailServer.MailServerSettings.First(e => e.Key == "ssl").Value == "true",
+            Email = mailServer.MailServerSettings.First(e => e.Key == "email").Value,
+            Host = mailServer.MailServerSettings.First(e => e.Key == "host").Value,
+            Password = mailServer.MailServerSettings.First(e => e.Key == "password").Value,
+            Port = int.Parse(mailServer.MailServerSettings.First(e => e.Key == "port").Value),
+            User = mailServer.MailServerSettings.First(e => e.Key == "user").Value
         };
     }
 }
