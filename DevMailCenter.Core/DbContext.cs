@@ -1,4 +1,5 @@
-﻿using DevMailCenter.Models;
+﻿using System.Net.Mail;
+using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevMailCenter.Core;
@@ -64,6 +65,7 @@ public class DmcContext : DbContext
             entity.Property(e => e.SendRequested).HasColumnName("EmailSendRequested").HasDefaultValue(null);
             entity.Property(e => e.Completed).HasColumnName("EmailCompleted").HasDefaultValue(null);
             entity.Property(e => e.ServerId).HasColumnName("EmailServerSettingsServerId").IsRequired();
+            entity.Property(e => e.Priority).HasColumnName("EmailPriority").IsRequired().HasDefaultValue(MailPriority.Normal);
             
             entity.HasMany(e => e.Receivers).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
         });

@@ -1,4 +1,6 @@
-﻿namespace DevMailCenter.Models;
+﻿using System.Net.Mail;
+
+namespace DevMailCenter.Models;
 
 public class Email
 {
@@ -6,6 +8,7 @@ public class Email
     public required Guid ServerId { get; set; }
     public required string Subject { get; set; }
     public required string Message { get; set; }
+    public required MailPriority Priority { get; set; }
     public required DateTime Created { get; set; }
     public DateTime? Modified { get; set; }
     public DateTime? SendRequested { get; set; }
@@ -19,6 +22,7 @@ public class EmailCreate
 {
     public required string Subject { get; set; }
     public required string Message { get; set; }
+    public required MailPriority Priority { get; set; }
     public required List<EmailReceiverCreate> Receivers { get; set; }
 }
 
@@ -26,6 +30,7 @@ public class EmailUpdate
 {
     public required string Subject { get; set; }
     public required string Message { get; set; }
+    public required MailPriority Priority { get; set; }
     
     public List<Guid> DeletedReceivers { get; set; }
     public List<EmailReceiverUpdate> UpdatedReceivers { get; set; }

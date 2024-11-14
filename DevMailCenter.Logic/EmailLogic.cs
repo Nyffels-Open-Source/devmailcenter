@@ -24,10 +24,15 @@ public class EmailLogic : IEmailLogic
     public Guid Send(Guid emailId)
     {
         var email = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>()
-            .Get(emailId);
+            .Get(emailId, true);
         if (email is null)
         {
             throw new Exception("Email not found");
+        }
+
+        if (email.Receivers == null || email.Receivers.Count <= 0)
+        {
+            throw new Exception("Receivers are required to send the e-mail");
         }
 
         var server = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()

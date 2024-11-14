@@ -56,6 +56,7 @@ public class EmailRepository : IEmailRepository
             Message = email.Message,
             Status = EmailStatus.Concept,
             Subject = email.Subject,
+            Priority = email.Priority,
             ServerId = serverId,
             Receivers = email.Receivers.Select(receiver => new EmailReceiver()
             {
