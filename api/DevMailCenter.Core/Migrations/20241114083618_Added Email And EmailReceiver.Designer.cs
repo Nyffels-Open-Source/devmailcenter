@@ -3,6 +3,7 @@ using System;
 using DevMailCenter.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
-    partial class DmcContextModelSnapshot : ModelSnapshot
+    [Migration("20241114083618_Added Email And EmailReceiver")]
+    partial class AddedEmailAndEmailReceiver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 447, DateTimeKind.Utc).AddTicks(4614))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 36, 17, 997, DateTimeKind.Utc).AddTicks(8861))
                         .HasColumnName("EmailCreated");
 
                     b.Property<string>("Message")
@@ -48,10 +51,6 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime?>("SendRequested")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("EmailSendRequested");
-
-                    b.Property<Guid>("ServerId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("EmailServerSettingsServerId");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
@@ -68,8 +67,6 @@ namespace DevMailCenter.Core.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("ServerId");
 
                     b.ToTable("DmcEmail", (string)null);
                 });
@@ -120,7 +117,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 446, DateTimeKind.Utc).AddTicks(9383))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 36, 17, 997, DateTimeKind.Utc).AddTicks(5185))
                         .HasColumnName("ServerCreated");
 
                     b.Property<DateTime?>("LastUsed")
@@ -158,7 +155,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 42, 29, 447, DateTimeKind.Utc).AddTicks(3557))
+                        .HasDefaultValue(new DateTime(2024, 11, 14, 8, 36, 17, 997, DateTimeKind.Utc).AddTicks(7924))
                         .HasColumnName("MailServerSettingsCreated");
 
                     b.Property<string>("Key")
@@ -189,15 +186,6 @@ namespace DevMailCenter.Core.Migrations
                     b.ToTable("DmcMailServerSettings", (string)null);
                 });
 
-            modelBuilder.Entity("DevMailCenter.Models.Email", b =>
-                {
-                    b.HasOne("DevMailCenter.Models.MailServer", null)
-                        .WithMany("Emails")
-                        .HasForeignKey("ServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DevMailCenter.Models.EmailReceiver", b =>
                 {
                     b.HasOne("DevMailCenter.Models.Email", null)
@@ -223,8 +211,6 @@ namespace DevMailCenter.Core.Migrations
 
             modelBuilder.Entity("DevMailCenter.Models.MailServer", b =>
                 {
-                    b.Navigation("Emails");
-
                     b.Navigation("MailServerSettings");
                 });
 #pragma warning restore 612, 618

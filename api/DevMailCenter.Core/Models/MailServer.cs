@@ -23,6 +23,7 @@ public class MailServer
     public DateTime? LastUsed { get; set; }
 
     public ICollection<MailServerSettings> MailServerSettings { get; set; }
+    public ICollection<Email> Emails { get; set; }
 }
 
 public class MailServerCreate

@@ -55,11 +55,11 @@ public class MailServerRepository : IMailServerRepository
         {
             case MailServerType.Smtp:
             {
-                var smtpValues = new List<string>() { "server", "port", "ssl", "email", "user", "password" };
+                var smtpValues = new List<string>() { "host", "port", "ssl", "email", "user", "password" };
 
-                if (!keys.Contains("server"))
+                if (!keys.Contains("host"))
                 {
-                    settingsMissing.Add("server");
+                    settingsMissing.Add("host");
                 }
 
                 if (!keys.Contains("port"))
@@ -93,7 +93,7 @@ public class MailServerRepository : IMailServerRepository
             }
             case MailServerType.MicrosoftExchange:
             {
-                // TODO
+                // TODO Accept authorization token or refresh token?
                 break;
             }
         }
