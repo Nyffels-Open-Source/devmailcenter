@@ -6,6 +6,7 @@ namespace DevMailCenter.Repository;
 
 public interface IEmailTransactionRepository
 {
+    EmailTransaction Get(Guid id);
     Guid Create(Guid emailId, string response);
 }
 
@@ -18,6 +19,11 @@ public class EmailTransactionRepository : IEmailTransactionRepository
         _dbContext = dbContext;
     }
 
+    public EmailTransaction Get(Guid id)
+    {
+        return _dbContext.EmailTransactions.FirstOrDefault(x => x.Id == id);
+    }
+    
     public Guid Create(Guid emailId, string response)
     {
         var transaction = new EmailTransaction
