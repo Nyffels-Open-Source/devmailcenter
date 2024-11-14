@@ -26,6 +26,7 @@ public class SmtpLogic : ISmtpLogic
     public Guid Send(SmtpSettings settings, Email email)
     {
         var emailRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>();
+        var emailTransactionRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailTransactionRepository>();
         
         var mm = new MimeMessage();
 
@@ -63,15 +64,12 @@ public class SmtpLogic : ISmtpLogic
             client.Disconnect(true);
      
             emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
-            // TODO Save Transaction properties and return transaction id.
+            return emailTransactionRepository.Create(email.Id, rawServerResponse);
         }
         catch (Exception ex)
         {
             emailRepository.SetEmailStatus(email.Id, EmailStatus.Failed);
-            Console.WriteLine(ex.Message); // TODO
-            // TODO Save Transacrion properties and return the transcation id. 
+            return emailTransactionRepository.Create(email.Id, ex.Message);
         }
-        
-        return Guid.NewGuid(); // TODO Delete, return will have to be the transaction id. 
     }
 }
