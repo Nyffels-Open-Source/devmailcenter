@@ -11,6 +11,7 @@ public interface IEmailRepository
     Guid Create(EmailCreate email, Guid serverId);
     void Update(Guid id, EmailUpdate email);
     int Delete(Guid guid);
+    void SetEmailStatus(Guid id, EmailStatus status);
 }
 
 public class EmailRepository : IEmailRepository
@@ -128,5 +129,12 @@ public class EmailRepository : IEmailRepository
     public int Delete(Guid guid)
     {
         return _dbContext.Emails.Where(e => e.Id == guid).ExecuteDelete();
+    }
+
+    public void SetEmailStatus(Guid id, EmailStatus status)
+    {
+        var entry = _dbContext.Emails.FirstOrDefault(e => e.Id == id);
+        entry.Status = status;
+        _dbContext.SaveChanges();
     }
 }
