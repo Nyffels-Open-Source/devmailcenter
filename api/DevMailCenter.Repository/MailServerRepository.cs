@@ -138,6 +138,11 @@ public class MailServerRepository : IMailServerRepository
         entry.Active = mailServer.Active;
         entry.Modified = DateTime.UtcNow;
 
+        foreach (var setting in mailServer.Settings)
+        {
+            entry.MailServerSettings.First(e => e.Key == setting.Key).Value = setting.Value;
+        }
+
         _dbContext.SaveChanges();
     }
 
