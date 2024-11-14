@@ -60,6 +60,7 @@ public class DmcContext : DbContext
             entity.Property(e => e.Message).HasColumnName("EmailMessage").IsRequired();
             entity.Property(e => e.Status).HasColumnName("EmailStatus").IsRequired().HasDefaultValue(EmailStatus.Concept);
             entity.Property(e => e.Created).HasColumnName("EmailCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
+            entity.Property(e => e.Modified).HasColumnName("EmailModified").HasDefaultValue(null);
             entity.Property(e => e.SendRequested).HasColumnName("EmailSendRequested").HasDefaultValue(null);
             entity.Property(e => e.Completed).HasColumnName("EmailCompleted").HasDefaultValue(null);
             entity.Property(e => e.RawServerResponse).HasColumnName("EmailRawServerResponse").HasDefaultValue(null);

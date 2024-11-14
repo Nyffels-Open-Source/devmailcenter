@@ -7,6 +7,7 @@ public class Email
     public required string Subject { get; set; }
     public required string Message { get; set; }
     public required DateTime Created { get; set; }
+    public DateTime? Modified { get; set; }
     public DateTime? SendRequested { get; set; }
     public DateTime? Completed { get; set; }
     public required EmailStatus Status { get; set; }
@@ -26,6 +27,10 @@ public class EmailUpdate
 {
     public required string Subject { get; set; }
     public required string Message { get; set; }
+    
+    public List<Guid> DeletedReceivers { get; set; }
+    public List<EmailReceiverUpdate> UpdatedReceivers { get; set; }
+    public List<EmailReceiverCreate> CreatedReceivers { get; set; }
 }
 
 public enum EmailStatus

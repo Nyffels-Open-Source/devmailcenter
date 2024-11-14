@@ -73,18 +73,50 @@ public class EmailRepository : IEmailRepository
 
     public void Update(Guid id, EmailUpdate email)
     {
-        // var entry = _dbContext.MailServers.FirstOrDefault(e => e.Id == id);
-        // if (entry == null)
-        // {
-        //     throw new Exception("Mailserver not found");
-        // }
-        //
-        // entry.Name = mailServer.Name;
-        // entry.Active = mailServer.Active;
-        // entry.Modified = DateTime.UtcNow;
-        // ;
-        //
-        // _dbContext.SaveChanges();
+        var entry = _dbContext.Emails.Include(e => e.Receivers).FirstOrDefault(e => e.Id == id);
+        if (entry == null)
+        {
+            throw new Exception("Email not found");
+        }
+
+        if (entry.Status != EmailStatus.Concept)
+        {
+            throw new Exception("Email isn't in an editable state");
+        }
+
+        entry.Subject = email.Subject;
+        entry.Message = email.Message;
+        entry.Modified = DateTime.UtcNow;
+
+        if (email.DeletedReceivers != null && email.DeletedReceivers.Count > 0)
+        {
+            entry.Receivers = entry.Receivers.Where(receiver => !email.DeletedReceivers.Contains(receiver.Id)).ToList();
+        }
+
+        if (email.UpdatedReceivers != null && email.UpdatedReceivers.Count > 0)
+        {
+            foreach (var receiver in email.UpdatedReceivers)
+            {
+                entry.Receivers.First(e => e.Id == receiver.Id).ReceiverEmail = receiver.ReceiverEmail;
+                entry.Receivers.First(e => e.Id == receiver.Id).Type = receiver.Type;
+            }
+        }
+
+        if (email.CreatedReceivers != null && email.CreatedReceivers.Count > 0)
+        {
+            foreach (var receiver in email.CreatedReceivers)
+            {
+                entry.Receivers.Add(new EmailReceiver
+                {
+                    Type = receiver.Type,
+                    ReceiverEmail = receiver.ReceiverEmail,
+                    EmailId = id,
+                    Id = Guid.NewGuid(),
+                });   
+            }
+        }
+
+        _dbContext.SaveChanges();
     }
 
     public int Delete(Guid guid)

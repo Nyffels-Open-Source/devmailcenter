@@ -86,7 +86,8 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [EndpointDescription("Update an existing email.")]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [EndpointDescription("Update an existing email. Be aware only e-mails in status 'Concept' can be edited. Other statusses are non-editable")]
         public IActionResult UpdateEmail([FromRoute] Guid id, [FromBody] EmailUpdate email)
         {
             try
@@ -100,7 +101,8 @@ namespace devmailcenterApi.Controllers
             {
                 return ex.Message switch
                 {
-                    "Mailserver not found" => NotFound(ex.Message),
+                    "Email not found" => NotFound(ex.Message),
+                    "Email isn't in an editable state" => Conflict(ex.Message),
                     _ => BadRequest(ex.Message)
                 };
             }
