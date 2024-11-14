@@ -102,11 +102,25 @@ public class MailServerRepository : IMailServerRepository
         {
             throw new Exception(String.Format("Missing settings: {0}", String.Join(", ", settingsMissing)));
         }
-
-        var newMailServer = new MailServer(name: mailServer.Name, type: mailServer.Type);
+        
+        var newMailServerId = Guid.NewGuid();
+        var newMailServer = new MailServer
+        {
+            Id = newMailServerId,
+            Active = true,
+            Created = DateTime.UtcNow,
+            Name = mailServer.Name,
+            Type = mailServer.Type,
+            MailServerSettings = mailServer.Settings.Select(setting => new MailServerSettings
+            {
+                Created = DateTime.UtcNow,
+                Id = Guid.NewGuid(),
+                ServerId = newMailServerId,
+                Key = setting.Key,
+                Value = setting.Value,
+            }).ToList()
+        };
         _dbContext.MailServers.Add(newMailServer);
-        _dbContext.MailServerSettings.AddRange(mailServer.Settings.Select(e => new MailServerSettings(e.Key, e.Value, newMailServer.Id)));
-
         _dbContext.SaveChanges();
 
         return newMailServer.Id;
@@ -114,7 +128,7 @@ public class MailServerRepository : IMailServerRepository
 
     public void Update(Guid id, MailServerUpdate mailServer)
     {
-        var entry = _dbContext.MailServers.FirstOrDefault(e => e.Id == id);
+        var entry = _dbContext.MailServers.Include(e => e.MailServerSettings).FirstOrDefault(e => e.Id == id);
         if (entry == null)
         {
             throw new Exception("Mailserver not found");
@@ -123,7 +137,6 @@ public class MailServerRepository : IMailServerRepository
         entry.Name = mailServer.Name;
         entry.Active = mailServer.Active;
         entry.Modified = DateTime.UtcNow;
-        ;
 
         _dbContext.SaveChanges();
     }
