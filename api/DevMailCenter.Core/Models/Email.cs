@@ -21,6 +21,12 @@ public class EmailCreate
     public required string Message { get; set; }
 }
 
+public class EmailUpdate
+{
+    public required string Subject { get; set; }
+    public required string Message { get; set; }
+}
+
 public enum EmailStatus
 {
     Concept, 
