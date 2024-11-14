@@ -64,7 +64,10 @@ public class EmailRepository : IEmailRepository
                 Id = Guid.NewGuid(),
                 ReceiverEmail = receiver.ReceiverEmail,
                 EmailId = newEmailId
-            }).ToList()
+            }).ToList(),
+            Modified = null, 
+            Completed = null, 
+            SendRequested = null
         };
         _dbContext.Add(newEmail);
         _dbContext.SaveChanges();
