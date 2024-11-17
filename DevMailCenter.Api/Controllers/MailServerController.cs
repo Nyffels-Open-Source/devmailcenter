@@ -52,11 +52,11 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
-        public IActionResult CreateMailServer([FromBody] MailServerCreate mailServer)
+        public async Task<IActionResult> CreateMailServer([FromBody] MailServerCreate mailServer)
         {
             try
             {
-                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider
+                var mailServerResult = await _serviceScopeFactory.CreateScope().ServiceProvider
                     .GetRequiredService<IMailServerRepository>().Create(mailServer);
 
                 if (mailServerResult == null)

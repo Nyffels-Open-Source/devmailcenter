@@ -1,6 +1,9 @@
 ﻿using DevMailCenter.Core;
+using DevMailCenter.External;
 using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Repository;
 
@@ -8,7 +11,7 @@ public interface IMailServerRepository
 {
     MailServer Get(Guid id, bool includeSettings = true);
     List<MailServer> List(bool includeSettings = false);
-    Guid Create(MailServerCreate mailServer);
+    Task<Guid> Create(MailServerCreate mailServer);
     int Delete(Guid guid);
     void Update(Guid id, MailServerUpdate mailServer);
 }
@@ -16,10 +19,14 @@ public interface IMailServerRepository
 public class MailServerRepository : IMailServerRepository
 {
     private readonly DmcContext _dbContext;
-
-    public MailServerRepository(DmcContext dbContext)
+    private readonly ILogger<EmailRepository> _logger;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    
+    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger, IServiceScopeFactory serviceScopeFactory)
     {
         _dbContext = dbContext;
+        _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public MailServer Get(Guid id, bool includeSettings = false)
@@ -46,7 +53,7 @@ public class MailServerRepository : IMailServerRepository
         return queryable.ToList();
     }
 
-    public Guid Create(MailServerCreate mailServer)
+    public async Task<Guid> Create(MailServerCreate mailServer)
     {
         var settingsMissing = new List<string>();
         var keys = mailServer.Settings.Select(e => e.Key);
@@ -66,19 +73,33 @@ public class MailServerRepository : IMailServerRepository
                 }
 
                 mailServer.Settings = mailServer.Settings.Where(e => smtpValues.Contains(e.Key)).ToList();
+                
+                if (settingsMissing.Count > 0)
+                {
+                    throw new Exception(String.Format("Missing settings: {0}", String.Join(", ", settingsMissing)));
+                }
 
                 break;
             }
             case MailServerType.MicrosoftExchange:
             {
-                // TODO Accept authorization token or refresh token?
+                if (keys.FirstOrDefault(e => e == "authorizationcode") == null)
+                {
+                    throw new Exception("Missing settings: authorizationcode");
+                }
+
+                var refreshToken = await _serviceScopeFactory.CreateScope().ServiceProvider
+                    .GetRequiredService<IMicrosoftApi>()
+                    .GetRefreshTokenByAuthorizationCode(
+                        mailServer.Settings.First(e => e.Key == "authorizationcode").Value);
+
+                mailServer.Settings = new List<MailServerSettingsMutation>()
+                {
+                    new MailServerSettingsMutation("refreshtoken", refreshToken)
+                };
+                
                 break;
             }
-        }
-
-        if (settingsMissing.Count > 0)
-        {
-            throw new Exception(String.Format("Missing settings: {0}", String.Join(", ", settingsMissing)));
         }
         
         var newMailServerId = Guid.NewGuid();
