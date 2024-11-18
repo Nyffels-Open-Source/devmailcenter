@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace devmailcenterApi.Controllers
 {
     [ApiController]
-    [Route("email")]
+    [Route("api/email")]
     public class EmailController : ControllerBase
     {
         private readonly ILogger<EmailController> _logger;
