@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>3485d0d9-cc31-43c9-9a87-122adbfb999b</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <RootNamespace>devmailcenterApi</RootNamespace>
+    <RootNamespace>DevMailCenter</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +39,15 @@
     <ProjectReference Include="..\DevMailCenter.Core\DevMailCenter.Core.csproj" />
     <ProjectReference Include="..\DevMailCenter.Logic\DevMailCenter.Logic.csproj" />
     <ProjectReference Include="..\DevMailCenter.Repository\DevMailCenter.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="out\web.config" />
+    <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="out\appsettings.json" />
+    <_ContentIncludedByDefault Remove="out\DevMailCenter.Api.deps.json" />
+    <_ContentIncludedByDefault Remove="out\DevMailCenter.Api.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="out\DevMailCenter.Api.staticwebassets.endpoints.json" />
   </ItemGroup>
 
 </Project>

@@ -21,6 +21,6 @@ public class MicrosoftApi : IMicrosoftApi
 
     public Task<string> GetRefreshTokenByAuthorizationCode(string authorizationCode)
     {
-        return null;
+        return Task.FromResult("OK");
     }
 }

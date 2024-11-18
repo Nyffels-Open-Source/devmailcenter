@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --host=127.0.0.1",
     "build": "ng build",
+    "build-production": "ng build --delete-output-path true --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

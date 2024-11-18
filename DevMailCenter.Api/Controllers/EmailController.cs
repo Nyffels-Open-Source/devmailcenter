@@ -141,11 +141,6 @@ namespace devmailcenterApi.Controllers
             {
                 var transactionId = _serviceScopeFactory.CreateScope().ServiceProvider
                     .GetRequiredService<IEmailLogic>().Send(emailId);
-
-                if (transactionId == null)
-                {
-                    return BadRequest("Something whent wrong. No data has been returned after creation.");
-                }
                 
                 return Ok(transactionId);
             }
