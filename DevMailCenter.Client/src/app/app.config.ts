@@ -4,6 +4,12 @@ import { routes } from './app.routes';
 import {providePrimeNG} from 'primeng/config';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import Aura from '@primeng/themes/aura';
+import {API_BASE_URL} from './core/openapi/generated/openapi-client';
+import {environment} from '../environments/environment';
+
+export function GetApiBaseUrl() {
+  return environment
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +18,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: Aura
-    })
+    }),
+    {
+      provide: API_BASE_URL,
+      useFactory: GetApiBaseUrl
+    },
   ]
 };
