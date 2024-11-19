@@ -16,17 +16,19 @@ RUN dotnet build "./DevMailCenter.Api.csproj" -c $BUILD_CONFIGURATION -o /app/bu
 FROM node:lts-alpine AS build-angular
 WORKDIR /src
 COPY ./DevMailCenter.Client .
-RUN npm install -g @angular/cli
+RUN npm config set strict-ssl false
+RUN npm install -g @angular/cli --force
 RUN npm ci 
-RUN npm run build
 
 FROM build-dotnet AS publish-dotnet
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./DevMailCenter.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-angular AS publish-angular
+RUN ng build --configuration production
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish-dotnet /app/publish .
+COPY --from=publish-angular /src/dist/dev-mail-center.client/browser ./wwwroot
 ENTRYPOINT ["dotnet", "DevMailCenter.Api.dll"]
