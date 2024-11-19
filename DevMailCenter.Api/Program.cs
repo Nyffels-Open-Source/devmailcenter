@@ -27,6 +27,7 @@ app.MapOpenApi();
 app.UseSwaggerUI(o =>
 {
     o.SwaggerEndpoint("/openapi/v1.json", "DevMailCenter Api");
+    o.RoutePrefix = "api";
 });
 
 app.UseHttpsRedirection();
