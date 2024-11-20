@@ -18,7 +18,7 @@ WORKDIR /src
 COPY ./DevMailCenter.Client .
 RUN npm config set strict-ssl false
 RUN npm install -g @angular/cli --force
-RUN npm ci 
+RUN npm ci --force
 
 FROM build-dotnet AS publish-dotnet
 ARG BUILD_CONFIGURATION=Release
