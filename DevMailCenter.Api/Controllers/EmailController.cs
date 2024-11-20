@@ -20,6 +20,7 @@ namespace devmailcenterApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [EndpointName("GetEmail")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email by its ID.")]
@@ -38,6 +39,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpGet]
         [Route("list")]
+        [EndpointName("ListEmails")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK)]
         [EndpointDescription("Retrieve all emails.")]
         public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
@@ -50,6 +52,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpPost]
         [Route("{serverId}")]
+        [EndpointName("CreateEmail")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
@@ -78,6 +81,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpPut]
         [Route("{id}")]
+        [EndpointName("UpdateEmail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +109,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpDelete]
         [Route("{id}")]
+        [EndpointName("DeleteEmail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Delete an existinge email.")]
@@ -128,6 +133,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpPost]
         [Route("{emailId}/send")]
+        [EndpointName("SendEmail")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

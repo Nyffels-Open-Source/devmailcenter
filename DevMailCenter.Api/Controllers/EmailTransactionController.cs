@@ -20,10 +20,11 @@ namespace devmailcenterApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [EndpointName("GetEmailTransaction")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email transaction by its ID.")]
-        public IActionResult GetEmail([FromRoute] Guid id)
+        public IActionResult GetEmailTransaction([FromRoute] Guid id)
         {
             var transaction = _serviceScopeFactory.CreateScope().ServiceProvider
                 .GetRequiredService<IEmailTransactionRepository>().Get(id);

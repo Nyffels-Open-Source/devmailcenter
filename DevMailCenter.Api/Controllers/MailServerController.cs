@@ -19,6 +19,7 @@ namespace devmailcenterApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [EndpointName("GetMailServer")]
         [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email server by its ID.")]
@@ -37,6 +38,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpGet]
         [Route("list")]
+        [EndpointName("ListMailServers")]
         [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
         [EndpointDescription("Retrieve all email servers.")]
         public IActionResult ListMailServer([FromQuery] bool includeSettings = false)
@@ -49,6 +51,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpPost]
         [Route("")]
+        [EndpointName("CreateMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
@@ -77,6 +80,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpPut]
         [Route("{id}")]
+        [EndpointName("UpdateMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -102,6 +106,7 @@ namespace devmailcenterApi.Controllers
         
         [HttpDelete]
         [Route("{id}")]
+        [EndpointName("DeleteMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Delete an existinge email server.")]
