@@ -12,7 +12,7 @@ export const routes: Routes = [{
           loadComponent: () => import('./portal/dashboard/dashboard.component').then(c => c.DashboardComponent),
         },
         {
-          path: 'e-mails',
+          path: 'email',
           children: [
             {
               path: 'list',
@@ -29,7 +29,7 @@ export const routes: Routes = [{
           ]
         },
         {
-          path: 'e-mailservers',
+          path: 'emailserver',
           children: [
             {
               path: 'list',
