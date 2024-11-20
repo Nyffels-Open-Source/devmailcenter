@@ -20,6 +20,8 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 

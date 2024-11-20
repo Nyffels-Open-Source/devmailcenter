@@ -21,7 +21,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("{id}")]
         [EndpointName("GetEmail")]
-        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email by its ID.")]
         public IActionResult GetEmail([FromRoute] Guid id, [FromQuery] bool includeReceivers = false)
@@ -40,7 +40,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("list")]
         [EndpointName("ListEmails")]
-        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
         [EndpointDescription("Retrieve all emails.")]
         public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
         {
@@ -53,7 +53,7 @@ namespace devmailcenterApi.Controllers
         [HttpPost]
         [Route("{serverId}")]
         [EndpointName("CreateEmail")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
@@ -134,7 +134,7 @@ namespace devmailcenterApi.Controllers
         [HttpPost]
         [Route("{emailId}/send")]
         [EndpointName("SendEmail")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

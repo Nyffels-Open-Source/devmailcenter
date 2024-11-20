@@ -30,10 +30,11 @@ export const routes: Routes = [{
         },
         {
           path: 'e-mailservers',
-          children: [{
-            path: 'list',
-            loadComponent: () => import('./portal/mailserver/list/list.component').then(c => c.ListComponent),
-          },
+          children: [
+            {
+              path: 'list',
+              loadComponent: () => import('./portal/mailserver/list/list.component').then(c => c.ListComponent),
+            },
             {
               path: 'view',
               loadComponent: () => import('./portal/mailserver/view/view.component').then(c => c.ViewComponent),

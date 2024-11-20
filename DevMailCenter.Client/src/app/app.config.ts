@@ -6,9 +6,10 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import Aura from '@primeng/themes/aura';
 import {API_BASE_URL} from './core/openapi/generated/openapi-client';
 import {environment} from '../environments/environment';
+import {provideHttpClient} from '@angular/common/http';
 
 export function GetApiBaseUrl() {
-  return environment
+  return environment.api.url;
 }
 
 export const appConfig: ApplicationConfig = {
@@ -23,5 +24,6 @@ export const appConfig: ApplicationConfig = {
       provide: API_BASE_URL,
       useFactory: GetApiBaseUrl
     },
+    provideHttpClient(),
   ]
 };

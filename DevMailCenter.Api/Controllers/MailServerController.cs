@@ -20,7 +20,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("{id}")]
         [EndpointName("GetMailServer")]
-        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email server by its ID.")]
         public IActionResult GetMailServer([FromRoute] Guid id, [FromQuery] bool includeSettings = false)
@@ -39,7 +39,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("list")]
         [EndpointName("ListMailServers")]
-        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK, "application/json")]
         [EndpointDescription("Retrieve all email servers.")]
         public IActionResult ListMailServer([FromQuery] bool includeSettings = false)
         {
@@ -52,7 +52,7 @@ namespace devmailcenterApi.Controllers
         [HttpPost]
         [Route("")]
         [EndpointName("CreateMailServer")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMailServer([FromBody] MailServerCreate mailServer)
