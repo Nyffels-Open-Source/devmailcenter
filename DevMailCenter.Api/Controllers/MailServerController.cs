@@ -39,7 +39,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("list")]
         [EndpointName("ListMailServers")]
-        [ProducesResponseType(typeof(MailServer), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(List<MailServer>), StatusCodes.Status200OK, "application/json")]
         [EndpointDescription("Retrieve all email servers.")]
         public IActionResult ListMailServer([FromQuery] bool includeSettings = false)
         {

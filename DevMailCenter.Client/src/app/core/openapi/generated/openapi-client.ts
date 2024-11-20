@@ -251,7 +251,7 @@ export class EmailClient extends OpenapiBase {
      * @param includeReceivers (optional) 
      * @return OK
      */
-    listEmails(includeReceivers?: boolean | undefined): Observable<Email> {
+    listEmails(includeReceivers?: boolean | undefined): Observable<Email[]> {
         let url_ = this.baseUrl + "/api/email/list?";
         if (includeReceivers === null)
             throw new Error("The parameter 'includeReceivers' cannot be null.");
@@ -276,14 +276,14 @@ export class EmailClient extends OpenapiBase {
                 try {
                     return this.processListEmails(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Email>;
+                    return _observableThrow(e) as any as Observable<Email[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Email>;
+                return _observableThrow(response_) as any as Observable<Email[]>;
         }));
     }
 
-    protected processListEmails(response: HttpResponseBase): Observable<Email> {
+    protected processListEmails(response: HttpResponseBase): Observable<Email[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -294,7 +294,14 @@ export class EmailClient extends OpenapiBase {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Email.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Email.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -756,7 +763,7 @@ export class MailServerClient extends OpenapiBase {
      * @param includeSettings (optional) 
      * @return OK
      */
-    listMailServers(includeSettings?: boolean | undefined): Observable<MailServer> {
+    listMailServers(includeSettings?: boolean | undefined): Observable<MailServer[]> {
         let url_ = this.baseUrl + "/api/mailserver/list?";
         if (includeSettings === null)
             throw new Error("The parameter 'includeSettings' cannot be null.");
@@ -781,14 +788,14 @@ export class MailServerClient extends OpenapiBase {
                 try {
                     return this.processListMailServers(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<MailServer>;
+                    return _observableThrow(e) as any as Observable<MailServer[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<MailServer>;
+                return _observableThrow(response_) as any as Observable<MailServer[]>;
         }));
     }
 
-    protected processListMailServers(response: HttpResponseBase): Observable<MailServer> {
+    protected processListMailServers(response: HttpResponseBase): Observable<MailServer[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -799,7 +806,14 @@ export class MailServerClient extends OpenapiBase {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MailServer.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MailServer.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {

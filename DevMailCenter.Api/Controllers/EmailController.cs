@@ -40,7 +40,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("list")]
         [EndpointName("ListEmails")]
-        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(List<Email>), StatusCodes.Status200OK, "application/json")]
         [EndpointDescription("Retrieve all emails.")]
         public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
         {
