@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'dmc-mail-list',
-  standalone: true,
-  imports: [],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+    selector: 'dmc-mail-list',
+    imports: [],
+    templateUrl: './list.component.html',
+    styleUrl: './list.component.scss'
 })
 export class ListComponent {
 
