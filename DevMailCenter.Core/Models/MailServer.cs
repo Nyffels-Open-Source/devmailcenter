@@ -43,5 +43,6 @@ public class MailServerUpdate
 public enum MailServerType
 {
     Smtp,
-    MicrosoftExchange
+    MicrosoftExchange,
+    Google
 }
