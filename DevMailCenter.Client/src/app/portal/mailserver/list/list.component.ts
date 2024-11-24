@@ -1,17 +1,23 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
+import {ConfigClient, MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {Subject, takeUntil} from 'rxjs';
 import {Table, TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {TooltipModule} from 'primeng/tooltip';
 import {ActivatedRoute, Router} from '@angular/router';
+import {CardModule} from 'primeng/card';
+import {DatePipe} from '@angular/common';
+import {TagModule} from 'primeng/tag';
 
 @Component({
   selector: 'dmc-mailserver-list',
   imports: [
     TableModule,
     ButtonModule,
-    TooltipModule
+    TooltipModule,
+    CardModule,
+    DatePipe,
+    TagModule
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
@@ -22,7 +28,7 @@ export class ListComponent implements OnInit, OnDestroy {
   servers: MailServer[] = [];
   isLoading = false;
 
-  constructor(private mailServerClient: MailServerClient, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private mailServerClient: MailServerClient, private configClient: ConfigClient, private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -44,6 +50,15 @@ export class ListComponent implements OnInit, OnDestroy {
           // TODO Error handling
         }
       });
+
+    this.configClient.listEnableProviders().pipe(takeUntil(this.destroy$)).subscribe({
+      next: providers => {
+        console.log(providers);
+      },
+      error: error => {
+        // TODO Error handling toast. Do not show add!
+      }
+    })
   }
 
   ngOnDestroy() {
