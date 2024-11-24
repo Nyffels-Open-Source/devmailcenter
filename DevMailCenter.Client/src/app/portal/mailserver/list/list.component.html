@@ -1,1 +1,26 @@
-<p>list works!</p>
+<p-table [value]="servers" [tableStyle]="{'min-width': '60rem'}">
+  <ng-template pTemplate="caption">
+    <div class="flex flex-row align-center justify-between">
+      Email servers
+      <div>
+        <button pButton pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-refresh" (click)="refresh()"> </button>
+        <button pButton pTooltip="Add" tooltipPosition="bottom" icon="pi pi-plus" (click)="addServer()"> </button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-server>
+    <tr>
+      <td>{{server.name}}</td>
+    </tr>
+  </ng-template>
+<!--  <ng-template pTemplate="summary">-->
+<!--    <div class="flex align-center justify-between">-->
+<!--      In total there are {{servers ? servers.length : 0 }} servers.-->
+<!--    </div>-->
+<!--  </ng-template>-->
+</p-table>
