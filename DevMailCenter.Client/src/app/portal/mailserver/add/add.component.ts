@@ -4,6 +4,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {CardModule} from 'primeng/card';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {MicrosoftService} from '../../../core/services/microsoft.service';
 
 @Component({
     selector: 'dmc-mailserver-add',
@@ -21,7 +22,7 @@ export class AddComponent implements OnInit {
 
   selectedProvider: string | null = null;
 
-  constructor(private configClient: ConfigClient) {}
+  constructor(private configClient: ConfigClient, private microsoftService: MicrosoftService) {}
 
   ngOnInit() {
     this.configClient.listEnableProviders().pipe(takeUntil(this.destroy$)).subscribe({
@@ -46,7 +47,7 @@ export class AddComponent implements OnInit {
     })
   }
 
-  onSelectProvider(provider: string) {
+  async onSelectProvider(provider: string) {
     this.selectedProvider = provider;
 
     switch (provider) {
@@ -56,6 +57,7 @@ export class AddComponent implements OnInit {
       }
       case 'MicrosoftExchange': {
         // TODO
+        await this.microsoftService.acquireConsentAndAuthorizationTokenByRedirect();
         break;
       }
       case 'Google': {
