@@ -1,11 +1,67 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ConfigClient} from '../../../core/openapi/generated/openapi-client';
+import {Subject, takeUntil} from 'rxjs';
+import {CardModule} from 'primeng/card';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
     selector: 'dmc-mailserver-add',
-    imports: [],
+    imports: [CardModule, CommonModule, FormsModule],
     templateUrl: './add.component.html',
     styleUrl: './add.component.scss'
 })
-export class AddComponent {
+export class AddComponent implements OnInit {
+  private destroy$ = new Subject<void>();
 
+  providersLoaded = false;
+  providers: string[] = [];
+
+  providerCards: {provider: string, name?: string, logoUrl?: string}[] = [];
+
+  selectedProvider: string | null = null;
+
+  constructor(private configClient: ConfigClient) {}
+
+  ngOnInit() {
+    this.configClient.listEnableProviders().pipe(takeUntil(this.destroy$)).subscribe({
+      next: providers => {
+        this.providers = providers;
+        this.generateProviderCards();
+        this.providersLoaded = true;
+      },
+      error: error => {
+        // TODO Error handling toast. Do not show add!
+      }
+    })
+  }
+
+  generateProviderCards() {
+    this.providerCards = this.providers.map(provider => {
+      return {
+        provider: provider,
+        name: {'Smtp': 'Basic SMTP', 'MicrosoftExchange': 'Microsoft Exchange 365 / Outlook.com', 'Google': 'Gmail' }[provider] ?? 'Unknown provider',
+        logoUrl: {'Smtp': 'providers/smtp.png', 'MicrosoftExchange': 'providers/exchange.png', 'Google': 'providers/google.png' }[provider] ?? "",
+      }
+    })
+  }
+
+  onSelectProvider(provider: string) {
+    this.selectedProvider = provider;
+
+    switch (provider) {
+      case 'Smtp': {
+        // TODO
+        break;
+      }
+      case 'MicrosoftExchange': {
+        // TODO
+        break;
+      }
+      case 'Google': {
+        alert("Not yet implemented!")
+        break;
+      }
+    }
+  }
 }

@@ -46,7 +46,7 @@ export class ConfigClient extends OpenapiBase {
     /**
      * @return OK
      */
-    listEnableProviders(): Observable<number[]> {
+    listEnableProviders(): Observable<string[]> {
         let url_ = this.baseUrl + "/api/config/providers/enabled";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -67,14 +67,14 @@ export class ConfigClient extends OpenapiBase {
                 try {
                     return this.processListEnableProviders(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<number[]>;
+                    return _observableThrow(e) as any as Observable<string[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<number[]>;
+                return _observableThrow(response_) as any as Observable<string[]>;
         }));
     }
 
-    protected processListEnableProviders(response: HttpResponseBase): Observable<number[]> {
+    protected processListEnableProviders(response: HttpResponseBase): Observable<string[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

@@ -23,7 +23,7 @@ namespace devmailcenterApi.Controllers
         [HttpGet]
         [Route("providers/enabled")]
         [EndpointName("ListEnableProviders")]
-        [ProducesResponseType(typeof(List<MailServerType>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
         [EndpointDescription("Retrieve all the enabled providers for a email server")]
         public IActionResult listEnabledProviders()
         {

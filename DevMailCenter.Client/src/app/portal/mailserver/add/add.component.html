@@ -1,1 +1,5 @@
-<p>add works!</p>
+<div class="flex flex-row gap-10">
+  <p-card *ngFor="let card of providerCards" class="hover:cursor-pointer flex-1 hover:scale-110 duration-150">
+    <img src="{{card.logoUrl}}" class="h-[100px] mr-auto ml-auto" />
+  </p-card>
+</div>

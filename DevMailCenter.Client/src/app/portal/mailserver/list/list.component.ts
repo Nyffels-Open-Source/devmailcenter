@@ -28,7 +28,7 @@ export class ListComponent implements OnInit, OnDestroy {
   servers: MailServer[] = [];
   isLoading = false;
 
-  constructor(private mailServerClient: MailServerClient, private configClient: ConfigClient, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private mailServerClient: MailServerClient, private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -50,15 +50,6 @@ export class ListComponent implements OnInit, OnDestroy {
           // TODO Error handling
         }
       });
-
-    this.configClient.listEnableProviders().pipe(takeUntil(this.destroy$)).subscribe({
-      next: providers => {
-        console.log(providers);
-      },
-      error: error => {
-        // TODO Error handling toast. Do not show add!
-      }
-    })
   }
 
   ngOnDestroy() {
