@@ -64,4 +64,9 @@ export class ListComponent implements OnInit, OnDestroy {
   refresh() {
     this.loadData();
   }
+
+  deleteServer(server: MailServer) {
+    // TODO
+    alert("Not yet implemented");
+  }
 }
