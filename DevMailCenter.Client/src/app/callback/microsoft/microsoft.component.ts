@@ -42,5 +42,6 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
 
   handleRequest() {
     // TODO
+    // this.mailServerClient.
   }
 }

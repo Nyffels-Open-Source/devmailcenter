@@ -708,76 +708,6 @@ export class MailServerClient extends OpenapiBase {
     /**
      * @return No Content
      */
-    updateMailServer(id: string, body: MailServerUpdate): Observable<void> {
-        let url_ = this.baseUrl + "/api/mailserver/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
-            return this.http.request("put", url_, transformedOptions_);
-        })).pipe(_observableMergeMap((response_: any) => {
-            return this.processUpdateMailServer(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdateMailServer(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processUpdateMailServer(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @return No Content
-     */
     deleteMailServer(id: string): Observable<void> {
         let url_ = this.baseUrl + "/api/mailserver/{id}";
         if (id === undefined || id === null)
@@ -902,8 +832,8 @@ export class MailServerClient extends OpenapiBase {
     /**
      * @return OK
      */
-    createMailServer(body: MailServerCreate): Observable<string> {
-        let url_ = this.baseUrl + "/api/mailserver";
+    createSmtpMailServer(body: SmtpMailServerCreate): Observable<string> {
+        let url_ = this.baseUrl + "/api/mailserver/smtp";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -921,11 +851,11 @@ export class MailServerClient extends OpenapiBase {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processCreateMailServer(response_);
+            return this.processCreateSmtpMailServer(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateMailServer(response_ as any);
+                    return this.processCreateSmtpMailServer(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<string>;
                 }
@@ -934,7 +864,72 @@ export class MailServerClient extends OpenapiBase {
         }));
     }
 
-    protected processCreateMailServer(response: HttpResponseBase): Observable<string> {
+    protected processCreateSmtpMailServer(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : _responseText;
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createMicrosoftMailServer(body: MicrosoftMailServerCreate): Observable<string> {
+        let url_ = this.baseUrl + "/api/mailserver/microsoft";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processCreateMicrosoftMailServer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateMicrosoftMailServer(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processCreateMicrosoftMailServer(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1575,70 +1570,6 @@ export interface IMailServer {
     [key: string]: any;
 }
 
-export class MailServerCreate implements IMailServerCreate {
-    name!: string;
-    type!: number;
-    settings?: MailServerSettingsMutation[];
-
-    [key: string]: any;
-
-    constructor(data?: IMailServerCreate) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.name = _data["name"];
-            this.type = _data["type"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(MailServerSettingsMutation.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): MailServerCreate {
-        data = typeof data === 'object' ? data : {};
-        let result = new MailServerCreate();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["name"] = this.name;
-        data["type"] = this.type;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IMailServerCreate {
-    name: string;
-    type: number;
-    settings?: MailServerSettingsMutation[];
-
-    [key: string]: any;
-}
-
 export class MailServerSettings implements IMailServerSettings {
     id!: string;
     serverId!: string;
@@ -1707,13 +1638,12 @@ export interface IMailServerSettings {
     [key: string]: any;
 }
 
-export class MailServerSettingsMutation implements IMailServerSettingsMutation {
-    key!: string;
-    value!: string;
+export class MicrosoftMailServerCreate implements IMicrosoftMailServerCreate {
+    code!: string;
 
     [key: string]: any;
 
-    constructor(data?: IMailServerSettingsMutation) {
+    constructor(data?: IMicrosoftMailServerCreate) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1728,14 +1658,13 @@ export class MailServerSettingsMutation implements IMailServerSettingsMutation {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.key = _data["key"];
-            this.value = _data["value"];
+            this.code = _data["code"];
         }
     }
 
-    static fromJS(data: any): MailServerSettingsMutation {
+    static fromJS(data: any): MicrosoftMailServerCreate {
         data = typeof data === 'object' ? data : {};
-        let result = new MailServerSettingsMutation();
+        let result = new MicrosoftMailServerCreate();
         result.init(data);
         return result;
     }
@@ -1746,79 +1675,13 @@ export class MailServerSettingsMutation implements IMailServerSettingsMutation {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["key"] = this.key;
-        data["value"] = this.value;
+        data["code"] = this.code;
         return data;
     }
 }
 
-export interface IMailServerSettingsMutation {
-    key: string;
-    value: string;
-
-    [key: string]: any;
-}
-
-export class MailServerUpdate implements IMailServerUpdate {
-    name!: string;
-    active?: boolean;
-    settings?: MailServerSettingsMutation[];
-
-    [key: string]: any;
-
-    constructor(data?: IMailServerUpdate) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.name = _data["name"];
-            this.active = _data["active"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(MailServerSettingsMutation.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): MailServerUpdate {
-        data = typeof data === 'object' ? data : {};
-        let result = new MailServerUpdate();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["name"] = this.name;
-        data["active"] = this.active;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IMailServerUpdate {
-    name: string;
-    active?: boolean;
-    settings?: MailServerSettingsMutation[];
+export interface IMicrosoftMailServerCreate {
+    code: string;
 
     [key: string]: any;
 }
@@ -1883,6 +1746,82 @@ export interface IProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class SmtpMailServerCreate implements ISmtpMailServerCreate {
+    name!: string;
+    host!: string;
+    port!: number;
+    ssl!: boolean;
+    email!: string;
+    user!: string;
+    password!: string;
+    username!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ISmtpMailServerCreate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.name = _data["name"];
+            this.host = _data["host"];
+            this.port = _data["port"];
+            this.ssl = _data["ssl"];
+            this.email = _data["email"];
+            this.user = _data["user"];
+            this.password = _data["password"];
+            this.username = _data["username"];
+        }
+    }
+
+    static fromJS(data: any): SmtpMailServerCreate {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmtpMailServerCreate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["name"] = this.name;
+        data["host"] = this.host;
+        data["port"] = this.port;
+        data["ssl"] = this.ssl;
+        data["email"] = this.email;
+        data["user"] = this.user;
+        data["password"] = this.password;
+        data["username"] = this.username;
+        return data;
+    }
+}
+
+export interface ISmtpMailServerCreate {
+    name: string;
+    host: string;
+    port: number;
+    ssl: boolean;
+    email: string;
+    user: string;
+    password: string;
+    username: string;
 
     [key: string]: any;
 }
