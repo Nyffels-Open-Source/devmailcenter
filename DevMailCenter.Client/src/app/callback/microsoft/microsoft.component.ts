@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ProgressBarModule } from 'primeng/progressbar';
 import {CommonModule} from '@angular/common';
 import {CardModule} from 'primeng/card';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
     selector: 'dmc-callback-microsoft',
@@ -13,11 +15,31 @@ import {CardModule} from 'primeng/card';
     templateUrl: './microsoft.component.html',
     styleUrl: './microsoft.component.scss'
 })
-export class MicrosoftComponent implements OnInit {
+export class MicrosoftComponent implements OnInit, OnDestroy {
+  private _destroy$ = new Subject<void>();
+
+  code: string | null = null;
+
   state: "process" | 'error' | 'success' = 'process';
 
-  constructor() {
+  constructor(private route: ActivatedRoute, private router: Router) {
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.fragment.pipe(takeUntil(this._destroy$)).subscribe((fragments) => {
+      const urlFragments = new URLSearchParams(fragments ?? "");
+      this.code = urlFragments.get("code");
+
+      this.handleRequest();
+    });
+  }
+
+  ngOnDestroy() {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
+  handleRequest() {
+    // TODO
+  }
 }
