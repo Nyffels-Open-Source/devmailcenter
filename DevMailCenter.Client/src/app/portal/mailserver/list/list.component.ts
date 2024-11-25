@@ -1,19 +1,22 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ConfigClient, MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {Subject, takeUntil} from 'rxjs';
-import {Table, TableModule} from 'primeng/table';
+import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {TooltipModule} from 'primeng/tooltip';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CardModule} from 'primeng/card';
-import {DatePipe} from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {TagModule} from 'primeng/tag';
+import {RippleModule} from 'primeng/ripple';
 
 @Component({
   selector: 'dmc-mailserver-list',
   imports: [
+    CommonModule,
     TableModule,
     ButtonModule,
+    RippleModule,
     TooltipModule,
     CardModule,
     DatePipe,
