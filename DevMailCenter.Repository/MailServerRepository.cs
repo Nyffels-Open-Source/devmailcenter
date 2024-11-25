@@ -1,4 +1,5 @@
 ﻿using DevMailCenter.Core;
+using DevMailCenter.External;
 using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,11 +21,13 @@ public class MailServerRepository : IMailServerRepository
 {
     private readonly DmcContext _dbContext;
     private readonly ILogger<EmailRepository> _logger;
+    private readonly IMicrosoftApi _microsoftApi;
 
-    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger)
+    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger, IMicrosoftApi microsoftApi)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _microsoftApi = microsoftApi;
     }
 
     public MailServer Get(Guid id, bool includeSettings = false)
@@ -129,6 +132,8 @@ public class MailServerRepository : IMailServerRepository
 
     public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
     {
+        var refreshToken = await _microsoftApi.GetRefreshTokenByAuthorizationCode(mailServer.Code);
+        
         // TODO
         throw new Exception("Not yet implemented");
         // var newMailServerId = Guid.NewGuid();
