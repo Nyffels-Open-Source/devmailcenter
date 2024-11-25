@@ -1,5 +1,4 @@
 ﻿using DevMailCenter.Core;
-using DevMailCenter.External;
 using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,14 +20,11 @@ public class MailServerRepository : IMailServerRepository
 {
     private readonly DmcContext _dbContext;
     private readonly ILogger<EmailRepository> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger,
-        IServiceScopeFactory serviceScopeFactory)
+    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger)
     {
         _dbContext = dbContext;
         _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public MailServer Get(Guid id, bool includeSettings = false)

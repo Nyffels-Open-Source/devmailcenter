@@ -1,6 +1,4 @@
-﻿using DevMailCenter.Logic;
-using DevMailCenter.Models;
-using DevMailCenter.Repository;
+﻿using DevMailCenter.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace devmailcenterApi.Controllers
@@ -10,13 +8,11 @@ namespace devmailcenterApi.Controllers
     public class ConfigController : ControllerBase
     {
         private readonly ILogger<ConfigController> _logger;
-        public readonly IServiceScopeFactory _serviceScopeFactory;
         public readonly IConfiguration _configuration;
 
-        public ConfigController(ILogger<ConfigController> logger, IServiceScopeFactory serviceScopeFactory, IConfiguration configuration)
+        public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration)
         {
             _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
             _configuration = configuration;
         }
 

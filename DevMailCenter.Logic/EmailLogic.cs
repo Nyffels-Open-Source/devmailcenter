@@ -13,19 +13,22 @@ public interface IEmailLogic
 public class EmailLogic : IEmailLogic
 {
     private readonly ILogger<EmailLogic> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IEmailRepository _emailRepository;
+    private readonly ISmtpLogic _smtpLogic;
+    private readonly IMailServerRepository _mailServerRepository;
 
-    public EmailLogic(ILogger<EmailLogic> logger, IServiceScopeFactory serviceScopeFactory)
+    public EmailLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, ISmtpLogic smtpLogic, IMailServerRepository mailServerRepository)
     {
         _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
+        _emailRepository = emailRepository;
+        _smtpLogic = smtpLogic;
+        _mailServerRepository = mailServerRepository;
     }
 
     public Guid Send(Guid emailId)
     {
-        var email = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>()
-            .Get(emailId, true);
-        
+        var email = _emailRepository.Get(emailId, true);
+
         if (email is null)
         {
             throw new Exception("Email not found");
@@ -41,12 +44,12 @@ public class EmailLogic : IEmailLogic
             throw new Exception("Receivers are required to send the e-mail");
         }
 
-        var server = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
-            .Get(email.ServerId);
+        var server = _mailServerRepository.Get(email.ServerId);
         return server.Type switch
         {
-            MailServerType.Smtp => _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ISmtpLogic>().Send(GetSmtpSettingsFromMailServer(server), email),
-            MailServerType.MicrosoftExchange => throw new NotImplementedException("Sending email is not implemented yet for this mail server type."),
+            MailServerType.Smtp => _smtpLogic.Send(GetSmtpSettingsFromMailServer(server), email),
+            MailServerType.MicrosoftExchange => throw new NotImplementedException(
+                "Sending email is not implemented yet for this mail server type."),
             _ => throw new NotImplementedException("Sending email is not implemented yet for this mail server type.")
         };
     }

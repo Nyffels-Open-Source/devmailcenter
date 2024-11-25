@@ -10,12 +10,14 @@ namespace devmailcenterApi.Controllers
     public class EmailController : ControllerBase
     {
         private readonly ILogger<EmailController> _logger;
-        public readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IEmailRepository _emailRepository;
+        private readonly IEmailLogic _emailLogic;
 
-        public EmailController(ILogger<EmailController> logger, IServiceScopeFactory serviceScopeFactory)
+        public EmailController(ILogger<EmailController> logger, IEmailRepository emailRepository, IEmailLogic emailLogic)
         {
             _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
+            _emailRepository = emailRepository;
+            _emailLogic = emailLogic;
         }
 
         [HttpGet]
@@ -26,8 +28,7 @@ namespace devmailcenterApi.Controllers
         [EndpointDescription("Retrieve an email by its ID.")]
         public IActionResult GetEmail([FromRoute] Guid id, [FromQuery] bool includeReceivers = false)
         {
-            var email = _serviceScopeFactory.CreateScope().ServiceProvider
-                .GetRequiredService<IEmailRepository>().Get(id, includeReceivers);
+            var email = _emailRepository.Get(id, includeReceivers);
 
             if (email == null)
             {
@@ -36,7 +37,7 @@ namespace devmailcenterApi.Controllers
 
             return Ok(email);
         }
-        
+
         [HttpGet]
         [Route("list")]
         [EndpointName("ListEmails")]
@@ -44,30 +45,29 @@ namespace devmailcenterApi.Controllers
         [EndpointDescription("Retrieve all emails.")]
         public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
         {
-            var mailServers = _serviceScopeFactory.CreateScope().ServiceProvider
-                .GetRequiredService<IEmailRepository>().List(includeReceivers);
+            var mailServers = _emailRepository.List(includeReceivers);
 
             return Ok(mailServers);
         }
-        
+
         [HttpPost]
         [Route("{serverId}")]
         [EndpointName("CreateEmail")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
+        [EndpointDescription(
+            "Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
         {
             try
             {
-                var emailResult = _serviceScopeFactory.CreateScope().ServiceProvider
-                    .GetRequiredService<IEmailRepository>().Create(email, serverId);
+                var emailResult = _emailRepository.Create(email, serverId);
 
                 if (emailResult == null)
                 {
                     return BadRequest("Something whent wrong. No data has been returned after creation.");
                 }
-                
+
                 return Ok(emailResult);
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-        
+
         [HttpPut]
         [Route("{id}")]
         [EndpointName("UpdateEmail")]
@@ -86,13 +86,13 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [EndpointDescription("Update an existing email. Be aware only e-mails in status 'Concept' can be edited. Other statusses are non-editable")]
+        [EndpointDescription(
+            "Update an existing email. Be aware only e-mails in status 'Concept' can be edited. Other statusses are non-editable")]
         public IActionResult UpdateEmail([FromRoute] Guid id, [FromBody] EmailUpdate email)
         {
             try
             {
-                _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>()
-                    .Update(id, email);
+                _emailRepository.Update(id, email);
 
                 return NoContent();
             }
@@ -106,7 +106,7 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-        
+
         [HttpDelete]
         [Route("{id}")]
         [EndpointName("DeleteEmail")]
@@ -117,8 +117,7 @@ namespace devmailcenterApi.Controllers
         {
             try
             {
-                _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>()
-                    .Delete(id);
+                _emailRepository.Delete(id);
 
                 return NoContent();
             }
@@ -130,7 +129,7 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-        
+
         [HttpPost]
         [Route("{emailId}/send")]
         [EndpointName("SendEmail")]
@@ -145,9 +144,8 @@ namespace devmailcenterApi.Controllers
         {
             try
             {
-                var transactionId = _serviceScopeFactory.CreateScope().ServiceProvider
-                    .GetRequiredService<IEmailLogic>().Send(emailId);
-                
+                var transactionId = _emailLogic.Send(emailId);
+
                 return Ok(transactionId);
             }
             catch (Exception ex)

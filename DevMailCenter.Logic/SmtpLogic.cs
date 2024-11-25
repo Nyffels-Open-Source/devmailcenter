@@ -15,19 +15,18 @@ public interface ISmtpLogic
 public class SmtpLogic : ISmtpLogic
 {
     private readonly ILogger<EmailLogic> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IEmailRepository _emailRepository;
+    private readonly IEmailTransactionRepository _emailTransactionRepository;
 
-    public SmtpLogic(ILogger<EmailLogic> logger, IServiceScopeFactory serviceScopeFactory)
+    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository)
     {
         _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
+        _emailRepository = emailRepository;
+        _emailTransactionRepository = emailTransactionRepository;
     }
 
     public Guid Send(SmtpSettings settings, Email email)
     {
-        var emailRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailRepository>();
-        var emailTransactionRepository = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IEmailTransactionRepository>();
-        
         var mm = new MimeMessage();
 
         mm.From.Add(new MailboxAddress(settings.Name, settings.Email));
@@ -54,7 +53,7 @@ public class SmtpLogic : ISmtpLogic
 
         try
         {
-            emailRepository.SetEmailStatus(email.Id, EmailStatus.Pending);
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Pending);
             
             var client = new SmtpClient();
             client.Connect(settings.Host, settings.Port, settings.ssl);
@@ -63,13 +62,13 @@ public class SmtpLogic : ISmtpLogic
             var rawServerResponse = client.Send(mm);
             client.Disconnect(true);
      
-            emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
-            return emailTransactionRepository.Create(email.Id, rawServerResponse);
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
+            return _emailTransactionRepository.Create(email.Id, rawServerResponse);
         }
         catch (Exception ex)
         {
-            emailRepository.SetEmailStatus(email.Id, EmailStatus.Failed);
-            return emailTransactionRepository.Create(email.Id, ex.Message);
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Failed);
+            return _emailTransactionRepository.Create(email.Id, ex.Message);
         }
     }
 }

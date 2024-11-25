@@ -10,12 +10,12 @@ namespace devmailcenterApi.Controllers
     public class EmailTransactionController : ControllerBase
     {
         private readonly ILogger<EmailTransactionController> _logger;
-        public readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IEmailTransactionRepository _emailTransactionRepository;
 
-        public EmailTransactionController(ILogger<EmailTransactionController> logger, IServiceScopeFactory serviceScopeFactory)
+        public EmailTransactionController(ILogger<EmailTransactionController> logger, IEmailTransactionRepository emailTransactionRepository)
         {
             _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
+            _emailTransactionRepository = emailTransactionRepository;
         }
 
         [HttpGet]
@@ -26,8 +26,7 @@ namespace devmailcenterApi.Controllers
         [EndpointDescription("Retrieve an email transaction by its ID.")]
         public IActionResult GetEmailTransaction([FromRoute] Guid id)
         {
-            var transaction = _serviceScopeFactory.CreateScope().ServiceProvider
-                .GetRequiredService<IEmailTransactionRepository>().Get(id);
+            var transaction = _emailTransactionRepository.Get(id);
 
             if (transaction == null)
             {
