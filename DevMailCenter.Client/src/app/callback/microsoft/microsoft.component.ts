@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {CardModule} from 'primeng/card';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
-import {MailServerClient} from '../../core/openapi/generated/openapi-client';
+import {MailServerClient, MicrosoftMailServerCreate} from '../../core/openapi/generated/openapi-client';
 
 @Component({
     selector: 'dmc-callback-microsoft',
@@ -41,7 +41,17 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
   }
 
   handleRequest() {
-    // TODO
-    // this.mailServerClient.
+    this.mailServerClient.createMicrosoftMailServer(new MicrosoftMailServerCreate({code: this.code ?? ""})).pipe(takeUntil(this._destroy$)).subscribe({
+      next: (guid) => {
+        console.log(guid);
+        // TODO Show user request is successful.
+        // TODO Give options (go to dashboard - go to mailservers)
+      },
+      error: (err) => {
+        console.log(err);
+        // TODO Show user request has errors.
+        // TODO Give options (go to dashboard - go to mailservers)
+      }
+    });
   }
 }
