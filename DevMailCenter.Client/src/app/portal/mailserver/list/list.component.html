@@ -24,6 +24,7 @@
         <td>{{server.type}}</td>
         <td>{{server.created | date: 'dd/MM/yyyy HH:mm'}}</td>
         <td><p-tag [severity]="server.active ? 'success' : 'danger'">{{ server.active ? 'Active' : 'Deactivated' }}</p-tag></td>
+        <td><button pButton pTooltip="Delete" tooltipPosition="bottom" icon="pi pi-eye" (click)="viewServer(server)"> </button></td>
         <td><button pButton pTooltip="Delete" tooltipPosition="bottom" class="p-button-danger" icon="pi pi-trash" (click)="deleteServer(server)"> </button></td>
       </tr>
     </ng-template>

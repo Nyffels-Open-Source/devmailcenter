@@ -69,4 +69,9 @@ export class ListComponent implements OnInit, OnDestroy {
     // TODO
     alert("Not yet implemented");
   }
+
+  viewServer(server: MailServer) {
+    // TODO
+    alert("Not yet implemented");
+  }
 }
