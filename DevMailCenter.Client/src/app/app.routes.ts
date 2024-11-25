@@ -24,7 +24,8 @@ export const routes: Routes = [{
             },
             {
               path: '**',
-              loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+              redirectTo: '/404-not-found',
+              pathMatch: "full"
             }
           ]
         },
@@ -45,7 +46,8 @@ export const routes: Routes = [{
             },
             {
               path: '**',
-              loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+              redirectTo: '/404-not-found',
+              pathMatch: "full"
             }
           ]
         },
@@ -56,7 +58,8 @@ export const routes: Routes = [{
         },
         {
           path: '**',
-          loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+          redirectTo: '/404-not-found',
+          pathMatch: "full"
         }
       ],
     },
@@ -74,9 +77,14 @@ export const routes: Routes = [{
         },
         {
           path: '**',
-          loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+          redirectTo: '/404-not-found',
+          pathMatch: "full"
         }
       ]
+    },
+    {
+      path: '404-not-found',
+      loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
     },
     {
       path: "",
@@ -85,7 +93,8 @@ export const routes: Routes = [{
     },
     {
       path: "**",
-      loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+      redirectTo: '/404-not-found',
+      pathMatch: "full"
     }
   ],
 }];
