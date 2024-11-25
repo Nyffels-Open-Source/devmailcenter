@@ -50,17 +50,17 @@ namespace devmailcenterApi.Controllers
         }
         
         [HttpPost]
-        [Route("")]
-        [EndpointName("CreateMailServer")]
+        [Route("smtp")]
+        [EndpointName("CreateSmtpMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
-        public async Task<IActionResult> CreateMailServer([FromBody] MailServerCreate mailServer)
+        [EndpointDescription("Create a new SMTP email server. The endpoint will return the ID of the newly created email server.")]
+        public async Task<IActionResult> CreateMailServer([FromBody] SmtpMailServerCreate mailServer)
         {
             try
             {
-                var mailServerResult = await _serviceScopeFactory.CreateScope().ServiceProvider
-                    .GetRequiredService<IMailServerRepository>().Create(mailServer);
+                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider
+                    .GetRequiredService<IMailServerRepository>().CreateSmtp(mailServer);
 
                 if (mailServerResult == null)
                 {
@@ -78,31 +78,60 @@ namespace devmailcenterApi.Controllers
             }
         }
         
-        [HttpPut]
-        [Route("{id}")]
-        [EndpointName("UpdateMailServer")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPost]
+        [Route("microsoft")]
+        [EndpointName("CreateMicrosoftMailServer")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [EndpointDescription("Update an existing email server.")]
-        public IActionResult UpdateMailServer([FromRoute] Guid id, [FromBody] MailServerUpdate mailServer)
+        [EndpointDescription("Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
+        public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
             try
             {
-                _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
-                    .Update(id, mailServer);
+                var mailServerResult = _serviceScopeFactory.CreateScope().ServiceProvider
+                    .GetRequiredService<IMailServerRepository>().CreateMicrosoft(mailServer);
 
-                return NoContent();
+                if (mailServerResult == null)
+                {
+                    return BadRequest("Something whent wrong. No data has been returned after creation.");
+                }
+
+                return Ok(mailServerResult);
             }
             catch (Exception ex)
             {
                 return ex.Message switch
                 {
-                    "Mailserver not found" => NotFound(ex.Message),
                     _ => BadRequest(ex.Message)
                 };
             }
         }
+        
+        // [HttpPut]
+        // [Route("{id}")]
+        // [EndpointName("UpdateMailServer")]
+        // [ProducesResponseType(StatusCodes.Status204NoContent)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status404NotFound)]
+        // [EndpointDescription("Update an existing email server.")]
+        // public IActionResult UpdateMailServer([FromRoute] Guid id, [FromBody] MailServerUpdate mailServer)
+        // {
+        //     try
+        //     {
+        //         _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IMailServerRepository>()
+        //             .Update(id, mailServer);
+        //
+        //         return NoContent();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return ex.Message switch
+        //         {
+        //             "Mailserver not found" => NotFound(ex.Message),
+        //             _ => BadRequest(ex.Message)
+        //         };
+        //     }
+        // }
         
         [HttpDelete]
         [Route("{id}")]

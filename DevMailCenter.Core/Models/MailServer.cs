@@ -28,6 +28,40 @@ public class MailServerCreate
     public List<MailServerSettingsMutation> Settings { get; set; }
 }
 
+public class SmtpMailServerCreate
+{
+    public SmtpMailServerCreate(string name, string host, int port, bool ssl, string email, string user, string password, string username)
+    {
+        Name = name;
+        Host = host;
+        Port = port;
+        Ssl = ssl;
+        Email = email;
+        User = user;
+        Password = password;
+        Username = username;
+    }
+
+    public string Name { get; set; }
+    public string Host { get; set; }
+    public int Port { get; set; }
+    public bool Ssl { get; set; }
+    public string Email { get; set; }
+    public string User { get; set; }
+    public string Password { get; set; }
+    public string Username { get; set; }
+}
+
+public class MicrosoftMailServerCreate
+{
+    public MicrosoftMailServerCreate(string code)
+    {
+        Code = code;
+    }
+
+    public string Code { get; set; }
+}
+
 public class MailServerUpdate
 {
     public MailServerUpdate(string name)

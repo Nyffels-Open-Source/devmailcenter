@@ -11,7 +11,8 @@ public interface IMailServerRepository
 {
     MailServer Get(Guid id, bool includeSettings = true);
     List<MailServer> List(bool includeSettings = false);
-    Task<Guid> Create(MailServerCreate mailServer);
+    Guid CreateSmtp(SmtpMailServerCreate mailServer);
+    Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer);
     int Delete(Guid guid);
     void Update(Guid id, MailServerUpdate mailServer);
 }
@@ -21,8 +22,9 @@ public class MailServerRepository : IMailServerRepository
     private readonly DmcContext _dbContext;
     private readonly ILogger<EmailRepository> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    
-    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger, IServiceScopeFactory serviceScopeFactory)
+
+    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger,
+        IServiceScopeFactory serviceScopeFactory)
     {
         _dbContext = dbContext;
         _logger = logger;
@@ -37,71 +39,24 @@ public class MailServerRepository : IMailServerRepository
         {
             queryable = queryable.Include(e => e.MailServerSettings);
         }
-        
+
         return queryable.FirstOrDefault(e => e.Id == id);
     }
 
     public List<MailServer> List(bool includeSettings = false)
     {
         var queryable = _dbContext.MailServers.AsQueryable();
-        
+
         if (includeSettings)
         {
             queryable = queryable.Include(e => e.MailServerSettings);
         }
-        
+
         return queryable.ToList();
     }
 
-    public async Task<Guid> Create(MailServerCreate mailServer)
+    public Guid CreateSmtp(SmtpMailServerCreate mailServer)
     {
-        var settingsMissing = new List<string>();
-        var keys = mailServer.Settings.Select(e => e.Key);
-
-        switch (mailServer.Type)
-        {
-            case MailServerType.Smtp:
-            {
-                var smtpValues = new List<string>() { "host", "port", "ssl", "email", "user", "password", "name" };
-
-                foreach (var value in smtpValues)
-                {
-                    if (!keys.Contains(value))
-                    {
-                        settingsMissing.Add(value);
-                    }
-                }
-
-                mailServer.Settings = mailServer.Settings.Where(e => smtpValues.Contains(e.Key)).ToList();
-                
-                if (settingsMissing.Count > 0)
-                {
-                    throw new Exception(String.Format("Missing settings: {0}", String.Join(", ", settingsMissing)));
-                }
-
-                break;
-            }
-            case MailServerType.MicrosoftExchange:
-            {
-                if (keys.FirstOrDefault(e => e == "authorizationcode") == null)
-                {
-                    throw new Exception("Missing settings: authorizationcode");
-                }
-
-                var refreshToken = await _serviceScopeFactory.CreateScope().ServiceProvider
-                    .GetRequiredService<IMicrosoftApi>()
-                    .GetRefreshTokenByAuthorizationCode(
-                        mailServer.Settings.First(e => e.Key == "authorizationcode").Value);
-
-                mailServer.Settings = new List<MailServerSettingsMutation>()
-                {
-                    new MailServerSettingsMutation("refreshtoken", refreshToken)
-                };
-                
-                break;
-            }
-        }
-        
         var newMailServerId = Guid.NewGuid();
         var newMailServer = new MailServer
         {
@@ -109,20 +64,149 @@ public class MailServerRepository : IMailServerRepository
             Active = true,
             Created = DateTime.UtcNow,
             Name = mailServer.Name,
-            Type = mailServer.Type,
-            MailServerSettings = mailServer.Settings.Select(setting => new MailServerSettings
-            {
-                Created = DateTime.UtcNow,
-                Id = Guid.NewGuid(),
-                ServerId = newMailServerId,
-                Key = setting.Key,
-                Value = setting.Value,
-            }).ToList()
+            Type = MailServerType.Smtp,
+            MailServerSettings = new List<MailServerSettings>()
         };
+
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "host",
+            Value = mailServer.Host,
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "port",
+            Value = mailServer.Port.ToString(),
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "ssl",
+            Value = mailServer.Ssl.ToString(),
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "email",
+            Value = mailServer.Email,
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "user",
+            Value = mailServer.User,
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "password",
+            Value = mailServer.Password,
+            ServerId = newMailServerId,
+        });
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "username",
+            Value = mailServer.Username,
+            ServerId = newMailServerId,
+        });
+
         _dbContext.MailServers.Add(newMailServer);
         _dbContext.SaveChanges();
 
         return newMailServer.Id;
+    }
+
+    public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
+    {
+        // TODO
+        throw new Exception("Not yet implemented");
+        // var newMailServerId = Guid.NewGuid();
+        // var newMailServer = new MailServer
+        // {
+        //     Id = newMailServerId,
+        //     Active = true,
+        //     Created = DateTime.UtcNow,
+        //     Name = mailServer.Name,
+        //     Type = MailServerType.Smtp,
+        //     MailServerSettings = new List<MailServerSettings>()
+        // };
+        //
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "host",
+        //     Value = mailServer.Host,
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "port",
+        //     Value = mailServer.Port.ToString(),
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "ssl",
+        //     Value = mailServer.Ssl.ToString(),
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "email",
+        //     Value = mailServer.Email,
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "user",
+        //     Value = mailServer.User,
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "password",
+        //     Value = mailServer.Password,
+        //     ServerId = newMailServerId,
+        // });
+        // newMailServer.MailServerSettings.Add(new MailServerSettings()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Created = DateTime.UtcNow,
+        //     Key = "username",
+        //     Value = mailServer.Username,
+        //     ServerId = newMailServerId,
+        // });
+        //
+        // _dbContext.MailServers.Add(newMailServer);
+        // _dbContext.SaveChanges();
+        //
+        // return newMailServer.Id;
     }
 
     public void Update(Guid id, MailServerUpdate mailServer)
