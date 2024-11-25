@@ -69,7 +69,8 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deleteServer(server: MailServer) {
-    // TODO
+    // TODO Are you sure you wish to delete this mailserver. All e-mails connected to this mailserver will also be deleted.
+    // TODO Delete the server
     alert("Not yet implemented");
   }
 
