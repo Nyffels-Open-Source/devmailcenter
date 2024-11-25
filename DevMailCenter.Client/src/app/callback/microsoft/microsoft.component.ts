@@ -4,6 +4,7 @@ import {CommonModule} from '@angular/common';
 import {CardModule} from 'primeng/card';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
+import {MailServerClient} from '../../core/openapi/generated/openapi-client';
 
 @Component({
     selector: 'dmc-callback-microsoft',
@@ -22,7 +23,7 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
 
   state: "process" | 'error' | 'success' = 'process';
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute, private router: Router, private mailServerClient: MailServerClient) {
   }
 
   ngOnInit() {
