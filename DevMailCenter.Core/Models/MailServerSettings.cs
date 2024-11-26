@@ -8,6 +8,7 @@ public class MailServerSettings
     public required string Value { get; set; }
     public required DateTime Created { get; set; }
     public DateTime? Modified { get; set; }
+    public bool Secret { get; set; }
 }
 
 public class MailServerSettingsMutation

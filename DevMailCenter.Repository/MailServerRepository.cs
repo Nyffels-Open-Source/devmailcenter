@@ -36,7 +36,7 @@ public class MailServerRepository : IMailServerRepository
 
         if (includeSettings)
         {
-            queryable = queryable.Include(e => e.MailServerSettings);
+            queryable = queryable.Include(e => e.MailServerSettings.Where(e => e.Secret == false));
         }
 
         return queryable.FirstOrDefault(e => e.Id == id);
@@ -74,6 +74,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "host",
             Value = mailServer.Host,
             ServerId = newMailServerId,
+            Secret = false
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -82,6 +83,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "port",
             Value = mailServer.Port.ToString(),
             ServerId = newMailServerId,
+            Secret = false
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -90,6 +92,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "ssl",
             Value = mailServer.Ssl.ToString(),
             ServerId = newMailServerId,
+            Secret = false
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -98,6 +101,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "email",
             Value = mailServer.Email,
             ServerId = newMailServerId,
+            Secret = false
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -106,6 +110,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "user",
             Value = mailServer.User,
             ServerId = newMailServerId,
+            Secret = false
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -114,6 +119,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "password",
             Value = mailServer.Password,
             ServerId = newMailServerId,
+            Secret = true
         });
         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
@@ -122,6 +128,7 @@ public class MailServerRepository : IMailServerRepository
             Key = "username",
             Value = mailServer.Username,
             ServerId = newMailServerId,
+            Secret = false
         });
 
         _dbContext.MailServers.Add(newMailServer);
@@ -132,82 +139,33 @@ public class MailServerRepository : IMailServerRepository
 
     public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
     {
-        var refreshToken = _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
+        var MicrosoftTokens = _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
         
-        // TODO
-        throw new Exception("Not yet implemented");
-        // var newMailServerId = Guid.NewGuid();
-        // var newMailServer = new MailServer
-        // {
-        //     Id = newMailServerId,
-        //     Active = true,
-        //     Created = DateTime.UtcNow,
-        //     Name = mailServer.Name,
-        //     Type = MailServerType.Smtp,
-        //     MailServerSettings = new List<MailServerSettings>()
-        // };
-        //
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "host",
-        //     Value = mailServer.Host,
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "port",
-        //     Value = mailServer.Port.ToString(),
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "ssl",
-        //     Value = mailServer.Ssl.ToString(),
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "email",
-        //     Value = mailServer.Email,
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "user",
-        //     Value = mailServer.User,
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "password",
-        //     Value = mailServer.Password,
-        //     ServerId = newMailServerId,
-        // });
-        // newMailServer.MailServerSettings.Add(new MailServerSettings()
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Created = DateTime.UtcNow,
-        //     Key = "username",
-        //     Value = mailServer.Username,
-        //     ServerId = newMailServerId,
-        // });
-        //
-        // _dbContext.MailServers.Add(newMailServer);
-        // _dbContext.SaveChanges();
-        //
-        // return newMailServer.Id;
+        var newMailServerId = Guid.NewGuid();
+        var newMailServer = new MailServer
+        {
+            Id = newMailServerId,
+            Active = true,
+            Created = DateTime.UtcNow,
+            Name = "Microsoft Exchange 365",
+            Type = MailServerType.MicrosoftExchange,
+            MailServerSettings = new List<MailServerSettings>()
+        };
+        
+        newMailServer.MailServerSettings.Add(new MailServerSettings()
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Key = "refreshToken",
+            Value = MicrosoftTokens.RefreshToken,
+            ServerId = newMailServerId,
+            Secret = true
+        });
+        
+        _dbContext.MailServers.Add(newMailServer);
+        _dbContext.SaveChanges();
+        
+        return newMailServer.Id;
     }
 
     public void Update(Guid id, MailServerUpdate mailServer)

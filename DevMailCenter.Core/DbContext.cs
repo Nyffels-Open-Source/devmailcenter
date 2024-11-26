@@ -49,6 +49,7 @@ public class DmcContext : DbContext
             entity.Property(e => e.Value).HasColumnName("MailServerSettingsValue").IsRequired();
             entity.Property(e => e.Created).HasColumnName("MailServerSettingsCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
             entity.Property(e => e.Modified).HasColumnName("MailServerSettingsModified").IsRequired(false).HasDefaultValue(null);
+            entity.Property(e => e.Secret).HasColumnName("MailServerSettingsSecret").IsRequired(true).HasDefaultValue(true);
         });
 
         modelBuilder.Entity<Email>(entity =>
