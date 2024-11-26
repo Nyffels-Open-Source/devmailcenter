@@ -12,12 +12,14 @@ namespace devmailcenterApi.Controllers
         private readonly IMailServerRepository _mailServerRepository;
         private readonly IMicrosoftApi _microsoftApi;
         private readonly ILogger<MailServerController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository, IMicrosoftApi microsoftApi)
+        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository, IMicrosoftApi microsoftApi, IConfiguration configuration)
         {
             _logger = logger;
             _mailServerRepository = mailServerRepository;
             _microsoftApi = microsoftApi;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -58,6 +60,11 @@ namespace devmailcenterApi.Controllers
         [EndpointDescription("Create a new SMTP email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMailServer([FromBody] SmtpMailServerCreate mailServer)
         {
+            if (_configuration["Smtp:Enabled"] == "False")
+            {
+                return Unauthorized("Smtp has been disabled");
+            }
+            
             try
             {
                 var mailServerResult = _mailServerRepository.CreateSmtp(mailServer);
@@ -86,6 +93,11 @@ namespace devmailcenterApi.Controllers
         [EndpointDescription("Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
+            if (_configuration["Microsoft:Enabled"] == "False")
+            {
+                return Unauthorized("Microsoft has been disabled");
+            }
+            
             try
             {
                 var mailServerResult = await _mailServerRepository.CreateMicrosoft(mailServer);
