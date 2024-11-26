@@ -14,3 +14,10 @@
   border-bottom: 1px #e5e7eb solid;
   border-top: 0;
 }
+
+.p-speeddial-direction-up {
+  &.speeddial-right {
+    right: 20px;
+    bottom: 20px;
+  }
+}

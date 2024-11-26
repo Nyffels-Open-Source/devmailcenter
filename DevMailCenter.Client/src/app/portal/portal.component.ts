@@ -1,14 +1,55 @@
-import { Component } from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router, RouterOutlet} from '@angular/router';
+import {SpeedDialModule} from 'primeng/speeddial';
+import {MenuItem} from 'primeng/api';
+import {FormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
 
 @Component({
-    selector: 'dmc-portal',
-    imports: [
-        RouterOutlet
-    ],
-    templateUrl: './portal.component.html',
-    styleUrl: './portal.component.scss'
+  selector: 'dmc-portal',
+  imports: [
+    RouterOutlet,
+    SpeedDialModule,
+    FormsModule,
+    CommonModule
+  ],
+  templateUrl: './portal.component.html',
+  styleUrl: './portal.component.scss'
 })
-export class PortalComponent {
+export class PortalComponent implements OnInit {
+  tooltipItems!: MenuItem[];
 
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.tooltipItems = [
+      {
+        tooltipOptions: {
+          tooltipLabel: 'Emails'
+        },
+        icon: 'pi pi-envelope',
+        command: () => {
+          this.router.navigate(['portal/email/list']);
+        }
+      },
+      {
+        tooltipOptions: {
+          tooltipLabel: 'Servers'
+        },
+        icon: 'pi pi-server',
+        command: () => {
+          this.router.navigate(['portal/emailserver/list']);
+        }
+      },
+      {
+        tooltipOptions: {
+          tooltipLabel: 'Dashboard'
+        },
+        icon: 'pi pi-chart-bar',
+        command: () => {
+          this.router.navigate(['portal/dashboard']);
+        }
+      },
+    ]
+  }
 }
