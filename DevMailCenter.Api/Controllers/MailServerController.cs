@@ -1,4 +1,5 @@
-﻿using DevMailCenter.Models;
+﻿using DevMailCenter.External;
+using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,14 @@ namespace devmailcenterApi.Controllers
     public class MailServerController : ControllerBase
     {
         private readonly IMailServerRepository _mailServerRepository;
+        private readonly IMicrosoftApi _microsoftApi;
         private readonly ILogger<MailServerController> _logger;
 
-        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository)
+        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository, IMicrosoftApi microsoftApi)
         {
             _logger = logger;
             _mailServerRepository = mailServerRepository;
+            _microsoftApi = microsoftApi;
         }
 
         [HttpGet]
@@ -93,6 +96,33 @@ namespace devmailcenterApi.Controllers
                 }
 
                 return Ok(mailServerResult);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
+
+        [HttpGet]
+        [Route("microsoft/authenticate")]
+        [EndpointName("GetMicrosoftAuthenticationUrl")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK, "text/plain")]
+        [EndpointDescription("This endpoint will return a Microsoft Authentication Url needed to request the Access token for usage in CreateMicrosoftMailServer endpoint. The return url must be registered in the registed app inside azure portal.")]
+        public async Task<IActionResult> GetMicrosoftAuthenticationUrl([FromQuery] string redirectUri)
+        {
+            try
+            {
+                var uri = _microsoftApi.GenerateAuthenticationRedirectUrl(redirectUri);
+
+                if (uri == null)
+                {
+                    return BadRequest("Redirect uri can't be generated!");
+                }
+
+                return Ok(uri);
             }
             catch (Exception ex)
             {

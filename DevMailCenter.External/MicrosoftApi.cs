@@ -7,6 +7,7 @@ namespace DevMailCenter.External;
 
 public interface IMicrosoftApi
 {
+    string GenerateAuthenticationRedirectUrl(string redirectUri);
     MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken);
     // Task<MicrosoftTokens> GetTokensByRefreshToken(string refreshToken);
     // Task<MicrosoftTokens> GetTokensByRefreshTokenInternal(string refreshToken);
@@ -25,6 +26,25 @@ public class MicrosoftApi : IMicrosoftApi
         _httpClient = httpClient;
     }
 
+    public string GenerateAuthenticationRedirectUrl(string redirectUri)
+    {
+        var clientId = this._configuration["Microsoft:ClientId"];
+        var scope = this._configuration["Microsoft:Scope"];
+        var authority = "https://login.microsoftonline.com/common/";
+        
+        string url = $"{authority}/oauth2/v2.0/authorize?";
+        url += $"client_id={clientId}";
+        url += $"&scope=api%3A%2F%2Fnyffels-websites-api%2Faccess_as_user%20api%3A%2F%2Fnyffels-websites-api%2Femail%20api%3A%2F%2Fnyffels-websites-api%2FMail.Send%20api%3A%2F%2Fnyffels-websites-api%2Foffline_access%20api%3A%2F%2Fnyffels-websites-api%2Fopenid%20api%3A%2F%2Fnyffels-websites-api%2Fprofile%20api%3A%2F%2Fnyffels-websites-api%2FUser.Read%20openid%20profile%20offline_access";
+        url += $"&redirect_uri={redirectUri}";
+        url += $"&response_mode=fragment";
+        url += $"&response_type=token";
+        url += $"&code_challenge=so0hRl0s-92wTU8QI5Ck9grpsiv_nk93QkREi_qjuAg";
+        url += $"&code_challenge_method=S256";
+        url += $"&prompt=consent";
+        
+        return url;
+    }
+    
     public MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken)
     {
         var clientId = this._configuration["Microsoft:ClientId"];

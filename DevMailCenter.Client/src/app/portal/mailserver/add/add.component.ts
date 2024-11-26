@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ConfigClient} from '../../../core/openapi/generated/openapi-client';
+import {ConfigClient, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {Subject, takeUntil} from 'rxjs';
 import {CardModule} from 'primeng/card';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MicrosoftService} from '../../../core/services/microsoft.service';
 
 @Component({
   selector: 'dmc-mailserver-add',
@@ -22,7 +21,7 @@ export class AddComponent implements OnInit {
 
   selectedProvider: string | null = null;
 
-  constructor(private configClient: ConfigClient, private microsoftService: MicrosoftService) {}
+  constructor(private configClient: ConfigClient, private mailServerClient: MailServerClient) {}
 
   ngOnInit() {
     this.configClient.listEnableProviders()
@@ -58,13 +57,15 @@ export class AddComponent implements OnInit {
         break;
       }
       case 'MicrosoftExchange': {
-        Object.keys(sessionStorage)
-          .filter(k => /^msal\..*/.test(k))
-          .reduce(function (obj: any, key: string) {
-            sessionStorage.removeItem(key);
-          }, {});
+        // Object.keys(sessionStorage)
+        //   .filter(k => /^msal\..*/.test(k))
+        //   .reduce(function (obj: any, key: string) {
+        //     sessionStorage.removeItem(key);
+        //   }, {});
 
-        await this.microsoftService.acquireConsentAndAuthorizationTokenByRedirect();
+        this.mailServerClient.getMicrosoftAuthenticationUrl(window.location.origin + "/callback/microsoft")
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({next: url => {window.open(url, "_self")}});
         break;
       }
       case 'Google': {
