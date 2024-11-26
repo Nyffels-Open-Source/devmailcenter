@@ -1,10 +1,23 @@
 <div class="w-dvw h-dvh flex justify-center items-center">
-  <div class="max-w-96 w-full">
+  <div class="max-w-[600px] w-full">
     <p-card>
       <div class="max-w-72 mr-auto ml-auto mb-4">
         <img src="/providers/exchange-small.png" alt="exchange-logo" class="w-full" />
       </div>
       <p-progressBar *ngIf="state == 'process'" mode="indeterminate" [style]="{ height: '6px' }" />
+      <p *ngIf="state == 'error'" class="font-bold text-red-500 text-center">{{ message }}</p>
+      <div *ngIf="state == 'success'">
+        <p class="font-bold text-green-500 text-center">{{ message }}</p>
+
+        <p-inputGroup class="mt-2" *ngIf="showNameChange">
+          <input #servername type="text" pInputText placeholder="Give a name to the new email server" />
+          <button type="button" pButton icon="pi pi-check" class="p-button-success" (click)="setServerName(servername.value)"></button>
+        </p-inputGroup>
+      </div>
+      <div *ngIf="state == 'success' || state == 'error'" class="mt-8 flex flex-row gap-5 w-full align-middle justify-center">
+        <p-button severity="secondary" label="Return to dashboard" (click)="navigateToDashboard()"></p-button>
+        <p-button severity="secondary" label="View all mailservers" (click)="navigateToMailServers()"></p-button>
+      </div>
     </p-card>
   </div>
 </div>

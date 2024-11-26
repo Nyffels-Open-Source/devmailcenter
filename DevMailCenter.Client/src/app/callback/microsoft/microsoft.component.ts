@@ -54,4 +54,19 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  setServerName(name: string) {
+    this.showNameChange = false;
+    this.message = `Emailserver created with name '${name}'`;
+
+    // TODO Save name in database.
+  }
+
+  navigateToDashboard() {
+    this.router.navigate(['/portal/dashboard']);
+  }
+
+  navigateToMailServers() {
+    this.router.navigate(['/portal/emailserver/list']);
+  }
 }

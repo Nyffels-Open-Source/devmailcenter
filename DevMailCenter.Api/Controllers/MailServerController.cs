@@ -81,14 +81,14 @@ namespace devmailcenterApi.Controllers
         [HttpPost]
         [Route("microsoft")]
         [EndpointName("CreateMicrosoftMailServer")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription("Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
             try
             {
-                var mailServerResult = _mailServerRepository.CreateMicrosoft(mailServer);
+                var mailServerResult = await _mailServerRepository.CreateMicrosoft(mailServer);
 
                 if (mailServerResult == null)
                 {

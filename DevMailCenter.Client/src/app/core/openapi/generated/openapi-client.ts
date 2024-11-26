@@ -1636,6 +1636,7 @@ export class MailServerSettings implements IMailServerSettings {
     value!: string;
     created!: Date;
     modified?: Date | undefined;
+    secret?: boolean;
 
     [key: string]: any;
 
@@ -1660,6 +1661,7 @@ export class MailServerSettings implements IMailServerSettings {
             this.value = _data["value"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : <any>undefined;
+            this.secret = _data["secret"];
         }
     }
 
@@ -1682,6 +1684,7 @@ export class MailServerSettings implements IMailServerSettings {
         data["value"] = this.value;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        data["secret"] = this.secret;
         return data;
     }
 }
@@ -1693,6 +1696,7 @@ export interface IMailServerSettings {
     value: string;
     created: Date;
     modified?: Date | undefined;
+    secret?: boolean;
 
     [key: string]: any;
 }
