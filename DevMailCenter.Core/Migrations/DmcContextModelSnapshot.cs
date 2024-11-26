@@ -16,7 +16,7 @@ namespace DevMailCenter.Core.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DevMailCenter.Models.Email", b =>
@@ -33,7 +33,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 15, 8, 55, 805, DateTimeKind.Utc).AddTicks(7025))
+                        .HasDefaultValue(new DateTime(2024, 11, 26, 13, 40, 59, 135, DateTimeKind.Utc).AddTicks(1721))
                         .HasColumnName("EmailCreated");
 
                     b.Property<string>("Message")
@@ -124,7 +124,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 15, 8, 55, 805, DateTimeKind.Utc).AddTicks(9546))
+                        .HasDefaultValue(new DateTime(2024, 11, 26, 13, 40, 59, 135, DateTimeKind.Utc).AddTicks(3803))
                         .HasColumnName("EmailTransactionCreated");
 
                     b.Property<Guid>("EmailId")
@@ -162,7 +162,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 15, 8, 55, 805, DateTimeKind.Utc).AddTicks(1389))
+                        .HasDefaultValue(new DateTime(2024, 11, 26, 13, 40, 59, 134, DateTimeKind.Utc).AddTicks(7017))
                         .HasColumnName("ServerCreated");
 
                     b.Property<DateTime?>("LastUsed")
@@ -200,7 +200,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 11, 14, 15, 8, 55, 805, DateTimeKind.Utc).AddTicks(5805))
+                        .HasDefaultValue(new DateTime(2024, 11, 26, 13, 40, 59, 135, DateTimeKind.Utc).AddTicks(791))
                         .HasColumnName("MailServerSettingsCreated");
 
                     b.Property<string>("Key")
@@ -211,6 +211,12 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("MailServerSettingsModified");
+
+                    b.Property<bool>("Secret")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("MailServerSettingsSecret");
 
                     b.Property<Guid>("ServerId")
                         .HasColumnType("char(36)")
