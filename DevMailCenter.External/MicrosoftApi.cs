@@ -28,18 +28,16 @@ public class MicrosoftApi : IMicrosoftApi
 
     public string GenerateAuthenticationRedirectUrl(string redirectUri)
     {
-        var clientId = this._configuration["Microsoft:ClientId"];
+        var clientId = this._configuration["Microsoft:Authentication:ClientId"];
         var scope = this._configuration["Microsoft:Scope"];
         var authority = "https://login.microsoftonline.com/common/";
         
         string url = $"{authority}/oauth2/v2.0/authorize?";
         url += $"client_id={clientId}";
-        url += $"&scope=api%3A%2F%2Fnyffels-websites-api%2Faccess_as_user%20api%3A%2F%2Fnyffels-websites-api%2Femail%20api%3A%2F%2Fnyffels-websites-api%2FMail.Send%20api%3A%2F%2Fnyffels-websites-api%2Foffline_access%20api%3A%2F%2Fnyffels-websites-api%2Fopenid%20api%3A%2F%2Fnyffels-websites-api%2Fprofile%20api%3A%2F%2Fnyffels-websites-api%2FUser.Read%20openid%20profile%20offline_access";
+        url += $"&scope={scope}";
         url += $"&redirect_uri={redirectUri}";
         url += $"&response_mode=fragment";
         url += $"&response_type=token";
-        url += $"&code_challenge=so0hRl0s-92wTU8QI5Ck9grpsiv_nk93QkREi_qjuAg";
-        url += $"&code_challenge_method=S256";
         url += $"&prompt=consent";
         
         return url;
@@ -47,9 +45,10 @@ public class MicrosoftApi : IMicrosoftApi
     
     public MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken)
     {
-        var clientId = this._configuration["Microsoft:ClientId"];
-        var clientSecret = this._configuration["Microsoft:ClientSecret"];
+        var clientId = this._configuration["Microsoft:Mailer:ClientId"];
+        var clientSecret = this._configuration["Microsoft:Mailer:ClientSecret"];
         var scope = this._configuration["Microsoft:Scope"];
+        var redirectUri = "http://localhost:4200/callback/microsoft";
 
         string url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
         string queryString = $"grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id={clientId}&client_secret={clientSecret}&assertion={accessToken}&scope={scope}&requested_token_use=on_behalf_of";

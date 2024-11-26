@@ -57,11 +57,11 @@ export class AddComponent implements OnInit {
         break;
       }
       case 'MicrosoftExchange': {
-        // Object.keys(sessionStorage)
-        //   .filter(k => /^msal\..*/.test(k))
-        //   .reduce(function (obj: any, key: string) {
-        //     sessionStorage.removeItem(key);
-        //   }, {});
+        Object.keys(sessionStorage)
+          .filter(k => /^msal\..*/.test(k))
+          .reduce(function (obj: any, key: string) {
+            sessionStorage.removeItem(key);
+          }, {});
 
         this.mailServerClient.getMicrosoftAuthenticationUrl(window.location.origin + "/callback/microsoft")
           .pipe(takeUntil(this.destroy$))
