@@ -132,7 +132,7 @@ public class MailServerRepository : IMailServerRepository
 
     public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
     {
-        var refreshToken = await _microsoftApi.GetRefreshTokenByAuthorizationCode(mailServer.Code);
+        var refreshToken = _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
         
         // TODO
         throw new Exception("Not yet implemented");

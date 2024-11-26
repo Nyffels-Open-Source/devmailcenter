@@ -19,7 +19,7 @@ import {MailServerClient, MicrosoftMailServerCreate} from '../../core/openapi/ge
 export class MicrosoftComponent implements OnInit, OnDestroy {
   private _destroy$ = new Subject<void>();
 
-  code: string | null = null;
+  accessToken: string | null = null;
 
   state: "process" | 'error' | 'success' = 'process';
 
@@ -29,7 +29,7 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.fragment.pipe(takeUntil(this._destroy$)).subscribe((fragments) => {
       const urlFragments = new URLSearchParams(fragments ?? "");
-      this.code = urlFragments.get("code");
+      this.accessToken = urlFragments.get("access_token");
 
       this.handleRequest();
     });
@@ -41,7 +41,7 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
   }
 
   handleRequest() {
-    this.mailServerClient.createMicrosoftMailServer(new MicrosoftMailServerCreate({code: this.code ?? ""})).pipe(takeUntil(this._destroy$)).subscribe({
+    this.mailServerClient.createMicrosoftMailServer(new MicrosoftMailServerCreate({code: this.accessToken ?? ""})).pipe(takeUntil(this._destroy$)).subscribe({
       next: (guid) => {
         console.log(guid);
         // TODO Show user request is successful.

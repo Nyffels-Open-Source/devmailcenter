@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using DevMailCenter.Core;
+using DevMailCenter.External;
 using DevMailCenter.Repository;
 using DevMailCenter.Logic;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient();
 builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
-    builder.Configuration.GetConnectionString("db"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
+    builder.Configuration.GetConnectionString("Database"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
 
 builder.Services
     .AddScoped<IMailServerRepository, MailServerRepository>()
     .AddScoped<IEmailRepository, EmailRepository>()
     .AddScoped<IEmailLogic, EmailLogic>()
     .AddScoped<ISmtpLogic, SmtpLogic>()
-    .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>();
+    .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
+    .AddScoped<IMicrosoftApi, MicrosoftApi>();
 
 var app = builder.Build();
 
