@@ -3,38 +3,37 @@
     <div class="flex flex-row align-center items-center justify-between pr-8 pl-8 pt-4 pb-3 border-b-[1px] border-black border-opacity-30">
       <h1 class="font-bold">Email servers</h1>
       <div class="flex flex-row gap-1">
-        <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-refresh" (click)="refresh()"> </button>
-        <button pButton class="p-button-text p-button-icon p-button-success" size="small" pTooltip="Add" tooltipPosition="bottom" icon="pi pi-plus" (click)="addServer()"> </button>
+        <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-refresh" (click)="refresh()"></button>
+        <button pButton class="p-button-text p-button-icon p-button-success" size="small" pTooltip="Add" tooltipPosition="bottom" icon="pi pi-plus" (click)="addServer()"></button>
       </div>
     </div>
   </ng-template>
 
-  <p-table [value]="servers" class="table-auto">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Name</th>
-        <th style="width: 150px;">Type</th>
-        <th style="width: 200px;">Created</th>
-        <th style="width: 100px;"></th>
-        <th style="width: 50px;"></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-server>
-      <tr>
-        <td>{{server.name}}</td>
-        <td>{{server.type}}</td>
-        <td>{{server.created | date: 'dd/MM/yyyy HH:mm'}}</td>
-        <td><p-tag [severity]="server.active ? 'success' : 'danger'">{{ server.active ? 'Active' : 'Deactivated' }}</p-tag></td>
-        <td class="flex flex-row gap-1">
-          <button pButton pRipple size="small" pTooltip="Details" tooltipPosition="bottom" class="p-button-text p-button-icon p-button-secondary" icon="pi pi-eye" (click)="viewServer(server)"> </button>
-          <button pButton pRipple size="small" pTooltip="Delete" tooltipPosition="bottom" class="p-button-text p-button-icon p-button p-button-danger" icon="pi pi-trash" (click)="deleteServer(server)"> </button>
-        </td>
-      </tr>
-    </ng-template>
-    <!--  <ng-template pTemplate="summary">-->
-    <!--    <div class="flex align-center justify-between">-->
-    <!--      In total there are {{servers ? servers.length : 0 }} servers.-->
-    <!--    </div>-->
-    <!--  </ng-template>-->
-  </p-table>
+  <div id="card-body">
+    <p-table [value]="servers" [scrollable]="true" scrollHeight="79dvh" class="table-auto">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th style="width: 150px;">Type</th>
+          <th style="width: 200px;">Created</th>
+          <th style="width: 100px;"></th>
+          <th style="width: 50px;"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-server>
+        <tr>
+          <td>{{ server.name }}</td>
+          <td>{{ server.type }}</td>
+          <td>{{ server.created | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <p-tag [severity]="server.active ? 'success' : 'danger'">{{ server.active ? 'Active' : 'Deactivated' }}</p-tag>
+          </td>
+          <td class="flex flex-row gap-1">
+            <button pButton pRipple size="small" pTooltip="Details" tooltipPosition="bottom" class="p-button-text p-button-icon p-button-secondary" icon="pi pi-eye" (click)="viewServer(server)"></button>
+            <button pButton pRipple size="small" pTooltip="Delete" tooltipPosition="bottom" class="p-button-text p-button-icon p-button p-button-danger" icon="pi pi-trash" (click)="deleteServer(server)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </p-card>
