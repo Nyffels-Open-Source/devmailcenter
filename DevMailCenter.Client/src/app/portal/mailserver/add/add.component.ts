@@ -2,12 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {ConfigClient, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {Subject, takeUntil} from 'rxjs';
 import {CardModule} from 'primeng/card';
-import {CommonModule} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {ButtonModule} from 'primeng/button';
+import {RippleModule} from 'primeng/ripple';
 
 @Component({
   selector: 'dmc-mailserver-add',
-  imports: [CardModule, CommonModule, FormsModule],
+  imports: [CardModule, CommonModule, FormsModule, ButtonModule, RippleModule],
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss'
 })
@@ -21,7 +23,7 @@ export class AddComponent implements OnInit {
 
   selectedProvider: string | null = null;
 
-  constructor(private configClient: ConfigClient, private mailServerClient: MailServerClient) {}
+  constructor(private configClient: ConfigClient, private mailServerClient: MailServerClient, private location: Location) {}
 
   ngOnInit() {
     this.configClient.listEnableProviders()
@@ -73,5 +75,9 @@ export class AddComponent implements OnInit {
         break;
       }
     }
+  }
+
+  onCancel() {
+    this.location.back();
   }
 }
