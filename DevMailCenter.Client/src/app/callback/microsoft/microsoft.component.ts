@@ -68,8 +68,8 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
     // TODO Save name in database.
   }
 
-  navigateToDashboard() {
-    this.router.navigate(['/portal/dashboard']);
+  navigateToMails() {
+    this.router.navigate(['/portal/mail/list']);
   }
 
   navigateToMailServers() {

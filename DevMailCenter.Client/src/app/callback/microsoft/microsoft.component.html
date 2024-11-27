@@ -15,7 +15,7 @@
         </p-inputGroup>
       </div>
       <div *ngIf="state == 'success' || state == 'error'" class="mt-8 flex flex-row gap-5 w-full align-middle justify-center">
-        <p-button severity="secondary" label="Return to dashboard" (click)="navigateToDashboard()"></p-button>
+        <p-button severity="secondary" label="View all emails" (click)="navigateToMails()"></p-button>
         <p-button severity="secondary" label="View all mailservers" (click)="navigateToMailServers()"></p-button>
       </div>
     </p-card>

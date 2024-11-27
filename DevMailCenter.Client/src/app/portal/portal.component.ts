@@ -40,16 +40,7 @@ export class PortalComponent implements OnInit {
         command: () => {
           this.router.navigate(['portal/emailserver/list']);
         }
-      },
-      {
-        tooltipOptions: {
-          tooltipLabel: 'Dashboard'
-        },
-        icon: 'pi pi-chart-bar',
-        command: () => {
-          this.router.navigate(['portal/dashboard']);
-        }
-      },
+      }
     ]
   }
 }

@@ -8,10 +8,6 @@ export const routes: Routes = [{
       loadComponent: () => import('./portal/portal.component').then(c => c.PortalComponent),
       children: [
         {
-          path: 'dashboard',
-          loadComponent: () => import('./portal/dashboard/dashboard.component').then(c => c.DashboardComponent),
-        },
-        {
           path: 'email',
           children: [
             {
@@ -53,7 +49,7 @@ export const routes: Routes = [{
         },
         {
           path: '',
-          redirectTo: '/dashboard',
+          redirectTo: '/email/list',
           pathMatch: "full"
         },
         {
@@ -88,7 +84,7 @@ export const routes: Routes = [{
     },
     {
       path: "",
-      redirectTo: '/portal/dashboard',
+      redirectTo: '/portal/email/list',
       pathMatch: "full"
     },
     {
