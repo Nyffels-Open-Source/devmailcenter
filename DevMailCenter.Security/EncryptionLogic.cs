@@ -65,7 +65,7 @@ public class EncryptionLogic : IEncryptionLogic
     {
         Aes aes = Aes.Create();  
         aes.GenerateKey();
-        var key = aes.Key.ToString();
+        var key = Convert.ToBase64String(aes.Key);
 
         if (updateSensitiveData)
         {
