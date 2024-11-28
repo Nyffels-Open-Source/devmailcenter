@@ -70,12 +70,6 @@ namespace devmailcenterApi.Controllers
             try
             {
                 var mailServerResult = _mailServerRepository.CreateSmtp(mailServer);
-
-                if (mailServerResult == null)
-                {
-                    return BadRequest("Something whent wrong. No data has been returned after creation.");
-                }
-
                 return Ok(mailServerResult);
             }
             catch (Exception ex)
@@ -94,7 +88,7 @@ namespace devmailcenterApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [EndpointDescription(
             "Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
-        public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
+        public IActionResult CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
             if (_configuration["Microsoft:Enabled"] == "False")
             {
@@ -103,13 +97,7 @@ namespace devmailcenterApi.Controllers
 
             try
             {
-                var mailServerResult = await _mailServerRepository.CreateMicrosoft(mailServer);
-
-                if (mailServerResult == null)
-                {
-                    return BadRequest("Something whent wrong. No data has been returned after creation.");
-                }
-
+                var mailServerResult = _mailServerRepository.CreateMicrosoft(mailServer);
                 return Ok(mailServerResult);
             }
             catch (Exception ex)
@@ -132,12 +120,6 @@ namespace devmailcenterApi.Controllers
             try
             {
                 var uri = _microsoftApi.GenerateAuthenticationRedirectUrl(redirectUri);
-
-                if (uri == null)
-                {
-                    return BadRequest("Redirect uri can't be generated!");
-                }
-
                 return Ok(uri);
             }
             catch (Exception ex)
