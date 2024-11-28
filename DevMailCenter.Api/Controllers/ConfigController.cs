@@ -1,5 +1,6 @@
 ﻿using DevMailCenter.Logic;
 using DevMailCenter.Models;
+using DevMailCenter.Security;
 using Microsoft.AspNetCore.Mvc;
 
 namespace devmailcenterApi.Controllers
@@ -54,6 +55,16 @@ namespace devmailcenterApi.Controllers
         public IActionResult RetrieveEncryptionStatus()
         {
             return Ok(_encryptionLogic.IsEncryptionEnabled());
+        }
+        
+        [HttpPost]
+        [Route("encryption/generate-key")]
+        [EndpointName("GenerateNewEncryptionKey")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [EndpointDescription("Generate a new encryption key. Use the query 'updateSensitiveData' to update all the sensitive data in the system to the new key, decrypting old data will happen with the current set key.")]
+        public IActionResult GenerateEncryptionKey([FromQuery] bool updateSensitiveData)
+        {
+            return Ok(_encryptionLogic.GenerateEncryptionKey(updateSensitiveData));
         }
     }
 }

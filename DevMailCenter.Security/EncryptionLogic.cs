@@ -9,7 +9,7 @@ public interface IEncryptionLogic
     bool IsEncryptionEnabled();
     string Encrypt(string value);
     string Decrypt(string value);
-    string GenerateEncryptionKey(bool updateEncryptedData = false);
+    string GenerateEncryptionKey(bool updateSensitiveData = false);
 }
 
 public class EncryptionLogic : IEncryptionLogic
@@ -61,13 +61,13 @@ public class EncryptionLogic : IEncryptionLogic
         }
     }
 
-    public string GenerateEncryptionKey(bool updateEncryptedData = false)
+    public string GenerateEncryptionKey(bool updateSensitiveData = false)
     {
         Aes aes = Aes.Create();  
         aes.GenerateKey();
         var key = aes.Key.ToString();
 
-        if (updateEncryptedData)
+        if (updateSensitiveData)
         {
             // TODO Load mailserversettings with encrypted data parameters. 
             // TODO if encrypted, use key to decrypt.

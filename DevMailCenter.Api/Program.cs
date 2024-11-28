@@ -3,6 +3,7 @@ using DevMailCenter.Core;
 using DevMailCenter.External;
 using DevMailCenter.Repository;
 using DevMailCenter.Logic;
+using DevMailCenter.Security;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
