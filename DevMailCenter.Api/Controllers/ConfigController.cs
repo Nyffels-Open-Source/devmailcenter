@@ -61,8 +61,8 @@ namespace devmailcenterApi.Controllers
         [Route("encryption/generate-key")]
         [EndpointName("GenerateNewEncryptionKey")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [EndpointDescription("Generate a new encryption key. Use the query 'updateSensitiveData' to update all the sensitive data in the system to the new key, decrypting old data will happen with the current set key.")]
-        public IActionResult GenerateEncryptionKey([FromQuery] bool updateSensitiveData)
+        [EndpointDescription("Generate a new encryption key. Use the query 'updateSensitiveData' to update all the sensitive data in the system to the new key, decrypting old data will happen with the current set key. Be aware, generating a key and updating sensitive data will allow the new key to become active.")]
+        public IActionResult GenerateEncryptionKey([FromQuery] bool updateSensitiveData = true)
         {
             return Ok(_encryptionLogic.GenerateEncryptionKey(updateSensitiveData));
         }

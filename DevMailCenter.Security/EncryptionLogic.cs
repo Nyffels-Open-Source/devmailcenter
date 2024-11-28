@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using DevMailCenter.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -16,19 +17,21 @@ public class EncryptionLogic : IEncryptionLogic
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<EncryptionLogic> _logger;
+    private readonly DmcContext _dbContext;
 
     private readonly bool _isEnabled;
-    private readonly string _key;
-    
-    public EncryptionLogic(IConfiguration configuration, ILogger<EncryptionLogic> logger)
+    private string  _key;
+
+    public EncryptionLogic(IConfiguration configuration, ILogger<EncryptionLogic> logger, DmcContext dbContext)
     {
         _configuration = configuration;
         _logger = logger;
+        _dbContext = dbContext;
 
         _isEnabled = _configuration["Encryption:Enabled"] == "True";
         if (_isEnabled)
         {
-            _key = _configuration["Encryption:Key"];   
+            _key = _configuration["Encryption:Key"];
         }
     }
 
@@ -61,31 +64,37 @@ public class EncryptionLogic : IEncryptionLogic
         }
     }
 
-    public string GenerateEncryptionKey(bool updateSensitiveData = false)
+    public string GenerateEncryptionKey(bool updateSensitiveData = true)
     {
-        Aes aes = Aes.Create();  
+        Aes aes = Aes.Create();
         aes.GenerateKey();
         var key = Convert.ToBase64String(aes.Key);
 
         if (updateSensitiveData)
         {
-            // TODO Load mailserversettings with encrypted data parameters. 
-            // TODO if encrypted, use key to decrypt.
-            // TODO encrypt plain text values to new values with the new key.
+            var serverSettings = _dbContext.MailServerSettings.Where(e => e.Secret == true).ToList();
+            foreach (var setting in serverSettings)
+            {
+                if (_isEnabled)
+                {
+                    setting.Value = DecryptString(setting.Value, _key);
+                }
+
+                setting.Value = EncryptString(setting.Value, key);
+            }
+            _dbContext.SaveChanges();
+            _key = key;
         }
         
         return key;
     }
-    
+
     private string EncryptString(string plaintext, string key)
     {
-        // Convert the plaintext string to a byte array
         byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
- 
-        // Derive a new password using the PBKDF2 algorithm and a random salt
+
         Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
- 
-        // Use the password to encrypt the plaintext
+
         Aes encryptor = Aes.Create();
         encryptor.Key = passwordBytes.GetBytes(32);
         encryptor.IV = passwordBytes.GetBytes(16);
@@ -95,19 +104,17 @@ public class EncryptionLogic : IEncryptionLogic
             {
                 cs.Write(plaintextBytes, 0, plaintextBytes.Length);
             }
+
             return Convert.ToBase64String(ms.ToArray());
         }
     }
-    
+
     private string DecryptString(string encrypted, string key)
     {
-        // Convert the encrypted string to a byte array
         byte[] encryptedBytes = Convert.FromBase64String(encrypted);
- 
-        // Derive the password using the PBKDF2 algorithm
+
         Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
- 
-        // Use the password to decrypt the encrypted string
+
         Aes encryptor = Aes.Create();
         encryptor.Key = passwordBytes.GetBytes(32);
         encryptor.IV = passwordBytes.GetBytes(16);
@@ -117,6 +124,7 @@ public class EncryptionLogic : IEncryptionLogic
             {
                 cs.Write(encryptedBytes, 0, encryptedBytes.Length);
             }
+
             return System.Text.Encoding.UTF8.GetString(ms.ToArray());
         }
     }
