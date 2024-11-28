@@ -62,16 +62,17 @@ public class MicrosoftMailServerCreate
     public string Code { get; set; }
 }
 
-public class MailServerUpdate
+public class MicrosoftMailServerUpdate
 {
-    public MailServerUpdate(string name)
-    {
-        Name = name;
-    }
-
     public string Name { get; set; }
     public bool Active { get; set; }
-    public List<MailServerSettingsMutation> Settings { get; set; }
+
+    public MicrosoftMailServerUpdate(string name, bool active)
+    {
+        Name = name;
+        Active = active;
+    }
+        
 }
 
 public enum MailServerType

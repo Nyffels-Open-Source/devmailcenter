@@ -14,7 +14,8 @@ namespace devmailcenterApi.Controllers
         private readonly ILogger<MailServerController> _logger;
         private readonly IConfiguration _configuration;
 
-        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository, IMicrosoftApi microsoftApi, IConfiguration configuration)
+        public MailServerController(ILogger<MailServerController> logger, IMailServerRepository mailServerRepository,
+            IMicrosoftApi microsoftApi, IConfiguration configuration)
         {
             _logger = logger;
             _mailServerRepository = mailServerRepository;
@@ -39,7 +40,7 @@ namespace devmailcenterApi.Controllers
 
             return Ok(mailServer);
         }
-        
+
         [HttpGet]
         [Route("list")]
         [EndpointName("ListMailServers")]
@@ -51,20 +52,21 @@ namespace devmailcenterApi.Controllers
 
             return Ok(mailServers);
         }
-        
+
         [HttpPost]
         [Route("smtp")]
         [EndpointName("CreateSmtpMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [EndpointDescription("Create a new SMTP email server. The endpoint will return the ID of the newly created email server.")]
+        [EndpointDescription(
+            "Create a new SMTP email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMailServer([FromBody] SmtpMailServerCreate mailServer)
         {
             if (_configuration["Smtp:Enabled"] == "False")
             {
                 return Unauthorized("Smtp has been disabled");
             }
-            
+
             try
             {
                 var mailServerResult = _mailServerRepository.CreateSmtp(mailServer);
@@ -84,20 +86,21 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-        
+
         [HttpPost]
         [Route("microsoft")]
         [EndpointName("CreateMicrosoftMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [EndpointDescription("Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
+        [EndpointDescription(
+            "Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
             if (_configuration["Microsoft:Enabled"] == "False")
             {
                 return Unauthorized("Microsoft has been disabled");
             }
-            
+
             try
             {
                 var mailServerResult = await _mailServerRepository.CreateMicrosoft(mailServer);
@@ -122,7 +125,8 @@ namespace devmailcenterApi.Controllers
         [Route("microsoft/authenticate")]
         [EndpointName("GetMicrosoftAuthenticationUrl")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK, "text/plain")]
-        [EndpointDescription("This endpoint will return a Microsoft Authentication Url needed to request the Access token for usage in CreateMicrosoftMailServer endpoint. The return url must be registered in the registed app inside azure portal.")]
+        [EndpointDescription(
+            "This endpoint will return a Microsoft Authentication Url needed to request the Access token for usage in CreateMicrosoftMailServer endpoint. The return url must be registered in the registed app inside azure portal.")]
         public async Task<IActionResult> GetMicrosoftAuthenticationUrl([FromQuery] string redirectUri)
         {
             try
@@ -144,7 +148,30 @@ namespace devmailcenterApi.Controllers
                 };
             }
         }
-        
+
+        [HttpPatch]
+        [Route("Microsoft/{id}")]
+        [EndpointName("UpdateMicrosoftMailServer")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdateMicrosoftMailServer([FromRoute] Guid id,
+            [FromBody] MicrosoftMailServerUpdate mailServer)
+        {
+            try
+            {
+                // TODO
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
+
         [HttpDelete]
         [Route("{id}")]
         [EndpointName("DeleteMailServer")]
