@@ -1,5 +1,6 @@
 ﻿using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using DevMailCenter.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
@@ -17,12 +18,14 @@ public class SmtpLogic : ISmtpLogic
     private readonly ILogger<EmailLogic> _logger;
     private readonly IEmailRepository _emailRepository;
     private readonly IEmailTransactionRepository _emailTransactionRepository;
+    private readonly IEncryptionLogic _encryptionLogic;
 
-    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository)
+    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic)
     {
         _logger = logger;
         _emailRepository = emailRepository;
         _emailTransactionRepository = emailTransactionRepository;
+        _encryptionLogic = encryptionLogic;
     }
 
     public Guid Send(SmtpSettings settings, Email email)
@@ -57,7 +60,7 @@ public class SmtpLogic : ISmtpLogic
             
             var client = new SmtpClient();
             client.Connect(settings.Host, settings.Port, settings.ssl);
-            client.Authenticate(settings.User, settings.Password);
+            client.Authenticate(settings.User, _encryptionLogic.Decrypt(settings.Password));
             
             var rawServerResponse = client.Send(mm);
             client.Disconnect(true);

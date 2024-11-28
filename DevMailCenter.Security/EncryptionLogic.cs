@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace DevMailCenter.Logic;
+namespace DevMailCenter.Security;
 
 public interface IEncryptionLogic
 {
