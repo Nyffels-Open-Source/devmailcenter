@@ -12,9 +12,11 @@ public interface IMailServerRepository
     MailServer Get(Guid id, bool includeSettings = true);
     List<MailServer> List(bool includeSettings = false);
     Guid CreateSmtp(SmtpMailServerCreate mailServer);
-    Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer);
+    Guid CreateMicrosoft(MicrosoftMailServerCreate mailServer);
     int Delete(Guid guid);
-    void Update(Guid id, MailServerUpdate mailServer);
+    void UpdateSmtp(Guid id, SmtpMailServerUpdate mailServer);
+    void UpdateMicrosoft(Guid id, MicrosoftMailServerUpdate mailServer);
+
 }
 
 public class MailServerRepository : IMailServerRepository
@@ -137,7 +139,7 @@ public class MailServerRepository : IMailServerRepository
         return newMailServer.Id;
     }
 
-    public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
+    public Guid CreateMicrosoft(MicrosoftMailServerCreate mailServer)
     {
         var MicrosoftTokens = _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
         
@@ -168,23 +170,64 @@ public class MailServerRepository : IMailServerRepository
         return newMailServer.Id;
     }
 
-    public void Update(Guid id, MailServerUpdate mailServer)
+    public void UpdateSmtp(Guid id, SmtpMailServerUpdate mailServer)
     {
         var entry = _dbContext.MailServers.Include(e => e.MailServerSettings).FirstOrDefault(e => e.Id == id);
         if (entry == null)
         {
             throw new Exception("Mailserver not found");
         }
-
+        
+        if (entry.Type != MailServerType.Smtp)
+        {
+            throw new Exception("Mailserver type isn't Smtp");
+        }
+        
         entry.Name = mailServer.Name;
         entry.Active = mailServer.Active;
         entry.Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "host").Value = mailServer.Host;
+        entry.MailServerSettings.Single(e => e.Key == "host").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "port").Value = mailServer.Port.ToString();
+        entry.MailServerSettings.Single(e => e.Key == "port").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "ssl").Value = mailServer.Ssl.ToString();
+        entry.MailServerSettings.Single(e => e.Key == "ssl").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "email").Value = mailServer.Email;
+        entry.MailServerSettings.Single(e => e.Key == "email").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "user").Value = mailServer.User;
+        entry.MailServerSettings.Single(e => e.Key == "user").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "password").Value = mailServer.Password;
+        entry.MailServerSettings.Single(e => e.Key == "password").Modified = DateTime.UtcNow;
+        
+        entry.MailServerSettings.Single(e => e.Key == "username").Value = mailServer.Username;
+        entry.MailServerSettings.Single(e => e.Key == "username").Modified = DateTime.UtcNow;
+        
+        _dbContext.SaveChanges();
+    }
 
-        foreach (var setting in mailServer.Settings)
+    public void UpdateMicrosoft(Guid id, MicrosoftMailServerUpdate mailServer)
+    {
+        var entry = _dbContext.MailServers.FirstOrDefault(e => e.Id == id);
+        if (entry == null)
         {
-            entry.MailServerSettings.First(e => e.Key == setting.Key).Value = setting.Value;
+            throw new Exception("Mailserver not found");
         }
-
+        
+        if (entry.Type != MailServerType.MicrosoftExchange)
+        {
+            throw new Exception("Mailserver type isn't Microsoft Exchange");
+        }
+        
+        entry.Name = mailServer.Name;
+        entry.Active = mailServer.Active;
+        entry.Modified = DateTime.UtcNow;
+        
         _dbContext.SaveChanges();
     }
 

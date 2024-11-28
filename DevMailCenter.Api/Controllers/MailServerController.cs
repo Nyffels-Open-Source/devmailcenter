@@ -160,13 +160,15 @@ namespace devmailcenterApi.Controllers
         {
             try
             {
-                // TODO
+                _mailServerRepository.UpdateMicrosoft(id, mailServer);
                 return NoContent();
             }
             catch (Exception ex)
             {
                 return ex.Message switch
                 {
+                    "Mailserver type isn't Microsoft Exchange" => NotFound(),
+                    "Mailserver not found" => NotFound(),
                     _ => BadRequest(ex.Message)
                 };
             }
@@ -183,13 +185,15 @@ namespace devmailcenterApi.Controllers
         {
             try
             {
-                // TODO
+                _mailServerRepository.UpdateSmtp(id, mailServer);
                 return NoContent();
             }
             catch (Exception ex)
             {
                 return ex.Message switch
                 {
+                    "Mailserver type isn't Smtp" => BadRequest(ex.Message),
+                    "Mailserver not found" => NotFound(),
                     _ => BadRequest(ex.Message)
                 };
             }
