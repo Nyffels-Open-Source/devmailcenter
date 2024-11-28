@@ -44,7 +44,7 @@ public class EmailLogic : IEmailLogic
             throw new Exception("Receivers are required to send the e-mail");
         }
 
-        var server = _mailServerRepository.Get(email.ServerId);
+        var server = _mailServerRepository.Get(email.ServerId, true, true);
         return server.Type switch
         {
             MailServerType.Smtp => _smtpLogic.Send(GetSmtpSettingsFromMailServer(server), email),
