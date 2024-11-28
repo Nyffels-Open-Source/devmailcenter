@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Security.Cryptography;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Security;
@@ -40,8 +41,7 @@ public class EncryptionLogic : IEncryptionLogic
     {
         if (_isEnabled)
         {
-            // TODO Encrypt
-            return "";
+            return EncryptString(value, _key);
         }
         else
         {
@@ -53,8 +53,7 @@ public class EncryptionLogic : IEncryptionLogic
     {
         if (_isEnabled)
         {
-            // TODO Decrypt
-            return "";
+            return DecryptString(value, _key);
         }
         else
         {
@@ -64,8 +63,9 @@ public class EncryptionLogic : IEncryptionLogic
 
     public string GenerateEncryptionKey(bool updateEncryptedData = false)
     {
-        // TODO Generate a new random Encryption key
-        var key = "";
+        Aes aes = Aes.Create();  
+        aes.GenerateKey();
+        var key = aes.Key.ToString();
 
         if (updateEncryptedData)
         {
@@ -75,5 +75,49 @@ public class EncryptionLogic : IEncryptionLogic
         }
         
         return key;
+    }
+    
+    private string EncryptString(string plaintext, string key)
+    {
+        // Convert the plaintext string to a byte array
+        byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
+ 
+        // Derive a new password using the PBKDF2 algorithm and a random salt
+        Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
+ 
+        // Use the password to encrypt the plaintext
+        Aes encryptor = Aes.Create();
+        encryptor.Key = passwordBytes.GetBytes(32);
+        encryptor.IV = passwordBytes.GetBytes(16);
+        using (MemoryStream ms = new MemoryStream())
+        {
+            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(plaintextBytes, 0, plaintextBytes.Length);
+            }
+            return Convert.ToBase64String(ms.ToArray());
+        }
+    }
+    
+    private string DecryptString(string encrypted, string key)
+    {
+        // Convert the encrypted string to a byte array
+        byte[] encryptedBytes = Convert.FromBase64String(encrypted);
+ 
+        // Derive the password using the PBKDF2 algorithm
+        Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
+ 
+        // Use the password to decrypt the encrypted string
+        Aes encryptor = Aes.Create();
+        encryptor.Key = passwordBytes.GetBytes(32);
+        encryptor.IV = passwordBytes.GetBytes(16);
+        using (MemoryStream ms = new MemoryStream())
+        {
+            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(encryptedBytes, 0, encryptedBytes.Length);
+            }
+            return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+        }
     }
 }
