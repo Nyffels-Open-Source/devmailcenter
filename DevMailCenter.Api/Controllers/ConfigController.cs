@@ -1,4 +1,5 @@
-﻿using DevMailCenter.Models;
+﻿using DevMailCenter.Logic;
+using DevMailCenter.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace devmailcenterApi.Controllers
@@ -9,11 +10,13 @@ namespace devmailcenterApi.Controllers
     {
         private readonly ILogger<ConfigController> _logger;
         public readonly IConfiguration _configuration;
+        private readonly IEncryptionLogic _encryptionLogic;
 
-        public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration)
+        public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration, IEncryptionLogic encryptionLogic)
         {
             _logger = logger;
             _configuration = configuration;
+            _encryptionLogic = encryptionLogic;
         }
 
         [HttpGet]
@@ -41,6 +44,16 @@ namespace devmailcenterApi.Controllers
             }
 
             return Ok(types);
+        }
+        
+        [HttpGet]
+        [Route("encryption/enabled")]
+        [EndpointName("CheckEncryptionStatus")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [EndpointDescription("Retrieve the encrypton status")]
+        public IActionResult RetrieveEncryptionStatus()
+        {
+            return Ok(_encryptionLogic.IsEncryptionEnabled());
         }
     }
 }

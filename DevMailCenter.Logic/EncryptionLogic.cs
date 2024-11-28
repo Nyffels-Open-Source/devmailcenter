@@ -5,7 +5,9 @@ namespace DevMailCenter.Logic;
 
 public interface IEncryptionLogic
 {
-    
+    bool IsEncryptionEnabled();
+    string Encrypt(string value);
+    string Decrypt(string value);
 }
 
 public class EncryptionLogic : IEncryptionLogic
@@ -26,6 +28,11 @@ public class EncryptionLogic : IEncryptionLogic
         {
             _key = _configuration["Encryption:Key"];   
         }
+    }
+
+    public bool IsEncryptionEnabled()
+    {
+        return _isEnabled;
     }
 
     public string Encrypt(string value)
