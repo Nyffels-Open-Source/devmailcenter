@@ -14,64 +14,64 @@ public class MailServer
     public ICollection<Email>? Emails { get; set; }
 }
 
-public class MailServerCreate
+public class MailServerCreate(string name, MailServerType type)
 {
-    public MailServerCreate(string name, MailServerType type)
-    {
-        Type = type;
-        Name = name;
-        Settings = new List<MailServerSettingsMutation>();
-    }
-
-    public string Name { get; set; }
-    public MailServerType Type { get; set; }
-    public List<MailServerSettingsMutation> Settings { get; set; }
+    public string Name { get; set; } = name;
+    public MailServerType Type { get; set; } = type;
+    public List<MailServerSettingsMutation> Settings { get; set; } = new();
 }
 
-public class SmtpMailServerCreate
+public class SmtpMailServerCreate(
+    string name,
+    string host,
+    int port,
+    bool ssl,
+    string email,
+    string user,
+    string password,
+    string username)
 {
-    public SmtpMailServerCreate(string name, string host, int port, bool ssl, string email, string user, string password, string username)
-    {
-        Name = name;
-        Host = host;
-        Port = port;
-        Ssl = ssl;
-        Email = email;
-        User = user;
-        Password = password;
-        Username = username;
-    }
-
-    public string Name { get; set; }
-    public string Host { get; set; }
-    public int Port { get; set; }
-    public bool Ssl { get; set; }
-    public string Email { get; set; }
-    public string User { get; set; }
-    public string Password { get; set; }
-    public string Username { get; set; }
+    public string Name { get; set; } = name;
+    public string Host { get; set; } = host;
+    public int Port { get; set; } = port;
+    public bool Ssl { get; set; } = ssl;
+    public string Email { get; set; } = email;
+    public string User { get; set; } = user;
+    public string Password { get; set; } = password;
+    public string Username { get; set; } = username;
 }
 
-public class MicrosoftMailServerCreate
+public class SmtpMailServerUpdate(
+    string name,
+    bool active,
+    string host,
+    int port,
+    bool ssl,
+    string email,
+    string user,
+    string password,
+    string username)
 {
-    public MicrosoftMailServerCreate(string code)
-    {
-        Code = code;
-    }
-
-    public string Code { get; set; }
+    public string Name { get; set; } = name;
+    public bool Active { get; set; } = active;
+    public string Host { get; set; } = host;
+    public int Port { get; set; } = port;
+    public bool Ssl { get; set; } = ssl;
+    public string Email { get; set; } = email;
+    public string User { get; set; } = user;
+    public string Password { get; set; } = password;
+    public string Username { get; set; } = username;
 }
 
-public class MailServerUpdate
+public class MicrosoftMailServerCreate(string code)
 {
-    public MailServerUpdate(string name)
-    {
-        Name = name;
-    }
+    public string Code { get; set; } = code;
+}
 
-    public string Name { get; set; }
-    public bool Active { get; set; }
-    public List<MailServerSettingsMutation> Settings { get; set; }
+public class MicrosoftMailServerUpdate(string name, bool active)
+{
+    public string Name { get; set; } = name;
+    public bool Active { get; set; } = active;
 }
 
 public enum MailServerType
