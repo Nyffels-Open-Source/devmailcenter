@@ -404,3 +404,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Do not push appsettings.Development.json to Github to prevent test data of entering open source code 
+appsettings.Development.json
