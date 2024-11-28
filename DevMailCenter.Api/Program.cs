@@ -19,7 +19,8 @@ builder.Services
     .AddScoped<IEmailLogic, EmailLogic>()
     .AddScoped<ISmtpLogic, SmtpLogic>()
     .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
-    .AddScoped<IMicrosoftApi, MicrosoftApi>();
+    .AddScoped<IMicrosoftApi, MicrosoftApi>()
+    .AddScoped<IEncryptionLogic, EncryptionLogic>();
 
 var app = builder.Build();
 
