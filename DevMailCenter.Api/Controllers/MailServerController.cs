@@ -149,14 +149,37 @@ namespace devmailcenterApi.Controllers
             }
         }
 
-        [HttpPatch]
-        [Route("Microsoft/{id}")]
+        [HttpPut]
+        [Route("microsoft/{id}")]
         [EndpointName("UpdateMicrosoftMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateMicrosoftMailServer([FromRoute] Guid id,
             [FromBody] MicrosoftMailServerUpdate mailServer)
+        {
+            try
+            {
+                // TODO
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message switch
+                {
+                    _ => BadRequest(ex.Message)
+                };
+            }
+        }
+        
+        [HttpPut]
+        [Route("smtp/{id}")]
+        [EndpointName("UpdateSmtpMailServer")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdateSmtpMailServer([FromRoute] Guid id,
+            [FromBody] SmtpMailServerUpdate mailServer)
         {
             try
             {
