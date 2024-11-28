@@ -8,6 +8,7 @@ public interface IEncryptionLogic
     bool IsEncryptionEnabled();
     string Encrypt(string value);
     string Decrypt(string value);
+    string GenerateEncryptionKey(bool updateEncryptedData = false);
 }
 
 public class EncryptionLogic : IEncryptionLogic
@@ -59,5 +60,20 @@ public class EncryptionLogic : IEncryptionLogic
         {
             return value;
         }
+    }
+
+    public string GenerateEncryptionKey(bool updateEncryptedData = false)
+    {
+        // TODO Generate a new random Encryption key
+        var key = "";
+
+        if (updateEncryptedData)
+        {
+            // TODO Load mailserversettings with encrypted data parameters. 
+            // TODO if encrypted, use key to decrypt.
+            // TODO encrypt plain text values to new values with the new key.
+        }
+        
+        return key;
     }
 }
