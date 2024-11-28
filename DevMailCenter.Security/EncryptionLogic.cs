@@ -19,7 +19,7 @@ public class EncryptionLogic : IEncryptionLogic
     private readonly ILogger<EncryptionLogic> _logger;
     private readonly DmcContext _dbContext;
 
-    private readonly bool _isEnabled;
+    private bool _isEnabled;
     private string  _key;
 
     public EncryptionLogic(IConfiguration configuration, ILogger<EncryptionLogic> logger, DmcContext dbContext)
@@ -83,6 +83,8 @@ public class EncryptionLogic : IEncryptionLogic
                 setting.Value = EncryptString(setting.Value, key);
             }
             _dbContext.SaveChanges();
+            
+            _isEnabled = true;
             _key = key;
         }
         
