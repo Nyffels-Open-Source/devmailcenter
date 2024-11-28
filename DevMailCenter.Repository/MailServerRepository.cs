@@ -9,8 +9,8 @@ namespace DevMailCenter.Repository;
 
 public interface IMailServerRepository
 {
-    MailServer Get(Guid id, bool includeSettings = true);
-    List<MailServer> List(bool includeSettings = false);
+    MailServer Get(Guid id, bool includeSettings = false, bool includeSecrets = false);
+    List<MailServer> List(bool includeSettings = false, bool includeSecrets = false);
     Guid CreateSmtp(SmtpMailServerCreate mailServer);
     Guid CreateMicrosoft(MicrosoftMailServerCreate mailServer);
     int Delete(Guid guid);
@@ -34,11 +34,15 @@ public class MailServerRepository : IMailServerRepository
         _encryptionLogic = encryptionLogic;
     }
 
-    public MailServer Get(Guid id, bool includeSettings = false)
+    public MailServer Get(Guid id, bool includeSettings = false, bool includeSecrets = false)
     {
         var queryable = _dbContext.MailServers.AsQueryable();
 
-        if (includeSettings)
+        if (includeSettings && includeSecrets)
+        {
+            queryable = queryable.Include(e => e.MailServerSettings);
+        }
+        else if (includeSettings && !includeSecrets)
         {
             queryable = queryable.Include(e => e.MailServerSettings.Where(e => e.Secret == false));
         }
@@ -46,13 +50,17 @@ public class MailServerRepository : IMailServerRepository
         return queryable.FirstOrDefault(e => e.Id == id);
     }
 
-    public List<MailServer> List(bool includeSettings = false)
+    public List<MailServer> List(bool includeSettings = false, bool includeSecrets = false)
     {
         var queryable = _dbContext.MailServers.AsQueryable();
 
-        if (includeSettings)
+        if (includeSettings && includeSecrets)
         {
             queryable = queryable.Include(e => e.MailServerSettings);
+        }
+        else if (includeSettings && !includeSecrets)
+        {
+            queryable = queryable.Include(e => e.MailServerSettings.Where(e => e.Secret == false));
         }
 
         return queryable.ToList();
