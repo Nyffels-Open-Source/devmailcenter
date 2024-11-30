@@ -64,7 +64,8 @@ public class MicrosoftLogic : IMicrosoftLogic
             SaveToSentItems = true
         };
         
-        // TODO
+        _microsoftApi.SendEmail(mm, newTokens);
+        
         return Guid.NewGuid();
     }
 }

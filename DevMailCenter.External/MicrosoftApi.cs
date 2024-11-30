@@ -1,4 +1,5 @@
-﻿using DevMailCenter.External.Models;
+﻿using System.Net.Http.Json;
+using DevMailCenter.External.Models;
 using DevMailCenter.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ public interface IMicrosoftApi
     string GenerateAuthenticationRedirectUrl(string redirectUri);
     MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken);
     MicrosoftTokens GetTokensByRefreshToken(string refreshToken);
-    void SendEmail(MicrosoftApiMail mail, string accessToken);
+    void SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens);
 }
 
 public class MicrosoftApi : IMicrosoftApi
@@ -30,7 +31,7 @@ public class MicrosoftApi : IMicrosoftApi
     public string GenerateAuthenticationRedirectUrl(string redirectUri)
     {
         var clientId = this._configuration["Microsoft:Authentication:ClientId"];
-        var scope = this._configuration["Microsoft:Scope"];
+        var scope = this._configuration["Microsoft:Authentication:Scope"];
         var authority = "https://login.microsoftonline.com/common/";
 
         string url = $"{authority}/oauth2/v2.0/authorize?";
@@ -48,7 +49,7 @@ public class MicrosoftApi : IMicrosoftApi
     {
         var clientId = this._configuration["Microsoft:Mailer:ClientId"];
         var clientSecret = this._configuration["Microsoft:Mailer:ClientSecret"];
-        var scope = this._configuration["Microsoft:Scope"];
+        var scope = this._configuration["Microsoft:Mailer:Scope"];
         var redirectUri = "http://localhost:4200/callback/microsoft"; // TODO 
 
         string url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
@@ -79,7 +80,7 @@ public class MicrosoftApi : IMicrosoftApi
     {
         var clientId = this._configuration["Microsoft:Mailer:ClientId"];
         var clientSecret = this._configuration["Microsoft:Mailer:ClientSecret"];
-        var scope = this._configuration["Microsoft:Scope"];
+        var scope = this._configuration["Microsoft:Mailer:Scope"];
 
         string url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
         string queryString = $"grant_type=refresh_token&client_id={clientId}&client_secret={clientSecret}&refresh_token={refreshToken}&scope={scope}";
@@ -104,8 +105,25 @@ public class MicrosoftApi : IMicrosoftApi
         }
     }
 
-    public void SendEmail(MicrosoftApiMail mail, string accessToken)
+    public void SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens)
     {
+        string url = @"https://graph.microsoft.com/v1.0/me/sendMail";
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", microsoftTokens.AccessToken);
+        var res = _httpClient.PostAsJsonAsync(url, mail).Result;
+        var content = res.Content.ReadAsStringAsync().Result;
+
+        if (content != "")
+        {
+            var deserializedObject = JsonConvert.DeserializeObject<dynamic>(res.Content.ReadAsStringAsync().Result);
         
+            if (deserializedObject.ContainsKey("error"))
+            {
+                throw new Exception(deserializedObject.error_description.Value);
+            }
+            else
+            {
+                throw new Exception(content);
+            }
+        }
     }
 }
