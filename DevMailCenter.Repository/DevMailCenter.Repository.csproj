@@ -9,13 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\DevMailCenter.Core\DevMailCenter.Core.csproj" />
       <ProjectReference Include="..\DevMailCenter.External\DevMailCenter.External.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+      <ProjectReference Include="..\DevMailCenter.Security\DevMailCenter.Security.csproj" />
     </ItemGroup>
 
 </Project>

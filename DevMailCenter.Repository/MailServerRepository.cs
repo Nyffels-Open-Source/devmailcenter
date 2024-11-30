@@ -2,8 +2,8 @@
 using DevMailCenter.External;
 using DevMailCenter.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DevMailCenter.Security;
 
 namespace DevMailCenter.Repository;
 
@@ -24,12 +24,14 @@ public class MailServerRepository : IMailServerRepository
     private readonly DmcContext _dbContext;
     private readonly ILogger<EmailRepository> _logger;
     private readonly IMicrosoftApi _microsoftApi;
+    private readonly IEncryptionLogic _encryptionLogic;
 
-    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger, IMicrosoftApi microsoftApi)
+    public MailServerRepository(DmcContext dbContext, ILogger<EmailRepository> logger, IMicrosoftApi microsoftApi, IEncryptionLogic encryptionLogic)
     {
         _dbContext = dbContext;
         _logger = logger;
         _microsoftApi = microsoftApi;
+        _encryptionLogic = encryptionLogic;
     }
 
     public MailServer Get(Guid id, bool includeSettings = false, bool includeSecrets = false)
@@ -127,7 +129,7 @@ public class MailServerRepository : IMailServerRepository
             Id = Guid.NewGuid(),
             Created = DateTime.UtcNow,
             Key = "password",
-            Value = mailServer.Password,
+            Value = _encryptionLogic.Encrypt(mailServer.Password),
             ServerId = newMailServerId,
             Secret = true
         });
@@ -167,7 +169,7 @@ public class MailServerRepository : IMailServerRepository
             Id = Guid.NewGuid(),
             Created = DateTime.UtcNow,
             Key = "refreshToken",
-            Value = MicrosoftTokens.RefreshToken,
+            Value = _encryptionLogic.Encrypt(MicrosoftTokens.RefreshToken),
             ServerId = newMailServerId,
             Secret = true
         });
@@ -210,7 +212,7 @@ public class MailServerRepository : IMailServerRepository
         entry.MailServerSettings.Single(e => e.Key == "user").Value = mailServer.User;
         entry.MailServerSettings.Single(e => e.Key == "user").Modified = DateTime.UtcNow;
         
-        entry.MailServerSettings.Single(e => e.Key == "password").Value = mailServer.Password;
+        entry.MailServerSettings.Single(e => e.Key == "password").Value = _encryptionLogic.Encrypt(mailServer.Password);
         entry.MailServerSettings.Single(e => e.Key == "password").Modified = DateTime.UtcNow;
         
         entry.MailServerSettings.Single(e => e.Key == "username").Value = mailServer.Username;

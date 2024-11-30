@@ -1,4 +1,6 @@
-﻿using DevMailCenter.Models;
+﻿using DevMailCenter.Logic;
+using DevMailCenter.Models;
+using DevMailCenter.Security;
 using Microsoft.AspNetCore.Mvc;
 
 namespace devmailcenterApi.Controllers
@@ -9,11 +11,13 @@ namespace devmailcenterApi.Controllers
     {
         private readonly ILogger<ConfigController> _logger;
         public readonly IConfiguration _configuration;
+        private readonly IEncryptionLogic _encryptionLogic;
 
-        public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration)
+        public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration, IEncryptionLogic encryptionLogic)
         {
             _logger = logger;
             _configuration = configuration;
+            _encryptionLogic = encryptionLogic;
         }
 
         [HttpGet]
@@ -41,6 +45,26 @@ namespace devmailcenterApi.Controllers
             }
 
             return Ok(types);
+        }
+        
+        [HttpGet]
+        [Route("encryption/enabled")]
+        [EndpointName("CheckEncryptionStatus")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [EndpointDescription("Retrieve the encrypton status")]
+        public IActionResult RetrieveEncryptionStatus()
+        {
+            return Ok(_encryptionLogic.IsEncryptionEnabled());
+        }
+        
+        [HttpPost]
+        [Route("encryption/generate-key")]
+        [EndpointName("GenerateNewEncryptionKey")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [EndpointDescription("Generate a new encryption key. Use the query 'updateSensitiveData' to update all the sensitive data in the system to the new key, decrypting old data will happen with the current set key. Be aware, generating a key and updating sensitive data will allow the new key to become active.")]
+        public IActionResult GenerateEncryptionKey([FromQuery] bool updateSensitiveData = true)
+        {
+            return Ok(_encryptionLogic.GenerateEncryptionKey(updateSensitiveData));
         }
     }
 }
