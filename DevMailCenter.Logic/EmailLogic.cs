@@ -58,7 +58,7 @@ public class EmailLogic : IEmailLogic
     {
         return new SmtpSettings
         {
-            ssl = mailServer.MailServerSettings.First(e => e.Key == "ssl").Value == "true",
+            ssl = mailServer.MailServerSettings.First(e => e.Key == "ssl").Value.ToLower() == "true",
             Email = mailServer.MailServerSettings.First(e => e.Key == "email").Value,
             Host = mailServer.MailServerSettings.First(e => e.Key == "host").Value,
             Password = mailServer.MailServerSettings.First(e => e.Key == "password").Value,
