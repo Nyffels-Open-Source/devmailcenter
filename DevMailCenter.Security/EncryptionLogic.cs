@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 using DevMailCenter.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,10 @@ public class EncryptionLogic : IEncryptionLogic
     private readonly DmcContext _dbContext;
 
     private bool _isEnabled;
-    private string  _key;
+    private string _key;
+
+    private readonly int Keysize = 256;
+    private readonly int DerivationIterations = 1000;
 
     public EncryptionLogic(IConfiguration configuration, ILogger<EncryptionLogic> logger, DmcContext dbContext)
     {
@@ -82,52 +86,55 @@ public class EncryptionLogic : IEncryptionLogic
 
                 setting.Value = EncryptString(setting.Value, key);
             }
+
             _dbContext.SaveChanges();
-            
+
             _isEnabled = true;
             _key = key;
         }
-        
+
         return key;
     }
 
-    private string EncryptString(string plaintext, string key)
+    public static string EncryptString(string clearText, string encryptionKey)
     {
-        byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-
-        Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
-
-        Aes encryptor = Aes.Create();
-        encryptor.Key = passwordBytes.GetBytes(32);
-        encryptor.IV = passwordBytes.GetBytes(16);
-        using (MemoryStream ms = new MemoryStream())
+        byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+        using (Aes encryptor = Aes.Create())
         {
-            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
             {
-                cs.Write(plaintextBytes, 0, plaintextBytes.Length);
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(clearBytes, 0, clearBytes.Length);
+                    cs.Close();
+                }
+                clearText = Convert.ToBase64String(ms.ToArray());
             }
-
-            return Convert.ToBase64String(ms.ToArray());
         }
+        return clearText;
     }
-
-    private string DecryptString(string encrypted, string key)
+    public static string DecryptString(string cipherText, string encryptionKey)
     {
-        byte[] encryptedBytes = Convert.FromBase64String(encrypted);
-
-        Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(key, 20);
-
-        Aes encryptor = Aes.Create();
-        encryptor.Key = passwordBytes.GetBytes(32);
-        encryptor.IV = passwordBytes.GetBytes(16);
-        using (MemoryStream ms = new MemoryStream())
+        cipherText = cipherText.Replace(" ", "+");
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+        using (Aes encryptor = Aes.Create())
         {
-            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
             {
-                cs.Write(encryptedBytes, 0, encryptedBytes.Length);
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    cs.Close();
+                }
+                cipherText = Encoding.Unicode.GetString(ms.ToArray());
             }
-
-            return System.Text.Encoding.UTF8.GetString(ms.ToArray());
         }
+        return cipherText;
     }
 }

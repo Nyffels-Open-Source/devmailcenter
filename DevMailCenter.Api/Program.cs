@@ -19,6 +19,7 @@ builder.Services
     .AddScoped<IEmailRepository, EmailRepository>()
     .AddScoped<IEmailLogic, EmailLogic>()
     .AddScoped<ISmtpLogic, SmtpLogic>()
+    .AddScoped<IMicrosoftLogic, MicrosoftLogic>()
     .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
     .AddScoped<IMicrosoftApi, MicrosoftApi>()
     .AddScoped<IEncryptionLogic, EncryptionLogic>();

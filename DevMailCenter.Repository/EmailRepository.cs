@@ -71,7 +71,7 @@ public class EmailRepository : IEmailRepository
             }).ToList(),
             Modified = null, 
             Completed = null, 
-            SendRequested = null
+            SendRequested = null,
         };
         _dbContext.Add(newEmail);
         _dbContext.SaveChanges();

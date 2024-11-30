@@ -106,7 +106,7 @@ public class MailServerRepository : IMailServerRepository
             ServerId = newMailServerId,
             Secret = false
         });
-        newMailServer.MailServerSettings.Add(new MailServerSettings()
+         newMailServer.MailServerSettings.Add(new MailServerSettings()
         {
             Id = Guid.NewGuid(),
             Created = DateTime.UtcNow,
