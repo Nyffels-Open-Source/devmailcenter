@@ -1,4 +1,5 @@
-﻿using DevMailCenter.External;
+﻿using System.Net.Mail;
+using DevMailCenter.External;
 using DevMailCenter.External.Models;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
@@ -34,6 +35,42 @@ public class MicrosoftLogic : IMicrosoftLogic
         var refreshToken = _encryptionLogic.Decrypt(settings.RefreshToken);
         var newTokens = _microsoftApi.GetTokensByRefreshToken(refreshToken);
 
+        var importance = email.Priority switch
+        {
+          MailPriority.Low => "low",
+          MailPriority.Normal => "normal",
+          MailPriority.High => "high",
+          _ => "normal"
+        };
+
+        var toRecipients = new List<MicrosoftApiMailMessageRecipient>();
+        var ccRecipients = new List<MicrosoftApiMailMessageRecipient>();
+        var bccRecipients = new List<MicrosoftApiMailMessageRecipient>();
+        
+        foreach (var emailReceiver in email.Receivers)
+        {
+            var microsoftReceiver = new MicrosoftApiMailMessageRecipient()
+            {
+                EmailAddress = new MicrosoftApiMailMessageRecipientEmailAddress()
+                {
+                    Address = emailReceiver.ReceiverEmail
+                }
+            };
+
+            switch (emailReceiver.Type)
+            {
+                case EmailReceiverType.CC:
+                    ccRecipients.Add(microsoftReceiver);
+                    break;
+                case EmailReceiverType.BCC:
+                    bccRecipients.Add(microsoftReceiver);
+                    break;
+                default:
+                    toRecipients.Add(microsoftReceiver);
+                    break;
+            }
+        }
+        
         var mm = new MicrosoftApiMail()
         {
             Message = new MicrosoftApiMailMessage()
@@ -44,22 +81,13 @@ public class MicrosoftLogic : IMicrosoftLogic
                     Type = "html"
                 },
                 Subject = email.Subject,
-                Importance = "normal", // TODO
-                ToRecipients = new List<MicrosoftApiMailMessageRecipient>()
-                {
-                    new MicrosoftApiMailMessageRecipient()
-                    {
-                        EmailAddress = new MicrosoftApiMailMessageRecipientEmailAddress()
-                        {
-                            Address = "hello@doffice.app", // TODO
-                        }
-                    }
-                },
-                CcRecipients = new List<MicrosoftApiMailMessageRecipient>(), // TODO
-                BccRecipients = new List<MicrosoftApiMailMessageRecipient>(), // TODO
+                Importance = importance,
+                ToRecipients = toRecipients,
+                CcRecipients = toRecipients,
+                BccRecipients = bccRecipients,
                 InterferenceClassification = "focused",
-                HasAttachments = false, // TODO
-                Attachments = new List<MicrosoftApiMailMessageAttachment>() // TODO
+                HasAttachments = false, // TODO Attachments #38
+                Attachments = new List<MicrosoftApiMailMessageAttachment>() // TODO Attachments #38
             },
             SaveToSentItems = true
         };
