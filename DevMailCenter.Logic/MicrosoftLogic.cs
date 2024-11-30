@@ -63,9 +63,18 @@ public class MicrosoftLogic : IMicrosoftLogic
             },
             SaveToSentItems = true
         };
-        
-        _microsoftApi.SendEmail(mm, newTokens);
-        
-        return Guid.NewGuid();
+
+        try
+        {
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Pending);
+            _microsoftApi.SendEmail(mm, newTokens);
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
+            return _emailTransactionRepository.Create(email.Id, "Accepted");
+        }
+        catch (Exception ex)
+        {
+            _emailRepository.SetEmailStatus(email.Id, EmailStatus.Failed);
+            return _emailTransactionRepository.Create(email.Id, ex.Message);
+        }
     }
 }
