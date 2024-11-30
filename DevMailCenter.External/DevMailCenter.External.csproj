@@ -15,4 +15,8 @@
       <ProjectReference Include="..\DevMailCenter.Core\DevMailCenter.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>
