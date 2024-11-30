@@ -1,4 +1,5 @@
-﻿using DevMailCenter.Models;
+﻿using DevMailCenter.External.Models;
+using DevMailCenter.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ public interface IMicrosoftApi
     string GenerateAuthenticationRedirectUrl(string redirectUri);
     MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken);
     MicrosoftTokens GetTokensByRefreshToken(string refreshToken);
+    void SendEmail(MicrosoftApiMail mail, string accessToken);
 }
 
 public class MicrosoftApi : IMicrosoftApi
@@ -100,5 +102,10 @@ public class MicrosoftApi : IMicrosoftApi
             };
             return tokens;
         }
+    }
+
+    public void SendEmail(MicrosoftApiMail mail, string accessToken)
+    {
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DevMailCenter.External;
+using DevMailCenter.External.Models;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using DevMailCenter.Security;
@@ -32,6 +33,36 @@ public class MicrosoftLogic : IMicrosoftLogic
     {
         var refreshToken = _encryptionLogic.Decrypt(settings.RefreshToken);
         var newTokens = _microsoftApi.GetTokensByRefreshToken(refreshToken);
+
+        var mm = new MicrosoftApiMail()
+        {
+            Message = new MicrosoftApiMailMessage()
+            {
+                Body = new MicrosoftApiMailMessageBody()
+                {
+                    Content = email.Message,
+                    Type = "html"
+                },
+                Subject = email.Subject,
+                Importance = "normal", // TODO
+                ToRecipients = new List<MicrosoftApiMailMessageRecipient>()
+                {
+                    new MicrosoftApiMailMessageRecipient()
+                    {
+                        EmailAddress = new MicrosoftApiMailMessageRecipientEmailAddress()
+                        {
+                            Address = "hello@doffice.app", // TODO
+                        }
+                    }
+                },
+                CcRecipients = new List<MicrosoftApiMailMessageRecipient>(), // TODO
+                BccRecipients = new List<MicrosoftApiMailMessageRecipient>(), // TODO
+                InterferenceClassification = "focused",
+                HasAttachments = false, // TODO
+                Attachments = new List<MicrosoftApiMailMessageAttachment>() // TODO
+            },
+            SaveToSentItems = true
+        };
         
         // TODO
         return Guid.NewGuid();
