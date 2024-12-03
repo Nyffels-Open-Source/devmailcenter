@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
+using DevMailCenter.Api.Middleware;
 using DevMailCenter.Core;
 using DevMailCenter.External;
 using DevMailCenter.Repository;
 using DevMailCenter.Logic;
 using DevMailCenter.Security;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,9 @@ builder.Services
     .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
     .AddScoped<IMicrosoftApi, MicrosoftApi>()
     .AddScoped<IEncryptionLogic, EncryptionLogic>();
+
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 var app = builder.Build();
 

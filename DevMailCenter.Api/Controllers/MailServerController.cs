@@ -1,9 +1,10 @@
 ﻿using DevMailCenter.External;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace devmailcenterApi.Controllers
+namespace DevMailCenter.Controllers
 {
     [ApiController]
     [Route("api/mailserver")]
@@ -40,7 +41,7 @@ namespace devmailcenterApi.Controllers
 
             return Ok(mailServer);
         }
-
+        [Authorize]
         [HttpGet]
         [Route("list")]
         [EndpointName("ListMailServers")]

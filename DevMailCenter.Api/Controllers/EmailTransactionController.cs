@@ -3,7 +3,7 @@ using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace devmailcenterApi.Controllers
+namespace DevMailCenter.Controllers
 {
     [ApiController]
     [Route("api/emailtransaction")]
