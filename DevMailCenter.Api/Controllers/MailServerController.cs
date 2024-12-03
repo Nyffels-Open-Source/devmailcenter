@@ -47,6 +47,7 @@ namespace DevMailCenter.Controllers
         [Route("list")]
         [EndpointName("ListMailServers")]
         [ProducesResponseType(typeof(List<MailServer>), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Retrieve all email servers.")]
         public IActionResult ListMailServer([FromQuery] bool includeSettings = false)
         {
@@ -60,6 +61,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("CreateSmtpMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription(
             "Create a new SMTP email server. The endpoint will return the ID of the newly created email server.")]
         public async Task<IActionResult> CreateMailServer([FromBody] SmtpMailServerCreate mailServer)
@@ -88,6 +90,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("CreateMicrosoftMailServer")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription(
             "Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
@@ -115,6 +118,7 @@ namespace DevMailCenter.Controllers
         [Route("microsoft/authenticate")]
         [EndpointName("GetMicrosoftAuthenticationUrl")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK, "text/plain")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription(
             "This endpoint will return a Microsoft Authentication Url needed to request the Access token for usage in CreateMicrosoftMailServer endpoint. The return url must be registered in the registed app inside azure portal.")]
         public async Task<IActionResult> GetMicrosoftAuthenticationUrl([FromQuery] string redirectUri)
@@ -137,6 +141,7 @@ namespace DevMailCenter.Controllers
         [Route("microsoft/{id}")]
         [EndpointName("UpdateMicrosoftMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateMicrosoftMailServer([FromRoute] Guid id,
@@ -162,6 +167,7 @@ namespace DevMailCenter.Controllers
         [Route("smtp/{id}")]
         [EndpointName("UpdateSmtpMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateSmtpMailServer([FromRoute] Guid id,
@@ -188,6 +194,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("DeleteMailServer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Delete an existinge email server.")]
         public IActionResult DeleteMailServer([FromRoute] Guid id)
         {

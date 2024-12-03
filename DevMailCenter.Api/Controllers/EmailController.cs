@@ -26,6 +26,7 @@ namespace DevMailCenter.Controllers
         [Route("{id}")]
         [EndpointName("GetEmail")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email by its ID.")]
         public IActionResult GetEmail([FromRoute] Guid id, [FromQuery] bool includeReceivers = false)
@@ -44,6 +45,7 @@ namespace DevMailCenter.Controllers
         [Route("list")]
         [EndpointName("ListEmails")]
         [ProducesResponseType(typeof(List<Email>), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Retrieve all emails.")]
         public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
         {
@@ -57,6 +59,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("CreateEmail")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription(
             "Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
@@ -86,6 +89,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("UpdateEmail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [EndpointDescription(
@@ -114,6 +118,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("DeleteEmail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Delete an existinge email.")]
         public IActionResult DeleteEmail([FromRoute] Guid id)
         {
@@ -137,6 +142,7 @@ namespace DevMailCenter.Controllers
         [EndpointName("SendEmail")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]

@@ -36,6 +36,7 @@ namespace DevMailCenter.Controllers
         [Route("providers/enabled")]
         [EndpointName("ListEnableProviders")]
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Retrieve all the enabled providers for a email server")]
         public IActionResult listEnabledProviders()
         {
@@ -64,6 +65,7 @@ namespace DevMailCenter.Controllers
         [Route("encryption/enabled")]
         [EndpointName("CheckEncryptionStatus")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Retrieve the encrypton status")]
         public IActionResult RetrieveEncryptionStatus()
         {
@@ -75,6 +77,7 @@ namespace DevMailCenter.Controllers
         [Route("encryption/generate-key")]
         [EndpointName("GenerateNewEncryptionKey")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Generate a new encryption key. Use the query 'updateSensitiveData' to update all the sensitive data in the system to the new key, decrypting old data will happen with the current set key. Be aware, generating a key and updating sensitive data will allow the new key to become active.")]
         public IActionResult GenerateEncryptionKey([FromQuery] bool updateSensitiveData = true)
         {

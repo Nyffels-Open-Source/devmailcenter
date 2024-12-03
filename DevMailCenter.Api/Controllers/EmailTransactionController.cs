@@ -24,6 +24,7 @@ namespace DevMailCenter.Controllers
         [Route("{id}")]
         [EndpointName("GetEmailTransaction")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email transaction by its ID.")]
         public IActionResult GetEmailTransaction([FromRoute] Guid id)
