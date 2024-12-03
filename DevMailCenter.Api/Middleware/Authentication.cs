@@ -6,13 +6,14 @@ using Microsoft.Extensions.Options;
 
 namespace DevMailCenter.Api.Middleware;
 
-public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public BasicAuthenticationHandler(
+    public DmcAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options, 
         ILoggerFactory logger, 
         UrlEncoder encoder, 
-        ISystemClock clock) 
+        ISystemClock clock,
+        IConfiguration configuration)
         : base(options, logger, encoder, clock)
     {
     }
