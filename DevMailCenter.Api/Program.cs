@@ -1,10 +1,13 @@
 using System.Text.Json.Serialization;
+using DevMailCenter.Api.Middleware;
 using DevMailCenter.Core;
 using DevMailCenter.External;
 using DevMailCenter.Repository;
 using DevMailCenter.Logic;
 using DevMailCenter.Security;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,9 @@ builder.Services
     .AddScoped<IMicrosoftApi, MicrosoftApi>()
     .AddScoped<IEncryptionLogic, EncryptionLogic>();
 
+builder.Services.AddAuthentication("DmcAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, DmcAuthenticationHandler>("DmcAuthentication", null);
+
 var app = builder.Build();
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -32,10 +38,12 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.MapOpenApi();
-app.UseSwaggerUI(o =>
+app.MapScalarApiReference(o =>
 {
-    o.SwaggerEndpoint("/openapi/v1.json", "DevMailCenter Api");
-    o.RoutePrefix = "api";
+    o.WithTitle("DevMailCenter.Api")
+        .WithEndpointPrefix("api/{documentName}")
+        .WithTestRequestButton(false)
+        .WithModels(false);
 });
 
 app.UseHttpsRedirection();

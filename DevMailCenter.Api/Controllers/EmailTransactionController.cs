@@ -1,10 +1,12 @@
 ﻿using DevMailCenter.Logic;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace devmailcenterApi.Controllers
+namespace DevMailCenter.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/emailtransaction")]
     public class EmailTransactionController : ControllerBase
@@ -22,6 +24,7 @@ namespace devmailcenterApi.Controllers
         [Route("{id}")]
         [EndpointName("GetEmailTransaction")]
         [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email transaction by its ID.")]
         public IActionResult GetEmailTransaction([FromRoute] Guid id)
