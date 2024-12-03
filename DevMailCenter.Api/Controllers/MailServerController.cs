@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DevMailCenter.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/mailserver")]
     public class MailServerController : ControllerBase
@@ -41,7 +42,7 @@ namespace DevMailCenter.Controllers
 
             return Ok(mailServer);
         }
-        [Authorize]
+
         [HttpGet]
         [Route("list")]
         [EndpointName("ListMailServers")]

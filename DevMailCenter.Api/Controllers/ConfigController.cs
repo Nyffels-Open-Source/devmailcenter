@@ -1,6 +1,7 @@
 ﻿using DevMailCenter.Logic;
 using DevMailCenter.Models;
 using DevMailCenter.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevMailCenter.Controllers
@@ -13,6 +14,16 @@ namespace DevMailCenter.Controllers
         public readonly IConfiguration _configuration;
         private readonly IEncryptionLogic _encryptionLogic;
 
+        [HttpGet]
+        [Route("status")]
+        [EndpointName("GetApiStatus")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [EndpointDescription("Check if the API is alive")]
+        public IActionResult getApiStatus()
+        {
+            return Ok("OK");
+        }
+        
         public ConfigController(ILogger<ConfigController> logger, IConfiguration configuration, IEncryptionLogic encryptionLogic)
         {
             _logger = logger;
@@ -20,6 +31,7 @@ namespace DevMailCenter.Controllers
             _encryptionLogic = encryptionLogic;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("providers/enabled")]
         [EndpointName("ListEnableProviders")]
@@ -47,6 +59,7 @@ namespace DevMailCenter.Controllers
             return Ok(types);
         }
         
+        [Authorize]
         [HttpGet]
         [Route("encryption/enabled")]
         [EndpointName("CheckEncryptionStatus")]
@@ -57,6 +70,7 @@ namespace DevMailCenter.Controllers
             return Ok(_encryptionLogic.IsEncryptionEnabled());
         }
         
+        [Authorize]
         [HttpPost]
         [Route("encryption/generate-key")]
         [EndpointName("GenerateNewEncryptionKey")]

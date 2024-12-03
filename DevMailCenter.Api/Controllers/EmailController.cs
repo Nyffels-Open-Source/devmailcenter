@@ -1,10 +1,12 @@
 ﻿using DevMailCenter.Logic;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevMailCenter.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/email")]
     public class EmailController : ControllerBase
