@@ -8,6 +8,8 @@ namespace DevMailCenter.Api.Middleware;
 
 public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
+    private readonly IConfiguration _configuration;
+    
     public DmcAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options, 
         ILoggerFactory logger, 
@@ -16,10 +18,25 @@ public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSche
         IConfiguration configuration)
         : base(options, logger, encoder, clock)
     {
+        _configuration = configuration;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        var requiredUser = _configuration["Authentication:User"];
+        var requiredPassword = _configuration["Authentication:Password"];
+        
+        if (_configuration["Authentication:Enabled"] != "True")
+        {
+            var disabledClaims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, requiredUser)
+            };
+            var disabledIdentity = new ClaimsIdentity(disabledClaims, "Basic");
+            var disabledClaimsPrincipal = new ClaimsPrincipal(disabledIdentity);
+            return AuthenticateResult.Success(new AuthenticationTicket(disabledClaimsPrincipal, Scheme.Name));
+        }
+        
         if (!Request.Headers.ContainsKey("Authorization"))
         {
             return AuthenticateResult.Fail("Unauthorized");
@@ -48,7 +65,7 @@ public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSche
         var username = credentials[0];
         var password = credentials[1];
         
-        if (username != "test@fake.com" && password != "subscribe")
+        if (username != requiredUser && password != requiredPassword)
         {
             return AuthenticateResult.Fail("Authentication failed");
         }
