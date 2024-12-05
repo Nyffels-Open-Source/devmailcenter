@@ -4,7 +4,8 @@ import { routes } from './app.routes';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {API_BASE_URL} from './core/openapi/generated/openapi-client';
 import {environment} from '../environments/environment';
-import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {authenticationInterceptor} from './core/Interceptors/http-authentication.interceptor';
 
 export function GetApiBaseUrl() {
   return environment.api.url;
@@ -23,6 +24,6 @@ export const appConfig: ApplicationConfig = {
       provide: API_BASE_URL,
       useFactory: GetApiBaseUrl
     },
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authenticationInterceptor])),
   ]
 };
