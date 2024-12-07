@@ -1,9 +1,12 @@
+<p-confirmDialog key="positionDialog" position="bottom" rejectButtonStyleClass="p-button-outlined"/>
+
 <p-card>
   <ng-template pTemplate="header">
     <div class="flex flex-row align-center items-center justify-between pr-8 pl-8 pt-4 pb-3 border-b-[1px] border-black border-opacity-30">
       <h1 class="font-bold">Email</h1>
       <div class="flex flex-row gap-1">
         <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-angle-double-left" (click)="return()"></button>
+        <button pButton class="p-button-text p-button-icon p-button-danger" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-trash" [disabled]="!email" (click)="delete()"></button>
       </div>
     </div>
   </ng-template>
