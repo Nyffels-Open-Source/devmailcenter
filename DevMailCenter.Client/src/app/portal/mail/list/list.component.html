@@ -14,22 +14,20 @@
     <p-table [value]="emails" [scrollable]="true" scrollHeight="79dvh" class="table-auto">
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 100px;">Sender<th>
+          <th>Sender</th>
           <th>Receivers</th>
-          <th style="width: 200px;">Subject</th>
-          <th style="width: 100px;">Priority</th>
-          <th style="width: 100px;">Finished</th>
+          <th>Subject</th>
+          <th>Finished on</th>
+          <th style="width: 81px;"></th>
           <th style="width: 100px;"></th>
-          <th style="width: 50px;"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-email>
         <tr>
-          <th>TODO</th>
-          <th>{{ getEmailReceivers(email) }}</th>
+          <td>TODO</td>
+          <td>{{ getEmailReceivers(email) }}</td>
           <td>{{ email.subject }}</td>
-          <td>{{ email.priority }}</td>
-          <td>{{ email.completed }}</td>
+          <td>{{ email.completed ? (email.completed | date) : "N/A" }}</td>
           <td>
             <p-tag [severity]="email.active ? 'success' : 'danger'">{{ email.active ? 'Active' : 'Deactivated' }}</p-tag>
           </td>
