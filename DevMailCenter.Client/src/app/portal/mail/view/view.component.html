@@ -75,6 +75,20 @@
           <p-skeleton height="50px"></p-skeleton>
         }
       </div>
+
+      @if (loaded && (email.transactions ?? []).length > 0) {
+        <div class="w-full flex flex-col gap-1">
+          <label>Transacties</label>
+          @if (loaded) {
+            @for (transaction of email.transactions; track transaction.id) {
+              <div class="flex flex-row gap-4">
+                <input readonly type="text" pInputText aria-describedby="Transaction date" [ngModel]="transaction.created"/>
+                <input readonly type="text" pInputText aria-describedby="Transaction date" [ngModel]="transaction.rawResponse"/>
+              </div>
+            }
+          }
+        </div>
+      }
     </div>
   </div>
 </p-card>
