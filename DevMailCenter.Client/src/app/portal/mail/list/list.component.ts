@@ -92,8 +92,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   viewEmail(email: Email) {
-    // TODO
-    alert("Not yet implemented");
+    this.router.navigate(['../view', email.id], {relativeTo: this.activatedRoute});
   }
 
   getEmailReceivers(email: Email) {
