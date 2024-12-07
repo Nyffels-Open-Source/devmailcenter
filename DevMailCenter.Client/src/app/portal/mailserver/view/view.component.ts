@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
 import {MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'dmc-mailserver-view',
@@ -26,7 +27,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private confirmationService: ConfirmationService, private mailServerClient: MailServerClient) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private confirmationService: ConfirmationService, private mailServerClient: MailServerClient, private location: Location) {}
 
   ngOnInit() {
 
@@ -38,7 +39,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   return() {
-    this.router.navigate(['../../list'], {relativeTo: this.activatedRoute});
+    this.location.back();
   }
 
   delete() {
@@ -56,7 +57,7 @@ export class ViewComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
-              this.return();
+              this.router.navigate(['../../list'], {relativeTo: this.activatedRoute});
             }
           })
       },

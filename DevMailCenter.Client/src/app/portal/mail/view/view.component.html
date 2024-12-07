@@ -6,12 +6,75 @@
       <h1 class="font-bold">Email</h1>
       <div class="flex flex-row gap-1">
         <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-angle-double-left" (click)="return()"></button>
-        <button pButton class="p-button-text p-button-icon p-button-danger" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-trash" [disabled]="!email" (click)="delete()"></button>
+        <button pButton class="p-button-text p-button-icon p-button-danger" size="small" pTooltip="Delete" tooltipPosition="bottom" icon="pi pi-trash" [disabled]="!email" (click)="delete()"></button>
       </div>
     </div>
   </ng-template>
 
   <div id="card-body">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-row gap-4">
+        <div class="w-full flex flex-col gap-1">
+          <label for="emailId">Email ID</label>
+          @if (emailId) {
+            <input readonly id="emailId" type="text" pInputText aria-describedby="Email ID" [ngModel]="emailId"/>
+          }
+          @if (!emailId) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </div>
 
+        <div class="w-full flex flex-col gap-1">
+          <label for="serverName">Server</label>
+          @if (loaded) {
+            <p-inputGroup>
+              <input readonly id="serverName" type="text" pInputText aria-describedby="Email Server Name" [ngModel]="email.serverName"/>
+              <button type="button" pButton icon="pi pi-eye" pTooltip="View server" tooltipPosition="bottom" class="p-button-secondary" (click)="toServer()"></button>
+            </p-inputGroup>
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col gap-1">
+        <label>Send to</label>
+        @if (loaded) {
+          @for (receiver of email.receivers; track receiver.id) {
+            <p-inputGroup>
+              <button type="button" pButton severity="secondary" [label]="receiver.type.toString()"></button>
+              <input readonly type="text" pInputText aria-describedby="Receiver name and email" [ngModel]="receiver.receiverName + '<' + receiver.receiverEmail + '>'"/>
+            </p-inputGroup>
+          }
+        }
+        @if (!loaded) {
+          <p-skeleton height="50px"></p-skeleton>
+        }
+      </div>
+
+      <div class="w-full flex flex-col gap-1">
+        <label for="emailSubject">Subject</label>
+        @if (loaded) {
+          <p-inputGroup>
+            <input readonly id="emailSubject" type="text" pInputText aria-describedby="Subject of the email" [ngModel]="email.subject"/>
+            <button type="button" pButton [severity]="getSeverityColor()" [label]="email.priority.toString()"></button>
+          </p-inputGroup>
+        }
+        @if (!loaded) {
+          <p-skeleton height="50px"></p-skeleton>
+        }
+      </div>
+
+      <div class="w-full flex flex-col gap-1">
+        <label for="emailMessage">Message</label>
+        @if (loaded) {
+          <textarea readonly id="emailMessage" class="resize-none" pInputTextarea aria-describedby="Message of the email" [ngModel]="email.message" [rows]="5"></textarea>
+        }
+        @if (!loaded) {
+          <p-skeleton height="50px"></p-skeleton>
+        }
+      </div>
+    </div>
   </div>
 </p-card>

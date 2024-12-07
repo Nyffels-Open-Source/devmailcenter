@@ -6,7 +6,7 @@
       <h1 class="font-bold">Email server</h1>
       <div class="flex flex-row gap-1">
         <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-angle-double-left" (click)="return()"></button>
-        <button pButton class="p-button-text p-button-icon p-button-danger" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-trash" [disabled]="!server" (click)="delete()"></button>
+        <button pButton class="p-button-text p-button-icon p-button-danger" size="small" pTooltip="Delete" tooltipPosition="bottom" icon="pi pi-trash" [disabled]="!server" (click)="delete()"></button>
       </div>
     </div>
   </ng-template>

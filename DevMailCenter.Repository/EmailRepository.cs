@@ -38,7 +38,7 @@ public class EmailRepository : IEmailRepository
         var server = _dbContext.MailServers.FirstOrDefault(e => e.Id == email.ServerId);
         if (server != null)
         {
-            email.Sender = server.Name;
+            email.ServerName = server.Name;
         }
 
         return email;
