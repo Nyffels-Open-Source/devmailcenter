@@ -11,7 +11,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {SkeletonModule} from 'primeng/skeleton';
 import {InputGroupModule} from 'primeng/inputgroup';
-import {Location} from '@angular/common';
+import {DatePipe, Location} from '@angular/common';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 
 @Component({
@@ -25,7 +25,8 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     FormsModule,
     SkeletonModule,
     InputGroupModule,
-    InputTextareaModule
+    InputTextareaModule,
+    DatePipe
   ],
   templateUrl: './view.component.html',
   styleUrl: './view.component.scss',
@@ -51,7 +52,6 @@ export class ViewComponent implements OnInit, OnDestroy {
           if (email) {
             this.email = email;
             this.loaded = true;
-            console.log(this.email);
           }
         },
         error: (error) => {

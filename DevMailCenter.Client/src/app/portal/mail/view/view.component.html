@@ -76,13 +76,45 @@
         }
       </div>
 
+      <div class="flex flex-row gap-4">
+        <div class="w-full flex flex-col gap-1">
+          <label for="emailCreated">Created</label>
+          @if (loaded) {
+            <input readonly id="emailCreated" type="text" pInputText aria-describedby="Email creation date" ngModel="{{(email.created | date) ?? 'N/A'}}"/>
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </div>
+
+        <div class="w-full flex flex-col gap-1">
+          <label for="emailSendRequested">Send requested</label>
+          @if (loaded) {
+            <input readonly id="emailSendRequested" type="text" pInputText aria-describedby="Email send requested date" ngModel="{{(email.sendRequested | date) ?? 'N/A'}}"/>
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </div>
+
+        <div class="w-full flex flex-col gap-1">
+          <label for="emailFinished">Finished</label>
+          @if (loaded) {
+            <input readonly id="emailFinished" type="text" pInputText aria-describedby="Email finished date" ngModel="{{(email.completed | date) ?? 'N/A'}}"/>
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </div>
+      </div>
+
       @if (loaded && (email.transactions ?? []).length > 0) {
         <div class="w-full flex flex-col gap-1">
           <label>Transacties</label>
           @if (loaded) {
             @for (transaction of email.transactions; track transaction.id) {
               <div class="flex flex-row gap-4">
-                <input readonly type="text" pInputText aria-describedby="Transaction date" [ngModel]="transaction.created"/>
+                <input readonly type="text" pInputText aria-describedby="Transaction date" ngModel="{{transaction.created | date}}"/>
                 <input readonly type="text" pInputText aria-describedby="Transaction date" [ngModel]="transaction.rawResponse"/>
               </div>
             }
