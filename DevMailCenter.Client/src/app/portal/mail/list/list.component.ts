@@ -47,6 +47,7 @@ export class ListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: data => {
+          console.log(data);
           this.emails = data;
           this.isLoading = false;
         },

@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Mail;
 
 namespace DevMailCenter.Models;
 
@@ -17,6 +18,9 @@ public class Email
     
     public ICollection<EmailReceiver> Receivers { get; set; }
     public ICollection<EmailTransaction> Transactions { get; set; }
+    
+    [NotMapped]
+    public string ServerName { get; set; }
 }
 
 public class EmailCreate

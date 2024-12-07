@@ -34,7 +34,14 @@ public class EmailRepository : IEmailRepository
             queryable = queryable.Include(e => e.Receivers);
         }
 
-        return queryable.FirstOrDefault(e => e.Id == id);
+        var email = queryable.FirstOrDefault(e => e.Id == id);
+        var server = _dbContext.MailServers.FirstOrDefault(e => e.Id == email.ServerId);
+        if (server != null)
+        {
+            email.Sender = server.Name;
+        }
+
+        return email;
     }
 
     public List<Email> List(bool includeReceivers = false)
@@ -46,7 +53,15 @@ public class EmailRepository : IEmailRepository
             queryable = queryable.Include(e => e.Receivers);
         }
 
-        return queryable.ToList();
+        var emails = queryable.ToList();
+        
+        var servers = _dbContext.MailServers.Where(s => emails.Select(e => e.ServerId).Contains(s.Id)).ToList();
+        
+        emails.ForEach(e =>
+        {
+            e.ServerName = servers.FirstOrDefault(s => s.Id == e.ServerId)?.Name;
+        });
+        return emails;
     }
 
     public Guid Create(EmailCreate email, Guid serverId)
