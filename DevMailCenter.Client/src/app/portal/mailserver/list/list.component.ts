@@ -97,7 +97,6 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   viewServer(server: MailServer) {
-    // TODO
-    alert("Not yet implemented");
+    this.router.navigate(['../view', server.id], {relativeTo: this.activatedRoute});
   }
 }

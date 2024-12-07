@@ -15,7 +15,7 @@ export const routes: Routes = [{
               loadComponent: () => import('./portal/mail/list/list.component').then(c => c.ListComponent),
             },
             {
-              path: 'view',
+              path: 'view/:id',
               loadComponent: () => import('./portal/mail/view/view.component').then(c => c.ViewComponent),
             },
             {
@@ -33,7 +33,7 @@ export const routes: Routes = [{
               loadComponent: () => import('./portal/mailserver/list/list.component').then(c => c.ListComponent),
             },
             {
-              path: 'view',
+              path: 'view/:id',
               loadComponent: () => import('./portal/mailserver/view/view.component').then(c => c.ViewComponent),
             },
             {

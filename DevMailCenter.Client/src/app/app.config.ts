@@ -6,6 +6,7 @@ import {API_BASE_URL} from './core/openapi/generated/openapi-client';
 import {environment} from '../environments/environment';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authenticationInterceptor} from './core/Interceptors/http-authentication.interceptor';
+import {DATE_PIPE_DEFAULT_OPTIONS} from '@angular/common';
 
 export function GetApiBaseUrl() {
   return environment.api.url;
@@ -25,5 +26,9 @@ export const appConfig: ApplicationConfig = {
       useFactory: GetApiBaseUrl
     },
     provideHttpClient(withInterceptors([authenticationInterceptor])),
+    {
+      provide: DATE_PIPE_DEFAULT_OPTIONS,
+      useValue: { dateFormat: "dd/MM/YYYY" }
+    }
   ]
 };
