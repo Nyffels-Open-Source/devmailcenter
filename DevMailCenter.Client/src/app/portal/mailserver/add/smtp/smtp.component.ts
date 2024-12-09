@@ -14,6 +14,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {CheckboxModule} from 'primeng/checkbox';
 import {FormRow} from '../../../../components/field-row/field-row.component';
 import {FormField} from '../../../../components/field/field.component';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'dmc-mailserver-add-smtp',
@@ -25,7 +26,7 @@ export class SmtpComponent implements OnInit {
   smtp: SmtpMailServerCreate = new SmtpMailServerCreate();
   canSave = false;
 
-  constructor(private location: Location, private mailServerClient: MailServerClient) {}
+  constructor(private location: Location, private mailServerClient: MailServerClient, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() {
     this.smtp.ssl = true;
@@ -38,9 +39,8 @@ export class SmtpComponent implements OnInit {
 
   addServer() {
     this.mailServerClient.createSmtpMailServer(this.smtp).subscribe({
-      next: (newGuid) => {
-        // TODO Go to view smtp guid.
-        console.log(newGuid);
+      next: () => {
+        this.router.navigate(['../../list'], {relativeTo: this.activatedRoute});
       },
       error: (err) => {
         // TODO Better error throwing
