@@ -6,6 +6,7 @@ import {CommonModule, Location} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'dmc-mailserver-add',
@@ -23,7 +24,7 @@ export class AddComponent implements OnInit {
 
   selectedProvider: string | null = null;
 
-  constructor(private configClient: ConfigClient, private mailServerClient: MailServerClient, private location: Location) {}
+  constructor(private configClient: ConfigClient, private mailServerClient: MailServerClient, private location: Location, private router: Router, private activetedRoute: ActivatedRoute) {}
 
   ngOnInit() {
     this.configClient.listEnableProviders()
@@ -55,7 +56,7 @@ export class AddComponent implements OnInit {
 
     switch (provider) {
       case 'Smtp': {
-        // TODO
+        this.router.navigate(['./smtp'], {relativeTo: this.activetedRoute});
         break;
       }
       case 'MicrosoftExchange': {

@@ -7,6 +7,7 @@
     "url": "https://nyffels.be"
   },
   "scripts": {
+    "start": "ng serve",
     "docker-dev-up":"docker-compose -f dev-docker-compose.yml up -d",
     "docker-dev-down":"docker-compose -f dev-docker-compose.yml down"
   }

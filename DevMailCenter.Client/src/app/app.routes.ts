@@ -37,6 +37,10 @@ export const routes: Routes = [{
               loadComponent: () => import('./portal/mailserver/view/view.component').then(c => c.ViewComponent),
             },
             {
+              path: 'add/smtp',
+              loadComponent: () => import('./portal/mailserver/add/smtp/smtp.component').then(c => c.SmtpComponent),
+            },
+            {
               path: 'add',
               loadComponent: () => import('./portal/mailserver/add/add.component').then(c => c.AddComponent),
             },

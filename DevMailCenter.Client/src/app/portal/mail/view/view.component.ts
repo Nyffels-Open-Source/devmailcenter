@@ -13,6 +13,8 @@ import {SkeletonModule} from 'primeng/skeleton';
 import {InputGroupModule} from 'primeng/inputgroup';
 import {DatePipe, Location} from '@angular/common';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {FormField} from '../../../components/field/field.component';
+import {FormRow} from '../../../components/field-row/field-row.component';
 
 @Component({
   selector: 'dmc-mail-view',
@@ -26,7 +28,9 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     SkeletonModule,
     InputGroupModule,
     InputTextareaModule,
-    DatePipe
+    DatePipe,
+    FormField,
+    FormRow
   ],
   templateUrl: './view.component.html',
   styleUrl: './view.component.scss',
