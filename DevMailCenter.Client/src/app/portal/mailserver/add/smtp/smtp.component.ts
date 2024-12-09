@@ -36,4 +36,8 @@ export class SmtpComponent implements OnInit {
   addServer() {
     // TODO
   }
+
+  checkChanges() {
+    // TODO
+  }
 }

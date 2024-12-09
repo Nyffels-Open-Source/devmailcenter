@@ -14,7 +14,7 @@
       <form-row>
         <form-field>
           <label for="name">Naam</label>
-          <input pInputText id="name" [(ngModel)]="smtp.name" placeholder="Enter the SMTP name for identification"/>
+          <input pInputText id="name" [(ngModel)]="smtp.name" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP name for identification"/>
         </form-field>
       </form-row>
 
@@ -22,7 +22,7 @@
         <form-field>
           <label for="host">Host</label>
           <p-inputGroup>
-            <input pInputText id="host" [(ngModel)]="smtp.host" placeholder="Enter the SMTP host"/>
+            <input pInputText id="host" [(ngModel)]="smtp.host" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP host"/>
             @if (smtp.ssl) {
               <button type="button" (click)="smtp.ssl = false" pRipple pButton icon="pi pi-check" class="p-button-success" label="SSL/TLS"></button>
             }
@@ -34,7 +34,31 @@
 
         <form-field>
           <label for="port">Port</label>
-          <input pInputText id="port" type="number" [(ngModel)]="smtp.port" placeholder="Enter the SMTP host"/>
+          <input pInputText id="port" type="number" [(ngModel)]="smtp.port" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP host"/>
+        </form-field>
+      </form-row>
+
+      <form-row>
+        <form-field>
+          <label for="email">Email</label>
+          <input pInputText id="email" [(ngModel)]="smtp.email" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP email"/>
+        </form-field>
+
+        <form-field>
+          <label for="user">Username</label>
+          <input pInputText id="user" [(ngModel)]="smtp.user" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP server username"/>
+        </form-field>
+      </form-row>
+
+      <form-row>
+        <form-field>
+          <label for="sender">Sender</label>
+          <input pInputText id="sender" [(ngModel)]="smtp.username" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP sender name"/>
+        </form-field>
+
+        <form-field>
+          <label for="password">Wachtwoord</label>
+          <input pInputText id="password" type="password" [(ngModel)]="smtp.password" (ngModelChange)="checkChanges()" placeholder="Enter the SMTP password"/>
         </form-field>
       </form-row>
     </div>
