@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {TooltipModule} from 'primeng/tooltip';
-import {SmtpMailServerCreate} from '../../../../core/openapi/generated/openapi-client';
+import {MailServerClient, SmtpMailServerCreate} from '../../../../core/openapi/generated/openapi-client';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputNumberModule} from 'primeng/inputnumber';
 import {InputGroupModule} from 'primeng/inputgroup';
@@ -25,7 +25,7 @@ export class SmtpComponent implements OnInit {
   smtp: SmtpMailServerCreate = new SmtpMailServerCreate();
   canSave = false;
 
-  constructor(private location: Location) {}
+  constructor(private location: Location, private mailServerClient: MailServerClient) {}
 
   ngOnInit() {
     this.smtp.ssl = true;
@@ -37,7 +37,16 @@ export class SmtpComponent implements OnInit {
   }
 
   addServer() {
-    // TODO
+    this.mailServerClient.createSmtpMailServer(this.smtp).subscribe({
+      next: (newGuid) => {
+        // TODO Go to view smtp guid.
+        console.log(newGuid);
+      },
+      error: (err) => {
+        // TODO Better error throwing
+        console.error(err);
+      }
+    })
   }
 
   checkChanges() {
