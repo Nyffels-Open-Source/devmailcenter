@@ -12,14 +12,14 @@
   <div id="card-body">
     <div class="flex flex-col gap-4">
       <form-row>
-        <dmc-field>
+        <form-field>
           <label for="name">Naam</label>
           <input pInputText id="name" [(ngModel)]="smtp.name" placeholder="Enter the SMTP name for identification"/>
-        </dmc-field>
+        </form-field>
       </form-row>
 
       <form-row>
-        <dmc-field>
+        <form-field>
           <label for="host">Host</label>
           <p-inputGroup>
             <input pInputText id="host" [(ngModel)]="smtp.host" placeholder="Enter the SMTP host"/>
@@ -30,12 +30,12 @@
               <button type="button" (click)="smtp.ssl = true" pRipple pButton icon="pi pi-times" class="p-button-danger" label="SSL/TLS"></button>
             }
           </p-inputGroup>
-        </dmc-field>
+        </form-field>
 
-        <dmc-field>
+        <form-field>
           <label for="port">Port</label>
           <input pInputText id="port" type="number" [(ngModel)]="smtp.port" placeholder="Enter the SMTP host"/>
-        </dmc-field>
+        </form-field>
       </form-row>
     </div>
   </div>

@@ -13,8 +13,8 @@
 
   <div id="card-body">
     <div class="flex flex-col gap-4">
-      <div class="flex flex-row gap-4">
-        <div class="w-full flex flex-col gap-1">
+      <form-row>
+        <form-field>
           <label for="emailId">Email ID</label>
           @if (emailId) {
             <input readonly id="emailId" type="text" pInputText aria-describedby="Email ID" [ngModel]="emailId"/>
@@ -22,9 +22,9 @@
           @if (!emailId) {
             <p-skeleton height="50px"></p-skeleton>
           }
-        </div>
+        </form-field>
 
-        <div class="w-full flex flex-col gap-1">
+        <form-field>
           <label for="serverName">Server</label>
           @if (loaded) {
             <p-inputGroup>
@@ -35,49 +35,55 @@
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
           }
-        </div>
-      </div>
+        </form-field>
+      </form-row>
 
-      <div class="w-full flex flex-col gap-1">
-        <label>Send to</label>
-        @if (loaded) {
-          @for (receiver of email.receivers; track receiver.id) {
+      <form-row>
+        <form-field>
+          <label>Send to</label>
+          @if (loaded) {
+            @for (receiver of email.receivers; track receiver.id) {
+              <p-inputGroup>
+                <button type="button" pButton severity="secondary" [label]="receiver.type.toString()"></button>
+                <input readonly type="text" pInputText aria-describedby="Receiver name and email" [ngModel]="receiver.receiverName + '<' + receiver.receiverEmail + '>'"/>
+              </p-inputGroup>
+            }
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </form-field>
+      </form-row>
+
+      <form-row>
+        <form-field>
+          <label for="emailSubject">Subject</label>
+          @if (loaded) {
             <p-inputGroup>
-              <button type="button" pButton severity="secondary" [label]="receiver.type.toString()"></button>
-              <input readonly type="text" pInputText aria-describedby="Receiver name and email" [ngModel]="receiver.receiverName + '<' + receiver.receiverEmail + '>'"/>
+              <input readonly id="emailSubject" type="text" pInputText aria-describedby="Subject of the email" [ngModel]="email.subject"/>
+              <button type="button" pButton [severity]="getSeverityColor()" [label]="email.priority.toString()"></button>
             </p-inputGroup>
           }
-        }
-        @if (!loaded) {
-          <p-skeleton height="50px"></p-skeleton>
-        }
-      </div>
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </form-field>
+      </form-row>
 
-      <div class="w-full flex flex-col gap-1">
-        <label for="emailSubject">Subject</label>
-        @if (loaded) {
-          <p-inputGroup>
-            <input readonly id="emailSubject" type="text" pInputText aria-describedby="Subject of the email" [ngModel]="email.subject"/>
-            <button type="button" pButton [severity]="getSeverityColor()" [label]="email.priority.toString()"></button>
-          </p-inputGroup>
-        }
-        @if (!loaded) {
-          <p-skeleton height="50px"></p-skeleton>
-        }
-      </div>
+      <form-row>
+        <form-field>
+          <label for="emailMessage">Message</label>
+          @if (loaded) {
+            <textarea readonly id="emailMessage" class="resize-none" pInputTextarea aria-describedby="Message of the email" [ngModel]="email.message" [rows]="5"></textarea>
+          }
+          @if (!loaded) {
+            <p-skeleton height="50px"></p-skeleton>
+          }
+        </form-field>
+      </form-row>
 
-      <div class="w-full flex flex-col gap-1">
-        <label for="emailMessage">Message</label>
-        @if (loaded) {
-          <textarea readonly id="emailMessage" class="resize-none" pInputTextarea aria-describedby="Message of the email" [ngModel]="email.message" [rows]="5"></textarea>
-        }
-        @if (!loaded) {
-          <p-skeleton height="50px"></p-skeleton>
-        }
-      </div>
-
-      <div class="flex flex-row gap-4">
-        <div class="w-full flex flex-col gap-1">
+      <form-row>
+        <form-field>
           <label for="emailCreated">Created</label>
           @if (loaded) {
             <input readonly id="emailCreated" type="text" pInputText aria-describedby="Email creation date" ngModel="{{(email.created | date) ?? 'N/A'}}"/>
@@ -85,9 +91,8 @@
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
           }
-        </div>
-
-        <div class="w-full flex flex-col gap-1">
+        </form-field>
+        <form-field>
           <label for="emailSendRequested">Send requested</label>
           @if (loaded) {
             <input readonly id="emailSendRequested" type="text" pInputText aria-describedby="Email send requested date" ngModel="{{(email.sendRequested | date) ?? 'N/A'}}"/>
@@ -95,9 +100,8 @@
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
           }
-        </div>
-
-        <div class="w-full flex flex-col gap-1">
+        </form-field>
+        <form-field>
           <label for="emailFinished">Finished</label>
           @if (loaded) {
             <input readonly id="emailFinished" type="text" pInputText aria-describedby="Email finished date" ngModel="{{(email.completed | date) ?? 'N/A'}}"/>
@@ -105,8 +109,8 @@
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
           }
-        </div>
-      </div>
+        </form-field>
+      </form-row>
 
       @if (loaded && (email.transactions ?? []).length > 0) {
         <div class="w-full flex flex-col gap-1">

@@ -12,12 +12,12 @@ import {InputGroupModule} from 'primeng/inputgroup';
 import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {CheckboxModule} from 'primeng/checkbox';
-import {DmcField} from '../../../../components/field/field.component';
-import {DmcFieldRow} from '../../../../components/field-row/field-row.component';
+import {FormRow} from '../../../../components/field-row/field-row.component';
+import {FormField} from '../../../../components/field/field.component';
 
 @Component({
   selector: 'dmc-mailserver-add-smtp',
-  imports: [CardModule, CommonModule, FormsModule, ButtonModule, RippleModule, TooltipModule, InputTextModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, RadioButtonModule, CheckboxModule, DmcField, DmcField, DmcField, DmcFieldRow],
+  imports: [CardModule, CommonModule, FormsModule, ButtonModule, RippleModule, TooltipModule, InputTextModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, RadioButtonModule, CheckboxModule, FormRow, FormField],
   templateUrl: './smtp.component.html',
   styleUrl: './smtp.component.scss'
 })

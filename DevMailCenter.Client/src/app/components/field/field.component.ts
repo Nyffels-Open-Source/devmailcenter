@@ -1,10 +1,16 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 
 @Component({
-  selector: 'dmc-field',
+  selector: 'form-field',
   imports: [],
-  template: `<div class="flex flex-col gap-2 w-full"><ng-content></ng-content></div>`,
+  template: `<ng-content></ng-content>`,
   styles: ``,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.flex]': 'true',
+    '[class.flex-col]': 'true',
+    '[class.gap-2]': 'true',
+    '[class.w-full]': 'true'
+  }
 })
-export class DmcField {}
+export class FormField {}
