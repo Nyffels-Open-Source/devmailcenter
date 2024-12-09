@@ -27,7 +27,10 @@ export class SmtpComponent implements OnInit {
 
   constructor(private location: Location) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.smtp.ssl = true;
+    this.smtp.port = 465;
+  }
 
   return() {
     this.location.back();
@@ -38,6 +41,12 @@ export class SmtpComponent implements OnInit {
   }
 
   checkChanges() {
-    // TODO
+    this.canSave = (this.smtp.name ?? '').trim().length > 0 &&
+      (this.smtp.host ?? '').trim().length > 0 &&
+      !Number.isNaN(+(this.smtp.port)) &&
+      (this.smtp.email ?? '').trim().length > 0 &&
+      (this.smtp.user ?? '').trim().length > 0 &&
+      (this.smtp.password ?? '').trim().length > 0 &&
+      (this.smtp.username ?? '').trim().length > 0
   }
 }
