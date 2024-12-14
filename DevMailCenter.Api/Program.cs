@@ -32,6 +32,15 @@ builder.Services.AddAuthentication("DmcAuthentication")
 
 var app = builder.Build();
 
+/* Build or update database if needed */
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    var context = scope.ServiceProvider.GetRequiredService<DmcContext>();
+    context.Database.Migrate();
+} 
+
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 if (app.Configuration["Client:Enabled"] == "True")
