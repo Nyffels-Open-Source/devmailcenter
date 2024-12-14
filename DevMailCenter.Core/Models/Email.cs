@@ -18,6 +18,7 @@ public class Email
     
     public ICollection<EmailReceiver> Receivers { get; set; }
     public ICollection<EmailTransaction> Transactions { get; set; }
+    public ICollection<EmailAttachment> Attachments { get; set; }
     
     [NotMapped]
     public string ServerName { get; set; }

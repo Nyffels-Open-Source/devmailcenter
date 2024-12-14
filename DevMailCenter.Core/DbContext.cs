@@ -71,6 +71,7 @@ public class DmcContext : DbContext
             
             entity.HasMany(e => e.Receivers).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
             entity.HasMany(e => e.Transactions).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Attachments).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailReceiver>(entity =>
