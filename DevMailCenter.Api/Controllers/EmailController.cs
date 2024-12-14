@@ -60,8 +60,7 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [EndpointDescription(
-            "Create a new email server. The endpoint will return the ID of the newly created email server.")]
+        [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
         {
             try

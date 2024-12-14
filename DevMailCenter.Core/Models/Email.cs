@@ -29,6 +29,7 @@ public class EmailCreate
     public required string Message { get; set; }
     public required MailPriority Priority { get; set; }
     public required List<EmailReceiverCreate> Receivers { get; set; }
+    public List<EmailAttachment> Attachments { get; set; }
 }
 
 public class EmailUpdate
@@ -40,6 +41,8 @@ public class EmailUpdate
     public List<Guid> DeletedReceivers { get; set; }
     public List<EmailReceiverUpdate> UpdatedReceivers { get; set; }
     public List<EmailReceiverCreate> CreatedReceivers { get; set; }
+    public List<Guid> DeletedAttachments { get; set; }
+    public List<EmailAttachment> AddedAttachments { get; set; }
 }
 
 public enum EmailStatus
