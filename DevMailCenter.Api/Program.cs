@@ -32,6 +32,19 @@ builder.Services.AddAuthentication("DmcAuthentication")
 
 var app = builder.Build();
 
+/* Build or update database if needed */
+try
+{
+    using var scope = app.Services.CreateScope();
+    await using var db = scope.ServiceProvider.GetRequiredService<DmcContext>();
+    db.Database.Migrate();
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex.Message);
+    await app.StopAsync(default);
+}
+
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 if (app.Configuration["Client:Enabled"] == "True")
@@ -62,4 +75,4 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-app.Run();
+app.Run();   
