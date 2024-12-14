@@ -34,8 +34,16 @@ var app = builder.Build();
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+if (app.Configuration["Client:Enabled"] == "True")
+{
+    app.Logger.LogInformation("Client is enabled");
+    app.UseDefaultFiles();
+    app.UseStaticFiles();   
+}
+else
+{
+    app.Logger.LogInformation("Client is disabled");
+}
 
 app.MapOpenApi();
 app.MapScalarApiReference(o =>
