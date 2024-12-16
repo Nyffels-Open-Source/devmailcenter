@@ -151,8 +151,8 @@ public class EmailRepository(DmcContext dbContext, IEmailAttachmentRepository em
 
     public int Delete(Guid guid)
     {
-        // TODO Retrieve attachment GUIDS. 
-        
+        var attachments = dbContext.EmailAttachments.Where(attachment => attachment.EmailId == guid).Select(e => e.Id).ToList();
+        emailAttachmentRepository.DeleteFromStorage(attachments); 
         return dbContext.Emails.Where(e => e.Id == guid).ExecuteDelete();
     }
 
