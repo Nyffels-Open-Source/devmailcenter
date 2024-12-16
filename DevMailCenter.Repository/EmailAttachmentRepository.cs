@@ -5,6 +5,7 @@ namespace DevMailCenter.Repository;
 public interface IEmailAttachmentRepository
 {
     List<EmailAttachment> AddToStorage(List<EmailAttachmentCreate> emailAttachments, Guid emailId);
+    void DeleteFromStorage(List<Guid> attachmentGuids);
 }
 
 public class EmailAttachmentRepository : IEmailAttachmentRepository
