@@ -7,6 +7,8 @@ public interface IEmailAttachmentRepository
 {
     List<EmailAttachment> AddToStorage(List<EmailAttachmentCreate> emailAttachments, Guid emailId);
     void DeleteFromStorage(List<Guid> attachmentGuids);
+    string GetAttachmentContent(Guid guid);
+    Stream GetAttachmentStream(Guid guid);
 }
 
 public class EmailAttachmentRepository : IEmailAttachmentRepository
@@ -54,5 +56,16 @@ public class EmailAttachmentRepository : IEmailAttachmentRepository
             File.Delete(Path.Combine(_rootPath, guid.ToString()));   
             _logger.LogInformation($"Removed attachment '{guid}'.");
         }
+    }
+
+    public string GetAttachmentContent(Guid guid)
+    {
+        // TODO Read file and return base64. 
+        return "";
+    }
+
+    public Stream GetAttachmentStream(Guid guid)
+    {
+        return File.OpenRead(Path.Combine(_rootPath, guid.ToString()));
     }
 }

@@ -1,7 +1,6 @@
 ﻿using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using DevMailCenter.Security;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
@@ -20,14 +19,16 @@ public class SmtpLogic : ISmtpLogic
     private readonly IEmailTransactionRepository _emailTransactionRepository;
     private readonly IEncryptionLogic _encryptionLogic;
     private readonly IMailServerRepository _mailServerRepository;
+    private readonly IEmailAttachmentRepository _emailAttachmentRepository;
 
-    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMailServerRepository mailServerRepository)
+    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMailServerRepository mailServerRepository, IEmailAttachmentRepository emailAttachmentRepository)
     {
         _logger = logger;
         _emailRepository = emailRepository;
         _emailTransactionRepository = emailTransactionRepository;
         _encryptionLogic = encryptionLogic;
         _mailServerRepository = mailServerRepository;
+        _emailAttachmentRepository = emailAttachmentRepository;
     }
 
     public Guid Send(SmtpSettings settings, Email email)
@@ -50,11 +51,32 @@ public class SmtpLogic : ISmtpLogic
                     break;
             }
         }
+        
+        var multipart = new Multipart("mixed");
+        multipart.Add(new TextPart(MimeKit.Text.TextFormat.Html) 
+        { 
+            Text = email.Message
+        });
+        foreach (var att in email.Attachments)
+        {
+            var content = _emailAttachmentRepository.GetAttachmentStream(att.Id);
+            if (content != null)
+            {
+                throw new Exception($"Attachment {att.Id} no longer exists in storage.");
+            }
+            
+            var attachment = new MimePart (att.Mime) {
+                Content = new MimeContent (content, ContentEncoding.Base64),
+                ContentDisposition = new ContentDisposition (ContentDisposition.Attachment),
+                ContentTransferEncoding = ContentEncoding.Base64,
+                FileName = Path.GetFileName (att.Name)
+            };
+            
+            multipart.Add(attachment);
+        }
 
         mm.Subject = email.Subject;
-        mm.Body = new TextPart(MimeKit.Text.TextFormat.Html) { 
-            Text = email.Message
-        };
+        mm.Body = multipart;
 
         try
         {
