@@ -1,4 +1,5 @@
 using DevMailCenter.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Repository;
 
@@ -10,9 +11,19 @@ public interface IEmailAttachmentRepository
 
 public class EmailAttachmentRepository : IEmailAttachmentRepository
 {
-    public EmailAttachmentRepository()
+    private string _rootPath { get; init; }
+    private readonly ILogger<EmailAttachmentRepository> _logger;
+    
+    public EmailAttachmentRepository(ILogger<EmailAttachmentRepository> logger)
     {
+        var attachmentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
+        if (!Directory.Exists(attachmentPath))
+        {
+            Directory.CreateDirectory(attachmentPath);   
+        }
         
+        _rootPath = attachmentPath;
+        _logger = logger;
     }
 
     public List<EmailAttachment> AddToStorage(List<EmailAttachmentCreate> emailAttachments, Guid emailId)
@@ -22,9 +33,7 @@ public class EmailAttachmentRepository : IEmailAttachmentRepository
         foreach (EmailAttachmentCreate emailAttachment in emailAttachments)
         {
             var newAttachmentId = Guid.NewGuid();
-            
-            // TODO Save the base64 to the storage
-            
+            File.WriteAllBytes(Path.Combine(_rootPath, newAttachmentId.ToString()), Convert.FromBase64String(emailAttachment.Base64));
             attachments.Add(new EmailAttachment()
             {
                 Id = newAttachmentId,
@@ -32,6 +41,7 @@ public class EmailAttachmentRepository : IEmailAttachmentRepository
                 Mime = emailAttachment.Mime,
                 Name = emailAttachment.Name,
             });
+            _logger.LogInformation($"Added attachment '{newAttachmentId}' with name {emailAttachment.Name}");
         }
         
         return attachments;
@@ -39,6 +49,10 @@ public class EmailAttachmentRepository : IEmailAttachmentRepository
 
     public void DeleteFromStorage(List<Guid> attachmentGuids)
     {
-        // TODO Delete the base64 from the storage based on the guids. 
+        foreach (var guid in attachmentGuids)
+        {
+            File.Delete(Path.Combine(_rootPath, guid.ToString()));   
+            _logger.LogInformation($"Removed attachment '{guid}'.");
+        }
     }
 }
