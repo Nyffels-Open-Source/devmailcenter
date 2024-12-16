@@ -11,6 +11,7 @@ public class DmcContext : DbContext
     public DbSet<Email> Emails { get; set; }
     public DbSet<EmailReceiver> EmailReceivers { get; set; }
     public DbSet<EmailTransaction> EmailTransactions { get; set; }
+    public DbSet<EmailAttachment> EmailAttachments { get; set; }
 
     public DmcContext(DbContextOptions<DmcContext> options) : base(options)
     {
