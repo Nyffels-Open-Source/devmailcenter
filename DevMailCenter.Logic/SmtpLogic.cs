@@ -19,13 +19,15 @@ public class SmtpLogic : ISmtpLogic
     private readonly IEmailRepository _emailRepository;
     private readonly IEmailTransactionRepository _emailTransactionRepository;
     private readonly IEncryptionLogic _encryptionLogic;
+    private readonly IMailServerRepository _mailServerRepository;
 
-    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic)
+    public SmtpLogic(ILogger<EmailLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMailServerRepository mailServerRepository)
     {
         _logger = logger;
         _emailRepository = emailRepository;
         _emailTransactionRepository = emailTransactionRepository;
         _encryptionLogic = encryptionLogic;
+        _mailServerRepository = mailServerRepository;
     }
 
     public Guid Send(SmtpSettings settings, Email email)
@@ -66,6 +68,7 @@ public class SmtpLogic : ISmtpLogic
             client.Disconnect(true);
      
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
+            _mailServerRepository.UpdateLastUsed(email.ServerId);
             return _emailTransactionRepository.Create(email.Id, rawServerResponse);
         }
         catch (Exception ex)

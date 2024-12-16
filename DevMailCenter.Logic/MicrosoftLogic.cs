@@ -4,6 +4,7 @@ using DevMailCenter.External.Models;
 using DevMailCenter.Models;
 using DevMailCenter.Repository;
 using DevMailCenter.Security;
+using MailKit;
 using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Logic;
@@ -20,14 +21,16 @@ public class MicrosoftLogic : IMicrosoftLogic
     private readonly IEmailTransactionRepository _emailTransactionRepository;
     private readonly IEncryptionLogic _encryptionLogic;
     private readonly IMicrosoftApi _microsoftApi;
+    private readonly IMailServerRepository _mailServerRepository;
     
-    public MicrosoftLogic(ILogger<MicrosoftLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMicrosoftApi microsoftApi)
+    public MicrosoftLogic(ILogger<MicrosoftLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMicrosoftApi microsoftApi, IMailServerRepository mailServerRepository)
     {
         _logger = logger;
         _emailRepository = emailRepository;
         _emailTransactionRepository = emailTransactionRepository;
         _encryptionLogic = encryptionLogic;
         _microsoftApi = microsoftApi;
+        _mailServerRepository = mailServerRepository;
     }
 
     public Guid Send(MicrosoftSettings settings, Email email)
@@ -97,7 +100,8 @@ public class MicrosoftLogic : IMicrosoftLogic
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Pending);
             _microsoftApi.SendEmail(mm, newTokens);
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
-            return _emailTransactionRepository.Create(email.Id, "Accepted");
+            _mailServerRepository.UpdateLastUsed(email.ServerId);
+            return _emailTransactionRepository.Create(email.Id, "Ok");
         }
         catch (Exception ex)
         {

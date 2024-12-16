@@ -16,6 +16,7 @@ public interface IMailServerRepository
     int Delete(Guid guid);
     void UpdateSmtp(Guid id, SmtpMailServerUpdate mailServer);
     void UpdateMicrosoft(Guid id, MicrosoftMailServerUpdate mailServer);
+    void UpdateLastUsed(Guid guid);
 
 }
 
@@ -244,5 +245,17 @@ public class MailServerRepository : IMailServerRepository
     public int Delete(Guid guid)
     {
         return _dbContext.MailServers.Where(e => e.Id == guid).ExecuteDelete();
+    }
+
+    public void UpdateLastUsed(Guid guid)
+    {
+        var server = _dbContext.MailServers.Where(e => e.Id == guid).FirstOrDefault();
+        if (server == null)
+        {
+            throw new Exception("Request for lastused update failed because server was not found.");
+        }
+        
+        server.LastUsed = DateTime.UtcNow;
+        _dbContext.SaveChanges();
     }
 }

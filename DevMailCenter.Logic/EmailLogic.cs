@@ -1,5 +1,6 @@
 ﻿using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Logic;
