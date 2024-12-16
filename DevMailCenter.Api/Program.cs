@@ -25,7 +25,8 @@ builder.Services
     .AddScoped<IMicrosoftLogic, MicrosoftLogic>()
     .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
     .AddScoped<IMicrosoftApi, MicrosoftApi>()
-    .AddScoped<IEncryptionLogic, EncryptionLogic>();
+    .AddScoped<IEncryptionLogic, EncryptionLogic>()
+    .AddScoped<IEmailAttachmentRepository, EmailAttachmentRepository>();
 
 builder.Services.AddAuthentication("DmcAuthentication")
     .AddScheme<AuthenticationSchemeOptions, DmcAuthenticationHandler>("DmcAuthentication", null);

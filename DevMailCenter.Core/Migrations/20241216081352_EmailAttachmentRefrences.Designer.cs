@@ -3,6 +3,7 @@ using System;
 using DevMailCenter.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
-    partial class DmcContextModelSnapshot : ModelSnapshot
+    [Migration("20241216081352_EmailAttachmentRefrences")]
+    partial class EmailAttachmentRefrences
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

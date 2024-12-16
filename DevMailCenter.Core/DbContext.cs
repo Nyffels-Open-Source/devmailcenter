@@ -97,5 +97,17 @@ public class DmcContext : DbContext
             entity.Property(e => e.RawResponse).HasColumnName("EmailTransactionRawResponse").IsRequired();
             entity.Property(e => e.Created).HasColumnName("EmailTransactionCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
         });
+
+        modelBuilder.Entity<EmailAttachment>(entity =>
+        {
+            entity.ToTable("DmcEmailAttachment");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Id).IsUnique();
+            entity.HasIndex(e => e.EmailId);
+            entity.Property(e => e.Id).HasColumnName("EmailAttachmentId").IsRequired();
+            entity.Property(e => e.EmailId).HasColumnName("EmailAttachmentEmailId").IsRequired();
+            entity.Property(e => e.Name).HasColumnName("EmailAttachmentName").IsRequired();
+            entity.Property(e => e.Mime).HasColumnName("EmailAttachmentMime").IsRequired();
+        });
     }
 }
