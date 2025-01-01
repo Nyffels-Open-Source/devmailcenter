@@ -60,7 +60,7 @@ public class SmtpLogic : ISmtpLogic
         foreach (var att in email.Attachments)
         {
             var content = _emailAttachmentRepository.GetAttachmentStream(att.Id);
-            if (content != null)
+            if (content == null)
             {
                 throw new Exception($"Attachment {att.Id} no longer exists in storage.");
             }

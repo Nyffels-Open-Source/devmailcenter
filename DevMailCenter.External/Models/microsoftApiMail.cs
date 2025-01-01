@@ -51,5 +51,5 @@ public class MicrosoftApiMailMessageAttachment
     [JsonPropertyName("@odata.type")] public string Type { get; set; }
     [JsonPropertyName("name")] public string Name { get; set; }
     [JsonPropertyName("contentType")] public string ContentType { get; set; }
-    [JsonPropertyName("contentBytes")] public string ContentBytes { get; set; }
+    [JsonPropertyName("contentBytes")] public byte[] ContentBytes { get; set; }
 }

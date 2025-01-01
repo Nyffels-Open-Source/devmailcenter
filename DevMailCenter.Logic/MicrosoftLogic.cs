@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using System.Text;
 using DevMailCenter.External;
 using DevMailCenter.External.Models;
 using DevMailCenter.Models;
@@ -22,8 +23,10 @@ public class MicrosoftLogic : IMicrosoftLogic
     private readonly IEncryptionLogic _encryptionLogic;
     private readonly IMicrosoftApi _microsoftApi;
     private readonly IMailServerRepository _mailServerRepository;
-    
-    public MicrosoftLogic(ILogger<MicrosoftLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMicrosoftApi microsoftApi, IMailServerRepository mailServerRepository)
+    private readonly IEmailAttachmentRepository _emailAttachmentRepository;
+
+    public MicrosoftLogic(ILogger<MicrosoftLogic> logger, IEmailRepository emailRepository, IEmailTransactionRepository emailTransactionRepository, IEncryptionLogic encryptionLogic, IMicrosoftApi microsoftApi, IMailServerRepository mailServerRepository,
+        IEmailAttachmentRepository emailAttachmentRepository)
     {
         _logger = logger;
         _emailRepository = emailRepository;
@@ -31,6 +34,7 @@ public class MicrosoftLogic : IMicrosoftLogic
         _encryptionLogic = encryptionLogic;
         _microsoftApi = microsoftApi;
         _mailServerRepository = mailServerRepository;
+        _emailAttachmentRepository = emailAttachmentRepository;
     }
 
     public Guid Send(MicrosoftSettings settings, Email email)
@@ -40,16 +44,16 @@ public class MicrosoftLogic : IMicrosoftLogic
 
         var importance = email.Priority switch
         {
-          MailPriority.Low => "low",
-          MailPriority.Normal => "normal",
-          MailPriority.High => "high",
-          _ => "normal"
+            MailPriority.Low => "low",
+            MailPriority.Normal => "normal",
+            MailPriority.High => "high",
+            _ => "normal"
         };
 
         var toRecipients = new List<MicrosoftApiMailMessageRecipient>();
         var ccRecipients = new List<MicrosoftApiMailMessageRecipient>();
         var bccRecipients = new List<MicrosoftApiMailMessageRecipient>();
-        
+
         foreach (var emailReceiver in email.Receivers)
         {
             var microsoftReceiver = new MicrosoftApiMailMessageRecipient()
@@ -73,7 +77,7 @@ public class MicrosoftLogic : IMicrosoftLogic
                     break;
             }
         }
-        
+
         var mm = new MicrosoftApiMail()
         {
             Message = new MicrosoftApiMailMessage()
@@ -89,8 +93,23 @@ public class MicrosoftLogic : IMicrosoftLogic
                 CcRecipients = toRecipients,
                 BccRecipients = bccRecipients,
                 InterferenceClassification = "focused",
-                HasAttachments = false, // TODO Attachments #38
-                Attachments = new List<MicrosoftApiMailMessageAttachment>() // TODO Attachments #38
+                HasAttachments = email.Attachments.Count > 0,
+                Attachments = email.Attachments.Select(att =>
+                {
+                    var content = _emailAttachmentRepository.GetAttachmentBytes(att.Id);
+                    if (content == null)
+                    {
+                        throw new Exception($"Attachment {att.Id} no longer exists in storage.");
+                    }
+
+                    return new MicrosoftApiMailMessageAttachment()
+                    {
+                        Type = "#microsoft.graph.fileAttachment",
+                        Name = att.Name,
+                        ContentType = att.Mime,
+                        ContentBytes = content!
+                    };
+                }).ToList()
             },
             SaveToSentItems = true
         };
@@ -108,5 +127,14 @@ public class MicrosoftLogic : IMicrosoftLogic
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Failed);
             return _emailTransactionRepository.Create(email.Id, ex.Message);
         }
+    }
+
+    private Stream ConvertAttachmentStreamToBase64(Stream stream)
+    {
+        Byte[] inArray = new Byte[(int)stream.Length];
+        Char[] outArray = new Char[(int)(stream.Length * 1.34)];
+        stream.Read(inArray, 0, (int)stream.Length);
+        Convert.ToBase64CharArray(inArray, 0, inArray.Length, outArray, 0);
+        return new MemoryStream(Encoding.UTF8.GetBytes(outArray));
     }
 }
