@@ -12,7 +12,7 @@ namespace DevMailCenter.Logic;
 
 public interface IMicrosoftLogic
 {
-    Guid Send(MicrosoftSettings settings, Email email);
+    Task<Guid> Send(MicrosoftSettings settings, Email email);
 }
 
 public class MicrosoftLogic : IMicrosoftLogic
@@ -37,7 +37,7 @@ public class MicrosoftLogic : IMicrosoftLogic
         _emailAttachmentRepository = emailAttachmentRepository;
     }
 
-    public Guid Send(MicrosoftSettings settings, Email email)
+    public async Task<Guid> Send(MicrosoftSettings settings, Email email)
     {
         var refreshToken = _encryptionLogic.Decrypt(settings.RefreshToken);
         var newTokens = _microsoftApi.GetTokensByRefreshToken(refreshToken);
@@ -90,7 +90,7 @@ public class MicrosoftLogic : IMicrosoftLogic
                 Subject = email.Subject,
                 Importance = importance,
                 ToRecipients = toRecipients,
-                CcRecipients = toRecipients,
+                CcRecipients = ccRecipients,
                 BccRecipients = bccRecipients,
                 InterferenceClassification = "focused",
                 HasAttachments = email.Attachments.Count > 0,
@@ -117,7 +117,7 @@ public class MicrosoftLogic : IMicrosoftLogic
         try
         {
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Pending);
-            _microsoftApi.SendEmail(mm, newTokens);
+            await _microsoftApi.SendEmail(mm, newTokens);
             _emailRepository.SetEmailStatus(email.Id, EmailStatus.Sent);
             _mailServerRepository.UpdateLastUsed(email.ServerId);
             return _emailTransactionRepository.Create(email.Id, "Ok");

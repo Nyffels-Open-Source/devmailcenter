@@ -12,7 +12,7 @@ public interface IMicrosoftApi
     string GenerateAuthenticationRedirectUrl(string redirectUri);
     MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken);
     MicrosoftTokens GetTokensByRefreshToken(string refreshToken);
-    void SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens);
+    Task<string> SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens);
 }
 
 public class MicrosoftApi : IMicrosoftApi
@@ -105,25 +105,29 @@ public class MicrosoftApi : IMicrosoftApi
         }
     }
 
-    public void SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens)
+    public async Task<string> SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens)
     {
         string url = @"https://graph.microsoft.com/v1.0/me/sendMail";
         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", microsoftTokens.AccessToken);
-        var res = _httpClient.PostAsJsonAsync(url, mail).Result;
-        var content = res.Content.ReadAsStringAsync().Result;
+        var res = await _httpClient.PostAsJsonAsync(url, mail);
+        var content = await res.Content.ReadAsStringAsync();
 
         if (content != "")
         {
-            var deserializedObject = JsonConvert.DeserializeObject<dynamic>(res.Content.ReadAsStringAsync().Result);
-        
+            var deserializedObject = JsonConvert.DeserializeObject<dynamic>(content);
+
             if (deserializedObject.ContainsKey("error"))
             {
-                throw new Exception(deserializedObject.error_description.Value);
+                throw new Exception((string)deserializedObject["error"]["message"]);
             }
             else
             {
-                throw new Exception(content);
+                return content;
             }
+        }
+        else
+        {
+            return "";
         }
     }
 }

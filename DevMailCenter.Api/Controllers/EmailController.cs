@@ -168,11 +168,11 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [EndpointDescription("Send a e-mail. Be aware, only concept e-mails can be send.")]
-        public IActionResult SendEmail([FromRoute] Guid emailId)
+        public async Task<IActionResult> SendEmail([FromRoute] Guid emailId)
         {
             try
             {
-                var transactionId = _emailLogic.Send(emailId);
+                var transactionId = await _emailLogic.Send(emailId);
 
                 return Ok(transactionId);
             }
