@@ -10,8 +10,8 @@ namespace DevMailCenter.External;
 public interface IMicrosoftApi
 {
     string GenerateAuthenticationRedirectUrl(string redirectUri);
-    MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken);
-    MicrosoftTokens GetTokensByRefreshToken(string refreshToken);
+    Task<MicrosoftTokens> GetTokensByOnBehalfAccessToken(string accessToken);
+    Task<MicrosoftTokens> GetTokensByRefreshToken(string refreshToken);
     Task<string> SendEmail(MicrosoftApiMail mail, MicrosoftTokens microsoftTokens);
 }
 
@@ -45,7 +45,7 @@ public class MicrosoftApi : IMicrosoftApi
         return url;
     }
 
-    public MicrosoftTokens GetTokensByOnBehalfAccessToken(string accessToken)
+    public async Task<MicrosoftTokens> GetTokensByOnBehalfAccessToken(string accessToken)
     {
         var clientId = this._configuration["Microsoft:Mailer:ClientId"];
         var clientSecret = this._configuration["Microsoft:Mailer:ClientSecret"];
@@ -56,12 +56,13 @@ public class MicrosoftApi : IMicrosoftApi
         string queryString = $"grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id={clientId}&client_secret={clientSecret}&assertion={accessToken}&scope={scope}&requested_token_use=on_behalf_of";
 
         StringContent httpContent = new StringContent(queryString, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
-        var res = _httpClient.PostAsync(url, httpContent).Result;
-        var deserializedObject = JsonConvert.DeserializeObject<dynamic>(res.Content.ReadAsStringAsync().Result);
+        var res = await _httpClient.PostAsync(url, httpContent);
+        var content = await res.Content.ReadAsStringAsync();
+        var deserializedObject = JsonConvert.DeserializeObject<dynamic>(content);
 
         if (deserializedObject.ContainsKey("error"))
         {
-            throw new Exception(deserializedObject.error_description.Value);
+            throw new Exception(deserializedObject["error"]["message"]);
         }
         else
         {
@@ -76,7 +77,7 @@ public class MicrosoftApi : IMicrosoftApi
     }
 
 
-    public MicrosoftTokens GetTokensByRefreshToken(string refreshToken)
+    public async Task<MicrosoftTokens> GetTokensByRefreshToken(string refreshToken)
     {
         var clientId = this._configuration["Microsoft:Mailer:ClientId"];
         var clientSecret = this._configuration["Microsoft:Mailer:ClientSecret"];
@@ -86,12 +87,13 @@ public class MicrosoftApi : IMicrosoftApi
         string queryString = $"grant_type=refresh_token&client_id={clientId}&client_secret={clientSecret}&refresh_token={refreshToken}&scope={scope}";
 
         StringContent httpContent = new StringContent(queryString, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
-        var res = _httpClient.PostAsync(url, httpContent).Result;
-        var deserializedObject = JsonConvert.DeserializeObject<dynamic>(res.Content.ReadAsStringAsync().Result);
+        var res = await _httpClient.PostAsync(url, httpContent);
+        var content = await res.Content.ReadAsStringAsync();
+        var deserializedObject = JsonConvert.DeserializeObject<dynamic>(content);
 
         if (deserializedObject.ContainsKey("error"))
         {
-            throw new Exception(deserializedObject.error_description.Value);
+            throw new Exception(deserializedObject["error"]["message"]);
         }
         else
         {

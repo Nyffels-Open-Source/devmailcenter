@@ -93,7 +93,7 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription(
             "Create a new Microsoft email server. The endpoint will return the ID of the newly created email server.")]
-        public IActionResult CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
+        public async Task<IActionResult> CreateMicrosoftMailServer([FromBody] MicrosoftMailServerCreate mailServer)
         {
             if (_configuration["Microsoft:Enabled"] == "False")
             {
@@ -102,7 +102,7 @@ namespace DevMailCenter.Controllers
 
             try
             {
-                var mailServerResult = _mailServerRepository.CreateMicrosoft(mailServer);
+                var mailServerResult = await _mailServerRepository.CreateMicrosoft(mailServer);
                 return Ok(mailServerResult);
             }
             catch (Exception ex)

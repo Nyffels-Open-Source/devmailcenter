@@ -12,7 +12,7 @@ public interface IMailServerRepository
     MailServer Get(Guid id, bool includeSettings = false, bool includeSecrets = false);
     List<MailServer> List(bool includeSettings = false, bool includeSecrets = false);
     Guid CreateSmtp(SmtpMailServerCreate mailServer);
-    Guid CreateMicrosoft(MicrosoftMailServerCreate mailServer);
+    Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer);
     int Delete(Guid guid);
     void UpdateSmtp(Guid id, SmtpMailServerUpdate mailServer);
     void UpdateMicrosoft(Guid id, MicrosoftMailServerUpdate mailServer);
@@ -150,9 +150,9 @@ public class MailServerRepository : IMailServerRepository
         return newMailServer.Id;
     }
 
-    public Guid CreateMicrosoft(MicrosoftMailServerCreate mailServer)
+    public async Task<Guid> CreateMicrosoft(MicrosoftMailServerCreate mailServer)
     {
-        var MicrosoftTokens = _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
+        var MicrosoftTokens = await _microsoftApi.GetTokensByOnBehalfAccessToken(mailServer.Code);
         
         var newMailServerId = Guid.NewGuid();
         var newMailServer = new MailServer
@@ -176,7 +176,7 @@ public class MailServerRepository : IMailServerRepository
         });
         
         _dbContext.MailServers.Add(newMailServer);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         
         return newMailServer.Id;
     }

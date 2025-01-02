@@ -40,7 +40,7 @@ public class MicrosoftLogic : IMicrosoftLogic
     public async Task<Guid> Send(MicrosoftSettings settings, Email email)
     {
         var refreshToken = _encryptionLogic.Decrypt(settings.RefreshToken);
-        var newTokens = _microsoftApi.GetTokensByRefreshToken(refreshToken);
+        var newTokens = await _microsoftApi.GetTokensByRefreshToken(refreshToken);
 
         var importance = email.Priority switch
         {
