@@ -1,29 +1,27 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ButtonDirective, ButtonModule} from "primeng/button";
-import {CardModule} from "primeng/card";
-import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {Card} from "primeng/card";
+import {ConfirmDialog} from "primeng/confirmdialog";
 import {CommonModule, DatePipe} from "@angular/common";
-import {ConfirmationService, PrimeTemplate} from "primeng/api";
-import {Ripple, RippleModule} from "primeng/ripple";
+import {ConfirmationService} from "primeng/api";
 import {TableModule} from "primeng/table";
-import {TagModule} from "primeng/tag";
-import {TooltipModule} from "primeng/tooltip";
+import {Tag} from "primeng/tag";
 import {Subject, takeUntil} from 'rxjs';
-import {Email, EmailClient, MailServer} from '../../../core/openapi/generated/openapi-client';
+import {Email, EmailClient} from '../../../core/openapi/generated/openapi-client';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Button} from 'primeng/button';
+import {Tooltip} from 'primeng/tooltip';
 
 @Component({
   selector: 'dmc-mail-list',
   imports: [
     CommonModule,
-    TableModule,
-    ButtonModule,
-    RippleModule,
-    TooltipModule,
-    CardModule,
+    Card,
     DatePipe,
-    TagModule,
-    ConfirmDialogModule
+    Tag,
+    ConfirmDialog,
+    TableModule,
+    Button,
+    Tooltip
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',

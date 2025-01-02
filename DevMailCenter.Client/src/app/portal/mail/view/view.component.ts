@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CardModule} from "primeng/card";
-import {ButtonDirective} from 'primeng/button';
+import {Button, ButtonDirective} from 'primeng/button';
 import {TooltipModule} from 'primeng/tooltip';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Email, EmailClient} from '../../../core/openapi/generated/openapi-client';
@@ -12,9 +12,9 @@ import {FormsModule} from '@angular/forms';
 import {SkeletonModule} from 'primeng/skeleton';
 import {InputGroupModule} from 'primeng/inputgroup';
 import {DatePipe, Location} from '@angular/common';
-import {InputTextareaModule} from 'primeng/inputtextarea';
 import {FormField} from '../../../components/field/field.component';
 import {FormRow} from '../../../components/field-row/field-row.component';
+import {Textarea} from 'primeng/textarea';
 
 @Component({
   selector: 'dmc-mail-view',
@@ -27,10 +27,11 @@ import {FormRow} from '../../../components/field-row/field-row.component';
     FormsModule,
     SkeletonModule,
     InputGroupModule,
-    InputTextareaModule,
     DatePipe,
     FormField,
-    FormRow
+    FormRow,
+    Textarea,
+    Button
   ],
   templateUrl: './view.component.html',
   styleUrl: './view.component.scss',

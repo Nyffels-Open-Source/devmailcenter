@@ -27,7 +27,7 @@
         <form-field>
           <label for="serverName">Server</label>
           @if (loaded) {
-            <p-inputGroup>
+            <p-inputgroup>
               <input readonly id="serverName" type="text" pInputText aria-describedby="Email Server Name" [ngModel]="email.serverName"/>
               <button type="button" pButton icon="pi pi-eye" pTooltip="View server" tooltipPosition="bottom" class="p-button-secondary" (click)="toServer()"></button>
             </p-inputGroup>
@@ -43,8 +43,8 @@
           <label>Send to</label>
           @if (loaded) {
             @for (receiver of email.receivers; track receiver.id) {
-              <p-inputGroup>
-                <button type="button" pButton severity="secondary" [label]="receiver.type.toString()"></button>
+              <p-inputgroup>
+                <p-button severity="secondary" [label]="receiver.type.toString()"></p-button>
                 <input readonly type="text" pInputText aria-describedby="Receiver name and email" [ngModel]="receiver.receiverName + '<' + receiver.receiverEmail + '>'"/>
               </p-inputGroup>
             }
@@ -59,10 +59,10 @@
         <form-field>
           <label for="emailSubject">Subject</label>
           @if (loaded) {
-            <p-inputGroup>
+            <p-inputgroup>
               <input readonly id="emailSubject" type="text" pInputText aria-describedby="Subject of the email" [ngModel]="email.subject"/>
               <button type="button" pButton [severity]="getSeverityColor()" [label]="email.priority.toString()"></button>
-            </p-inputGroup>
+            </p-inputgroup>
           }
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
@@ -74,7 +74,7 @@
         <form-field>
           <label for="emailMessage">Message</label>
           @if (loaded) {
-            <textarea readonly id="emailMessage" class="resize-none" pInputTextarea aria-describedby="Message of the email" [ngModel]="email.message" [rows]="5"></textarea>
+            <textarea readonly id="emailMessage" class="resize-none" pTextarea aria-describedby="Message of the email" [ngModel]="email.message" [rows]="5"></textarea>
           }
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>

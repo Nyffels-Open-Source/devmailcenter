@@ -1,18 +1,18 @@
 <p-confirmDialog key="positionDialog" position="bottom" rejectButtonStyleClass="p-button-outlined"/>
 
 <p-card>
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <div class="flex flex-row align-center items-center justify-between pr-8 pl-8 pt-4 pb-3 border-b-[1px] border-black border-opacity-30">
       <h1 class="font-bold">Emails</h1>
       <div class="flex flex-row gap-1">
-        <button pButton class="p-button-text p-button-icon p-button-secondary" size="small" pTooltip="Refresh" tooltipPosition="bottom" icon="pi pi-refresh" (click)="refresh()"></button>
+        <p-button [text]="true" icon="pi pi-refresh" size="small" severity="secondary" (onClick)="refresh()" pTooltip="Refresh" tooltipPosition="bottom"></p-button>
       </div>
     </div>
   </ng-template>
 
   <div id="card-body">
     <p-table [value]="emails" [scrollable]="true" scrollHeight="79dvh" class="table-auto">
-      <ng-template pTemplate="header">
+      <ng-template #header>
         <tr>
           <th>Server</th>
           <th>Receivers</th>
@@ -22,7 +22,7 @@
           <th style="width: 100px;"></th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-email>
+      <ng-template #body let-email>
         <tr>
           <td>{{ email.serverName }}</td>
           <td>{{ getEmailReceivers(email) }}</td>
@@ -32,8 +32,8 @@
             <p-tag [severity]="email.active ? 'success' : 'danger'">{{ email.active ? 'Active' : 'Deactivated' }}</p-tag>
           </td>
           <td class="flex flex-row gap-1">
-            <button pButton pRipple size="small" pTooltip="Details" tooltipPosition="bottom" class="p-button-text p-button-icon p-button-secondary" icon="pi pi-eye" (click)="viewEmail(email)"></button>
-            <button pButton pRipple size="small" pTooltip="Delete" tooltipPosition="bottom" class="p-button-text p-button-icon p-button p-button-danger" icon="pi pi-trash" (click)="deleteEmail(email)"></button>
+            <p-button size="small" pTooltip="Details" tooltipPosition="bottom" [text]="true" severity="secondary" icon="pi pi-eye" (onClick)="viewEmail(email)"></p-button>
+            <p-button size="small" pTooltip="Delete" tooltipPosition="bottom" [text]="true" severity="danger" icon="pi pi-trash" (onClick)="deleteEmail(email)"></p-button>
           </td>
         </tr>
       </ng-template>

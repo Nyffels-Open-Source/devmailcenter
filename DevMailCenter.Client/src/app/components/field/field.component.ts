@@ -3,7 +3,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
 @Component({
   selector: 'form-field',
   imports: [],
-  template: `<ng-content></ng-content>`,
+  template: `
+    <ng-content></ng-content>`,
   styles: ``,
   encapsulation: ViewEncapsulation.None,
   host: {

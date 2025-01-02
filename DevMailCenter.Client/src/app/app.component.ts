@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {PrimeNGConfig} from 'primeng/api';
 
 @Component({
     selector: 'dmc-root',
@@ -8,13 +7,8 @@ import {PrimeNGConfig} from 'primeng/api';
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'DevMailCenter';
 
-  constructor(private primengConfig: PrimeNGConfig) {
-  }
-
-  ngOnInit() {
-    this.primengConfig.ripple = true;
-  }
+  constructor() {}
 }

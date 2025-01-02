@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
-import {SpeedDialModule} from 'primeng/speeddial';
+import {SpeedDial, SpeedDialModule} from 'primeng/speeddial';
 import {MenuItem} from 'primeng/api';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
@@ -9,7 +9,7 @@ import {CommonModule} from '@angular/common';
   selector: 'dmc-portal',
   imports: [
     RouterOutlet,
-    SpeedDialModule,
+    SpeedDial,
     FormsModule,
     CommonModule
   ],
