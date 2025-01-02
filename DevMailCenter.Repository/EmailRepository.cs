@@ -8,8 +8,8 @@ namespace DevMailCenter.Repository;
 
 public interface IEmailRepository
 {
-    Email Get(Guid id, bool includeReceivers = false);
-    List<Email> List(bool includeReceivers = false);
+    Email Get(Guid id, bool includeReceivers = false, bool includeAttachments = false);
+    List<Email> List(bool includeReceivers = false, bool includeAttachments = false);
     Guid Create(EmailCreate email, Guid serverId);
     void Update(Guid id, EmailUpdate email);
     int Delete(Guid guid);
@@ -18,13 +18,18 @@ public interface IEmailRepository
 
 public class EmailRepository(DmcContext dbContext, IEmailAttachmentRepository emailAttachmentRepository) : IEmailRepository
 {
-    public Email Get(Guid id, bool includeReceivers = false)
+    public Email Get(Guid id, bool includeReceivers = false, bool includeAttachments = false)
     {
         var queryable = dbContext.Emails.AsQueryable();
 
         if (includeReceivers)
         {
             queryable = queryable.Include(e => e.Receivers);
+        }
+
+        if (includeAttachments)
+        {
+            queryable = queryable.Include(e => e.Attachments);
         }
 
         var email = queryable.FirstOrDefault(e => e.Id == id);
@@ -37,13 +42,18 @@ public class EmailRepository(DmcContext dbContext, IEmailAttachmentRepository em
         return email;
     }
 
-    public List<Email> List(bool includeReceivers = false)
+    public List<Email> List(bool includeReceivers = false, bool includeAttachments = false)
     {
         var queryable = dbContext.Emails.AsQueryable();
 
         if (includeReceivers)
         {
             queryable = queryable.Include(e => e.Receivers);
+        }
+        
+        if (includeAttachments)
+        {
+            queryable = queryable.Include(e => e.Attachments);
         }
 
         var emails = queryable.ToList();

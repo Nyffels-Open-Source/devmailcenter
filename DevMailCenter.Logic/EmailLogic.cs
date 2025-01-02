@@ -29,7 +29,7 @@ public class EmailLogic : IEmailLogic
 
     public Guid Send(Guid emailId)
     {
-        var email = _emailRepository.Get(emailId, true);
+        var email = _emailRepository.Get(emailId, true, true);
 
         if (email is null)
         {
