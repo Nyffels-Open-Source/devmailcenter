@@ -407,3 +407,5 @@ FodyWeavers.xsd
 
 # Do not push appsettings.Development.json to Github to prevent test data of entering open source code 
 appsettings.Development.json
+
+wwwroot/
