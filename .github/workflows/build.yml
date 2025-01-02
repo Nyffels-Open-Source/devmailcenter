@@ -1,0 +1,48 @@
+name: Build
+on:
+  push:
+    branches: [ 'main' ]
+
+env:
+  NODE_VERSION: 22
+  DOTNET_VERSION: 9
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ env.VERSION }}
+    
+    steps:
+      - name: Set Version
+        uses: Nyffels-IT/github-actions-calver-version-generator@v1.0.1
+
+      - name: Current version
+        run: 'echo Version: ${{ env.VERSION }}'
+        
+  build: 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}        
+        
+      - name: Build client        
+        run: |
+          cd DevMailCenter.Client
+          npm ci --force
+          npm run build
+        
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}     
+      
+      - name: Build API
+        run: |
+          dotnet restore
+          dotnet build -c Release -o /app/build
