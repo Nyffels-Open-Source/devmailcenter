@@ -3,6 +3,7 @@ using System;
 using DevMailCenter.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevMailCenter.Core.Migrations
 {
     [DbContext(typeof(DmcContext))]
-    partial class DmcContextModelSnapshot : ModelSnapshot
+    [Migration("20241214125950_addAttachmentsToEmail")]
+    partial class addAttachmentsToEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 12, 16, 8, 13, 52, 643, DateTimeKind.Utc).AddTicks(4830))
+                        .HasDefaultValue(new DateTime(2024, 12, 14, 12, 59, 49, 919, DateTimeKind.Utc).AddTicks(7691))
                         .HasColumnName("EmailCreated");
 
                     b.Property<string>("Message")
@@ -84,31 +87,24 @@ namespace DevMailCenter.Core.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("EmailAttachmentId");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("EmailId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("EmailAttachmentEmailId");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Mime")
                         .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("EmailAttachmentMime");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("EmailAttachmentName");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmailId");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("DmcEmailAttachment", (string)null);
+                    b.ToTable("EmailAttachment");
                 });
 
             modelBuilder.Entity("DevMailCenter.Models.EmailReceiver", b =>
@@ -155,7 +151,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 12, 16, 8, 13, 52, 643, DateTimeKind.Utc).AddTicks(6390))
+                        .HasDefaultValue(new DateTime(2024, 12, 14, 12, 59, 49, 920, DateTimeKind.Utc).AddTicks(610))
                         .HasColumnName("EmailTransactionCreated");
 
                     b.Property<Guid>("EmailId")
@@ -193,7 +189,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 12, 16, 8, 13, 52, 643, DateTimeKind.Utc).AddTicks(1710))
+                        .HasDefaultValue(new DateTime(2024, 12, 14, 12, 59, 49, 919, DateTimeKind.Utc).AddTicks(2741))
                         .HasColumnName("ServerCreated");
 
                     b.Property<DateTime?>("LastUsed")
@@ -231,7 +227,7 @@ namespace DevMailCenter.Core.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 12, 16, 8, 13, 52, 643, DateTimeKind.Utc).AddTicks(4030))
+                        .HasDefaultValue(new DateTime(2024, 12, 14, 12, 59, 49, 919, DateTimeKind.Utc).AddTicks(6552))
                         .HasColumnName("MailServerSettingsCreated");
 
                     b.Property<string>("Key")

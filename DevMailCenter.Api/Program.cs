@@ -14,8 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
-builder.Services.AddDbContext<DmcContext>(options => options.UseMySQL(
-    builder.Configuration.GetConnectionString("Database"), optionsBuilder => optionsBuilder.CommandTimeout(60)));
+builder.Services.AddDbContext<DmcContext>(options =>
+    options.UseMySQL(
+        builder.Configuration.GetConnectionString("Database"),
+        optionsBuilder => optionsBuilder.CommandTimeout(60)).EnableSensitiveDataLogging());
 
 builder.Services
     .AddScoped<IMailServerRepository, MailServerRepository>()
@@ -25,7 +27,8 @@ builder.Services
     .AddScoped<IMicrosoftLogic, MicrosoftLogic>()
     .AddScoped<IEmailTransactionRepository, EmailTransactionRepository>()
     .AddScoped<IMicrosoftApi, MicrosoftApi>()
-    .AddScoped<IEncryptionLogic, EncryptionLogic>();
+    .AddScoped<IEncryptionLogic, EncryptionLogic>()
+    .AddScoped<IEmailAttachmentRepository, EmailAttachmentRepository>();
 
 builder.Services.AddAuthentication("DmcAuthentication")
     .AddScheme<AuthenticationSchemeOptions, DmcAuthenticationHandler>("DmcAuthentication", null);
@@ -51,7 +54,7 @@ if (app.Configuration["Client:Enabled"] == "True")
 {
     app.Logger.LogInformation("Client is enabled");
     app.UseDefaultFiles();
-    app.UseStaticFiles();   
+    app.UseStaticFiles();
 }
 else
 {
@@ -75,4 +78,4 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-app.Run();   
+app.Run();

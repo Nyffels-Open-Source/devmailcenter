@@ -11,6 +11,7 @@ public class DmcContext : DbContext
     public DbSet<Email> Emails { get; set; }
     public DbSet<EmailReceiver> EmailReceivers { get; set; }
     public DbSet<EmailTransaction> EmailTransactions { get; set; }
+    public DbSet<EmailAttachment> EmailAttachments { get; set; }
 
     public DmcContext(DbContextOptions<DmcContext> options) : base(options)
     {
@@ -71,6 +72,7 @@ public class DmcContext : DbContext
             
             entity.HasMany(e => e.Receivers).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
             entity.HasMany(e => e.Transactions).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Attachments).WithOne().HasForeignKey(e => e.EmailId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailReceiver>(entity =>
@@ -95,6 +97,18 @@ public class DmcContext : DbContext
             entity.Property(e => e.EmailId).HasColumnName("EmailTransactionEmailId").IsRequired();
             entity.Property(e => e.RawResponse).HasColumnName("EmailTransactionRawResponse").IsRequired();
             entity.Property(e => e.Created).HasColumnName("EmailTransactionCreated").IsRequired().HasDefaultValue(DateTime.UtcNow);
+        });
+
+        modelBuilder.Entity<EmailAttachment>(entity =>
+        {
+            entity.ToTable("DmcEmailAttachment");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Id).IsUnique();
+            entity.HasIndex(e => e.EmailId);
+            entity.Property(e => e.Id).HasColumnName("EmailAttachmentId").IsRequired();
+            entity.Property(e => e.EmailId).HasColumnName("EmailAttachmentEmailId").IsRequired();
+            entity.Property(e => e.Name).HasColumnName("EmailAttachmentName").IsRequired();
+            entity.Property(e => e.Mime).HasColumnName("EmailAttachmentMime").IsRequired();
         });
     }
 }

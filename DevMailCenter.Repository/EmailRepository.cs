@@ -8,34 +8,32 @@ namespace DevMailCenter.Repository;
 
 public interface IEmailRepository
 {
-    Email Get(Guid id, bool includeReceivers = false);
-    List<Email> List(bool includeReceivers = false);
+    Email Get(Guid id, bool includeReceivers = false, bool includeAttachments = false);
+    List<Email> List(bool includeReceivers = false, bool includeAttachments = false);
     Guid Create(EmailCreate email, Guid serverId);
     void Update(Guid id, EmailUpdate email);
     int Delete(Guid guid);
     void SetEmailStatus(Guid id, EmailStatus status);
 }
 
-public class EmailRepository : IEmailRepository
+public class EmailRepository(DmcContext dbContext, IEmailAttachmentRepository emailAttachmentRepository) : IEmailRepository
 {
-    private readonly DmcContext _dbContext;
-
-    public EmailRepository(DmcContext dbContext)
+    public Email Get(Guid id, bool includeReceivers = false, bool includeAttachments = false)
     {
-        _dbContext = dbContext;
-    }
-
-    public Email Get(Guid id, bool includeReceivers = false)
-    {
-        var queryable = _dbContext.Emails.AsQueryable();
+        var queryable = dbContext.Emails.AsQueryable();
 
         if (includeReceivers)
         {
             queryable = queryable.Include(e => e.Receivers);
         }
 
+        if (includeAttachments)
+        {
+            queryable = queryable.Include(e => e.Attachments);
+        }
+
         var email = queryable.FirstOrDefault(e => e.Id == id);
-        var server = _dbContext.MailServers.FirstOrDefault(e => e.Id == email.ServerId);
+        var server = dbContext.MailServers.FirstOrDefault(e => e.Id == email.ServerId);
         if (server != null)
         {
             email.ServerName = server.Name;
@@ -44,18 +42,23 @@ public class EmailRepository : IEmailRepository
         return email;
     }
 
-    public List<Email> List(bool includeReceivers = false)
+    public List<Email> List(bool includeReceivers = false, bool includeAttachments = false)
     {
-        var queryable = _dbContext.Emails.AsQueryable();
+        var queryable = dbContext.Emails.AsQueryable();
 
         if (includeReceivers)
         {
             queryable = queryable.Include(e => e.Receivers);
         }
+        
+        if (includeAttachments)
+        {
+            queryable = queryable.Include(e => e.Attachments);
+        }
 
         var emails = queryable.ToList();
         
-        var servers = _dbContext.MailServers.Where(s => emails.Select(e => e.ServerId).Contains(s.Id)).ToList();
+        var servers = dbContext.MailServers.Where(s => emails.Select(e => e.ServerId).Contains(s.Id)).ToList();
         
         emails.ForEach(e =>
         {
@@ -67,6 +70,7 @@ public class EmailRepository : IEmailRepository
     public Guid Create(EmailCreate email, Guid serverId)
     {
         var newEmailId = new Guid();
+        var attachments = emailAttachmentRepository.AddToStorage(email.Attachments, newEmailId);
         var newEmail = new Email()
         {
             Created = DateTime.Now,
@@ -84,19 +88,20 @@ public class EmailRepository : IEmailRepository
                 ReceiverEmail = receiver.ReceiverEmail,
                 EmailId = newEmailId
             }).ToList(),
+            Attachments = attachments,
             Modified = null, 
             Completed = null, 
             SendRequested = null,
         };
-        _dbContext.Add(newEmail);
-        _dbContext.SaveChanges();
+        dbContext.Add(newEmail);
+        dbContext.SaveChanges();
 
         return newEmail.Id;
     }
 
     public void Update(Guid id, EmailUpdate email)
     {
-        var entry = _dbContext.Emails.Include(e => e.Receivers).FirstOrDefault(e => e.Id == id);
+        var entry = dbContext.Emails.Include(e => e.Receivers).Include(email => email.Attachments).FirstOrDefault(e => e.Id == id);
         if (entry == null)
         {
             throw new Exception("Email not found");
@@ -111,12 +116,12 @@ public class EmailRepository : IEmailRepository
         entry.Message = email.Message;
         entry.Modified = DateTime.UtcNow;
 
-        if (email.DeletedReceivers != null && email.DeletedReceivers.Count > 0)
+        if (email.DeletedReceivers.Count > 0)
         {
             entry.Receivers = entry.Receivers.Where(receiver => !email.DeletedReceivers.Contains(receiver.Id)).ToList();
         }
 
-        if (email.UpdatedReceivers != null && email.UpdatedReceivers.Count > 0)
+        if (email.UpdatedReceivers.Count > 0)
         {
             foreach (var receiver in email.UpdatedReceivers)
             {
@@ -125,7 +130,7 @@ public class EmailRepository : IEmailRepository
             }
         }
 
-        if (email.CreatedReceivers != null && email.CreatedReceivers.Count > 0)
+        if (email.CreatedReceivers.Count > 0)
         {
             foreach (var receiver in email.CreatedReceivers)
             {
@@ -140,18 +145,31 @@ public class EmailRepository : IEmailRepository
             }
         }
 
-        _dbContext.SaveChanges();
+        if (email.DeletedAttachments.Count > 0)
+        {
+            emailAttachmentRepository.DeleteFromStorage(email.DeletedAttachments);
+            entry.Attachments = entry.Attachments.Where(attachment => !email.DeletedAttachments.Contains(attachment.Id)).ToList();
+        }
+
+        if (email.AddedAttachments.Count > 0)
+        {
+            entry.Attachments = emailAttachmentRepository.AddToStorage(email.AddedAttachments, entry.Id);
+        }
+
+        dbContext.SaveChanges();
     }
 
     public int Delete(Guid guid)
     {
-        return _dbContext.Emails.Where(e => e.Id == guid).ExecuteDelete();
+        var attachments = dbContext.EmailAttachments.Where(attachment => attachment.EmailId == guid).Select(e => e.Id).ToList();
+        emailAttachmentRepository.DeleteFromStorage(attachments); 
+        return dbContext.Emails.Where(e => e.Id == guid).ExecuteDelete();
     }
 
     public void SetEmailStatus(Guid id, EmailStatus status)
     {
-        var entry = _dbContext.Emails.FirstOrDefault(e => e.Id == id);
+        var entry = dbContext.Emails.FirstOrDefault(e => e.Id == id);
         entry.Status = status;
-        _dbContext.SaveChanges();
+        dbContext.SaveChanges();
     }
 }

@@ -1,12 +1,13 @@
 ﻿using DevMailCenter.Models;
 using DevMailCenter.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DevMailCenter.Logic;
 
 public interface IEmailLogic
 {
-    Guid Send(Guid emailId);
+    Task<Guid> Send(Guid emailId);
 }
 
 public class EmailLogic : IEmailLogic
@@ -26,9 +27,9 @@ public class EmailLogic : IEmailLogic
         _microsoftLogic = microsoftLogic;
     }
 
-    public Guid Send(Guid emailId)
+    public async Task<Guid> Send(Guid emailId)
     {
-        var email = _emailRepository.Get(emailId, true);
+        var email = _emailRepository.Get(emailId, true, true);
 
         if (email is null)
         {
@@ -49,7 +50,7 @@ public class EmailLogic : IEmailLogic
         return server.Type switch
         {
             MailServerType.Smtp => _smtpLogic.Send(GetSmtpSettingsFromMailServer(server), email),
-            MailServerType.MicrosoftExchange => _microsoftLogic.Send(GetMicrosoftSettingsFromMailServer(server), email),
+            MailServerType.MicrosoftExchange => await _microsoftLogic.Send(GetMicrosoftSettingsFromMailServer(server), email),
             _ => throw new NotImplementedException("Sending email is not implemented yet for this mail server type.")
         };
     }

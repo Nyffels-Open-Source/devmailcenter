@@ -14,12 +14,14 @@ namespace DevMailCenter.Controllers
         private readonly ILogger<EmailController> _logger;
         private readonly IEmailRepository _emailRepository;
         private readonly IEmailLogic _emailLogic;
+        private readonly IEmailAttachmentRepository _emailAttachmentRepository;
 
-        public EmailController(ILogger<EmailController> logger, IEmailRepository emailRepository, IEmailLogic emailLogic)
+        public EmailController(ILogger<EmailController> logger, IEmailRepository emailRepository, IEmailLogic emailLogic, IEmailAttachmentRepository emailAttachmentRepository)
         {
             _logger = logger;
             _emailRepository = emailRepository;
             _emailLogic = emailLogic;
+            _emailAttachmentRepository = emailAttachmentRepository;
         }
 
         [HttpGet]
@@ -29,9 +31,9 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [EndpointDescription("Retrieve an email by its ID.")]
-        public IActionResult GetEmail([FromRoute] Guid id, [FromQuery] bool includeReceivers = false)
+        public IActionResult GetEmail([FromRoute] Guid id, [FromQuery] bool includeReceivers = false, [FromQuery] bool includeAttachments = false)
         {
-            var email = _emailRepository.Get(id, includeReceivers);
+            var email = _emailRepository.Get(id, includeReceivers, includeAttachments);
 
             if (email == null)
             {
@@ -40,6 +42,25 @@ namespace DevMailCenter.Controllers
 
             return Ok(email);
         }
+        
+        [HttpGet]
+        [Route("attachment/{id}")]
+        [EndpointName("GetEmailAttachmentContent")]
+        [ProducesResponseType(typeof(Email), StatusCodes.Status200OK, "text/plain")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [EndpointDescription("Retrieve an email by its ID.")]
+        public IActionResult GetEmailAttachmentContent([FromRoute] Guid id)
+        {
+            var content = _emailAttachmentRepository.GetAttachmentContent(id);
+
+            if (content == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(content);
+        }
 
         [HttpGet]
         [Route("list")]
@@ -47,9 +68,9 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(typeof(List<Email>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EndpointDescription("Retrieve all emails.")]
-        public IActionResult ListEmails([FromQuery] bool includeReceivers = false)
+        public IActionResult ListEmails([FromQuery] bool includeReceivers = false, [FromQuery] bool includeAttachments = false)
         {
-            var mailServers = _emailRepository.List(includeReceivers);
+            var mailServers = _emailRepository.List(includeReceivers, includeAttachments);
 
             return Ok(mailServers);
         }
@@ -60,8 +81,7 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK, "text/plain")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [EndpointDescription(
-            "Create a new email server. The endpoint will return the ID of the newly created email server.")]
+        [EndpointDescription("Create a new email server. The endpoint will return the ID of the newly created email server.")]
         public IActionResult CreateEmail([FromBody] EmailCreate email, [FromRoute] Guid serverId)
         {
             try
@@ -148,11 +168,11 @@ namespace DevMailCenter.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [EndpointDescription("Send a e-mail. Be aware, only concept e-mails can be send.")]
-        public IActionResult SendEmail([FromRoute] Guid emailId)
+        public async Task<IActionResult> SendEmail([FromRoute] Guid emailId)
         {
             try
             {
-                var transactionId = _emailLogic.Send(emailId);
+                var transactionId = await _emailLogic.Send(emailId);
 
                 return Ok(transactionId);
             }
