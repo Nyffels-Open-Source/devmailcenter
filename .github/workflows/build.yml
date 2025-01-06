@@ -36,6 +36,7 @@ jobs:
 #          cd DevMailCenter.Client
 #          npm ci
 #          npm run build
+#          TODO Copy files to wwwroot
         
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
