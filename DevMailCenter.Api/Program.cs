@@ -53,6 +53,7 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 if (app.Configuration["Client:Enabled"] == "True")
 {
     app.Logger.LogInformation("Client is enabled");
+    throw new Exception("Client not yet implemented!");
     app.UseDefaultFiles();
     app.UseStaticFiles();
 }

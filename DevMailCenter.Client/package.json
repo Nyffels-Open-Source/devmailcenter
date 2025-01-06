@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "generate": "npx nswag openapi2tsclient /input:\"http://localhost:5125/openapi/v1.json\" /output:\"src/app/core/openapi/generated/openapi-client.ts\" /typeScriptVersion:4.3 /template:Angular /ExceptionClass:\"SwaggerException\" /injectiontokentype:InjectionToken /OperationGenerationMode:MultipleClientsFromFirstTagAndOperationId /RxJsVersion:7.8 /UseSingletonProvider:true /ClientBaseClass:\"OpenapiBase\" /ExtensionCode:\".\\src\\app\\core\\openapi\\openapi-base.ts\" /UseTransformOptionsMethod:true /MarkOptionalProperties:true /GenerateOptionalParameters:true"
