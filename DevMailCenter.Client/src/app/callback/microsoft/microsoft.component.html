@@ -5,17 +5,17 @@
         <img src="/providers/exchange-small.png" alt="exchange-logo" class="w-full"/>
       </div>
       @if (state == 'process') {
-        <p-progress-bar mode="indeterminate" [style]="{ height: '6px' }"/>
+        <p-progressBar mode="indeterminate" [style]="{ height: '6px' }"/>
       } @else if (state == "error") {
         <p class="font-bold text-red-500 text-center">{{ message }}</p>
       } @else if (state == "success") {
         <div>
           <p class="font-bold text-green-500 text-center">{{ message }}</p>
 
-          <p-inputgroup> class="mt-2" *ngIf="showNameChange">
+          <p-inputgroup class="mt-2" *ngIf="showNameChange">
             <input #servername type="text" pInputText placeholder="Give a name to the new email server"/>
             <p-button icon="pi pi-check" severity="success" (onClick)="setServerName(servername.value)"></p-button>
-          </p-inputGroup>
+          </p-inputgroup>
         </div>
       }
       @if (state == "success" || state == "error") {

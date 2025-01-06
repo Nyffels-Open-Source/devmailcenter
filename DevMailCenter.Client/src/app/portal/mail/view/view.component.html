@@ -30,7 +30,7 @@
             <p-inputgroup>
               <input readonly id="serverName" type="text" pInputText aria-describedby="Email Server Name" [ngModel]="email.serverName"/>
               <button type="button" pButton icon="pi pi-eye" pTooltip="View server" tooltipPosition="bottom" class="p-button-secondary" (click)="toServer()"></button>
-            </p-inputGroup>
+            </p-inputgroup>
           }
           @if (!loaded) {
             <p-skeleton height="50px"></p-skeleton>
@@ -46,7 +46,7 @@
               <p-inputgroup>
                 <p-button severity="secondary" [label]="receiver.type.toString()"></p-button>
                 <input readonly type="text" pInputText aria-describedby="Receiver name and email" [ngModel]="receiver.receiverName + '<' + receiver.receiverEmail + '>'"/>
-              </p-inputGroup>
+              </p-inputgroup>
             }
           }
           @if (!loaded) {
