@@ -64,4 +64,4 @@ jobs:
           context: ./app
           pull: true
           push: true
-          tags: nyffels/devmailcenter:${{ needs.initialize.outputs.version }}
+          tags: nyffels/devmailcenter:${{ needs.initialize.outputs.version }}, nyffels/devmailcenter:latest
