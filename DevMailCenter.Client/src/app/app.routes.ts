@@ -1,4 +1,5 @@
 import {Routes} from '@angular/router';
+import {AuthenticatedGuard} from './core/guards/authenticated.guard';
 
 export const routes: Routes = [{
   path: "",
@@ -6,6 +7,7 @@ export const routes: Routes = [{
     {
       path: 'portal',
       loadComponent: () => import('./portal/portal.component').then(c => c.PortalComponent),
+      canActivate: [AuthenticatedGuard],
       children: [
         {
           path: 'email',
@@ -62,6 +64,13 @@ export const routes: Routes = [{
           pathMatch: "full"
         }
       ],
+    },
+    {
+      path: 'authentication',
+      children: [{
+        path: 'login',
+        loadComponent: () => import('./authentication/login/login.component').then(c => c.AuthenticationLoginComponent)
+      }]
     },
     {
       path: 'callback',

@@ -25,6 +25,16 @@ export class PortalComponent implements OnInit {
     this.tooltipItems = [
       {
         tooltipOptions: {
+          tooltipLabel: 'Log out'
+        },
+        icon: 'pi pi-sign-out',
+        command: () => {
+          localStorage.clear();
+          window.location.reload();
+        }
+      },
+      {
+        tooltipOptions: {
           tooltipLabel: 'Emails'
         },
         icon: 'pi pi-envelope',
@@ -40,7 +50,7 @@ export class PortalComponent implements OnInit {
         command: () => {
           this.router.navigate(['portal/emailserver/list']);
         }
-      }
+      },
     ]
   }
 }

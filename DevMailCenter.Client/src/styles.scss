@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import "primeicons/primeicons.css";
 
 .p-datatable .p-datatable-thead > tr > th, .p-datatable .p-datatable-header {

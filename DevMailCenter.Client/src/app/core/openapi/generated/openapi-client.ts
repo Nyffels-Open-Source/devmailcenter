@@ -12,22 +12,9 @@ import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 
 import { Observable, from as _observableFrom, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import {OpenapiBase} from '../openapi-base';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
-
-export class OpenapiBase {
-  protected constructor() {
-  }
-
-  protected transformOptions(options: any): Promise<any> {
-    // if (SwaggerBase.enableBasicAuth) {
-    //   const encodedCredentials = btoa(`${SwaggerBase.basicAuthLogin}:${SwaggerBase.basicAuthPassword}`);
-    //   options.headers = options.headers.append('authorization', `Basic ${encodedCredentials}`);
-    // }
-
-    return Promise.resolve(options);
-  }
-}
 
 @Injectable({
     providedIn: 'root'
@@ -86,8 +73,75 @@ export class ConfigClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return Accepted
+     */
+    authenticate(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/config/authenticate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processAuthenticate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAuthenticate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string[]>;
+        }));
+    }
+
+    protected processAuthenticate(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 202) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result202: any = null;
+            let resultData202 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData202)) {
+                result202 = [] as any;
+                for (let item of resultData202)
+                    result202!.push(item);
+            }
+            else {
+                result202 = <any>null;
+            }
+            return _observableOf(result202);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -207,7 +261,7 @@ export class ConfigClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 401) {
@@ -226,7 +280,7 @@ export class ConfigClient extends OpenapiBase {
     }
 
     /**
-     * @param updateSensitiveData (optional) 
+     * @param updateSensitiveData (optional)
      * @return OK
      */
     generateNewEncryptionKey(updateSensitiveData?: boolean | undefined): Observable<string> {
@@ -273,7 +327,7 @@ export class ConfigClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 401) {
@@ -307,10 +361,11 @@ export class EmailClient extends OpenapiBase {
     }
 
     /**
-     * @param includeReceivers (optional) 
+     * @param includeReceivers (optional)
+     * @param includeAttachments (optional)
      * @return OK
      */
-    getEmail(id: string, includeReceivers?: boolean | undefined): Observable<Email> {
+    getEmail(id: string, includeReceivers?: boolean | undefined, includeAttachments?: boolean | undefined): Observable<Email> {
         let url_ = this.baseUrl + "/api/email/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -319,6 +374,10 @@ export class EmailClient extends OpenapiBase {
             throw new Error("The parameter 'includeReceivers' cannot be null.");
         else if (includeReceivers !== undefined)
             url_ += "includeReceivers=" + encodeURIComponent("" + includeReceivers) + "&";
+        if (includeAttachments === null)
+            throw new Error("The parameter 'includeAttachments' cannot be null.");
+        else if (includeAttachments !== undefined)
+            url_ += "includeAttachments=" + encodeURIComponent("" + includeAttachments) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -532,15 +591,90 @@ export class EmailClient extends OpenapiBase {
     }
 
     /**
-     * @param includeReceivers (optional) 
      * @return OK
      */
-    listEmails(includeReceivers?: boolean | undefined): Observable<Email[]> {
+    getEmailAttachmentContent(id: string): Observable<Email> {
+        let url_ = this.baseUrl + "/api/email/attachment/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processGetEmailAttachmentContent(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmailAttachmentContent(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Email>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Email>;
+        }));
+    }
+
+    protected processGetEmailAttachmentContent(response: HttpResponseBase): Observable<Email> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : _responseText;
+            result200 = Email.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param includeReceivers (optional)
+     * @param includeAttachments (optional)
+     * @return OK
+     */
+    listEmails(includeReceivers?: boolean | undefined, includeAttachments?: boolean | undefined): Observable<Email[]> {
         let url_ = this.baseUrl + "/api/email/list?";
         if (includeReceivers === null)
             throw new Error("The parameter 'includeReceivers' cannot be null.");
         else if (includeReceivers !== undefined)
             url_ += "includeReceivers=" + encodeURIComponent("" + includeReceivers) + "&";
+        if (includeAttachments === null)
+            throw new Error("The parameter 'includeAttachments' cannot be null.");
+        else if (includeAttachments !== undefined)
+            url_ += "includeAttachments=" + encodeURIComponent("" + includeAttachments) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -653,7 +787,7 @@ export class EmailClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : _responseText;
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -724,7 +858,7 @@ export class EmailClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : _responseText;
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -875,7 +1009,7 @@ export class MailServerClient extends OpenapiBase {
     }
 
     /**
-     * @param includeSettings (optional) 
+     * @param includeSettings (optional)
      * @return OK
      */
     getMailServer(id: string, includeSettings?: boolean | undefined): Observable<MailServer> {
@@ -1009,7 +1143,7 @@ export class MailServerClient extends OpenapiBase {
     }
 
     /**
-     * @param includeSettings (optional) 
+     * @param includeSettings (optional)
      * @return OK
      */
     listMailServers(includeSettings?: boolean | undefined): Observable<MailServer[]> {
@@ -1127,7 +1261,7 @@ export class MailServerClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : _responseText;
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -1199,7 +1333,7 @@ export class MailServerClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -1225,7 +1359,7 @@ export class MailServerClient extends OpenapiBase {
     }
 
     /**
-     * @param redirectUri (optional) 
+     * @param redirectUri (optional)
      * @return OK
      */
     getMicrosoftAuthenticationUrl(redirectUri?: string | undefined): Observable<string> {
@@ -1272,7 +1406,7 @@ export class MailServerClient extends OpenapiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : _responseText;
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status === 401) {
@@ -1448,7 +1582,6 @@ export class MailServerClient extends OpenapiBase {
 export class Email implements IEmail {
     id!: string;
     serverId!: string;
-    serverName?: string;
     subject!: string;
     message!: string;
     priority!: number;
@@ -1459,6 +1592,8 @@ export class Email implements IEmail {
     status!: number;
     receivers?: EmailReceiver[];
     transactions?: EmailTransaction[];
+    attachments?: EmailAttachment[];
+    serverName?: string;
 
     [key: string]: any;
 
@@ -1479,7 +1614,6 @@ export class Email implements IEmail {
             }
             this.id = _data["id"];
             this.serverId = _data["serverId"];
-            this.serverName = _data["serverName"];
             this.subject = _data["subject"];
             this.message = _data["message"];
             this.priority = _data["priority"];
@@ -1498,6 +1632,12 @@ export class Email implements IEmail {
                 for (let item of _data["transactions"])
                     this.transactions!.push(EmailTransaction.fromJS(item));
             }
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(EmailAttachment.fromJS(item));
+            }
+            this.serverName = _data["serverName"];
         }
     }
 
@@ -1516,7 +1656,6 @@ export class Email implements IEmail {
         }
         data["id"] = this.id;
         data["serverId"] = this.serverId;
-        data["serverName"] = this.serverName;
         data["subject"] = this.subject;
         data["message"] = this.message;
         data["priority"] = this.priority;
@@ -1535,6 +1674,12 @@ export class Email implements IEmail {
             for (let item of this.transactions)
                 data["transactions"].push(item.toJSON());
         }
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        data["serverName"] = this.serverName;
         return data;
     }
 }
@@ -1542,7 +1687,6 @@ export class Email implements IEmail {
 export interface IEmail {
     id: string;
     serverId: string;
-    serverName?: string;
     subject: string;
     message: string;
     priority: number;
@@ -1553,6 +1697,124 @@ export interface IEmail {
     status: number;
     receivers?: EmailReceiver[];
     transactions?: EmailTransaction[];
+    attachments?: EmailAttachment[];
+    serverName?: string;
+
+    [key: string]: any;
+}
+
+export class EmailAttachment implements IEmailAttachment {
+    id?: string;
+    emailId?: string;
+    mime!: string;
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IEmailAttachment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.emailId = _data["emailId"];
+            this.mime = _data["mime"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): EmailAttachment {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmailAttachment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["emailId"] = this.emailId;
+        data["mime"] = this.mime;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IEmailAttachment {
+    id?: string;
+    emailId?: string;
+    mime: string;
+    name: string;
+
+    [key: string]: any;
+}
+
+export class EmailAttachmentCreate implements IEmailAttachmentCreate {
+    mime!: string;
+    name!: string;
+    base64!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IEmailAttachmentCreate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.mime = _data["mime"];
+            this.name = _data["name"];
+            this.base64 = _data["base64"];
+        }
+    }
+
+    static fromJS(data: any): EmailAttachmentCreate {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmailAttachmentCreate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["mime"] = this.mime;
+        data["name"] = this.name;
+        data["base64"] = this.base64;
+        return data;
+    }
+}
+
+export interface IEmailAttachmentCreate {
+    mime: string;
+    name: string;
+    base64: string;
 
     [key: string]: any;
 }
@@ -1562,6 +1824,7 @@ export class EmailCreate implements IEmailCreate {
     message!: string;
     priority!: number;
     receivers!: EmailReceiverCreate[];
+    attachments?: EmailAttachmentCreate[];
 
     [key: string]: any;
 
@@ -1591,6 +1854,11 @@ export class EmailCreate implements IEmailCreate {
                 for (let item of _data["receivers"])
                     this.receivers!.push(EmailReceiverCreate.fromJS(item));
             }
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(EmailAttachmentCreate.fromJS(item));
+            }
         }
     }
 
@@ -1615,6 +1883,11 @@ export class EmailCreate implements IEmailCreate {
             for (let item of this.receivers)
                 data["receivers"].push(item.toJSON());
         }
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1624,6 +1897,7 @@ export interface IEmailCreate {
     message: string;
     priority: number;
     receivers: EmailReceiverCreate[];
+    attachments?: EmailAttachmentCreate[];
 
     [key: string]: any;
 }
@@ -1875,6 +2149,8 @@ export class EmailUpdate implements IEmailUpdate {
     deletedReceivers?: string[];
     updatedReceivers?: EmailReceiverUpdate[];
     createdReceivers?: EmailReceiverCreate[];
+    deletedAttachments?: string[];
+    addedAttachments?: EmailAttachmentCreate[];
 
     [key: string]: any;
 
@@ -1911,6 +2187,16 @@ export class EmailUpdate implements IEmailUpdate {
                 for (let item of _data["createdReceivers"])
                     this.createdReceivers!.push(EmailReceiverCreate.fromJS(item));
             }
+            if (Array.isArray(_data["deletedAttachments"])) {
+                this.deletedAttachments = [] as any;
+                for (let item of _data["deletedAttachments"])
+                    this.deletedAttachments!.push(item);
+            }
+            if (Array.isArray(_data["addedAttachments"])) {
+                this.addedAttachments = [] as any;
+                for (let item of _data["addedAttachments"])
+                    this.addedAttachments!.push(EmailAttachmentCreate.fromJS(item));
+            }
         }
     }
 
@@ -1945,6 +2231,16 @@ export class EmailUpdate implements IEmailUpdate {
             for (let item of this.createdReceivers)
                 data["createdReceivers"].push(item.toJSON());
         }
+        if (Array.isArray(this.deletedAttachments)) {
+            data["deletedAttachments"] = [];
+            for (let item of this.deletedAttachments)
+                data["deletedAttachments"].push(item);
+        }
+        if (Array.isArray(this.addedAttachments)) {
+            data["addedAttachments"] = [];
+            for (let item of this.addedAttachments)
+                data["addedAttachments"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1956,6 +2252,8 @@ export interface IEmailUpdate {
     deletedReceivers?: string[];
     updatedReceivers?: EmailReceiverUpdate[];
     createdReceivers?: EmailReceiverCreate[];
+    deletedAttachments?: string[];
+    addedAttachments?: EmailAttachmentCreate[];
 
     [key: string]: any;
 }

@@ -42,7 +42,7 @@ public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSche
             return AuthenticateResult.Fail("Unauthorized");
         }
         
-        string authorizationHeader = Request.Headers["Authorization"];
+            string authorizationHeader = Request.Headers["Authorization"];
         if (string.IsNullOrEmpty(authorizationHeader))
         {
             return AuthenticateResult.Fail("Unauthorized");
@@ -65,7 +65,7 @@ public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSche
         var username = credentials[0];
         var password = credentials[1];
         
-        if (username != requiredUser && password != requiredPassword)
+        if (username != requiredUser || password != requiredPassword)
         {
             return AuthenticateResult.Fail("Authentication failed");
         }

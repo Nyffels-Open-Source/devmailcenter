@@ -33,6 +33,19 @@ namespace DevMailCenter.Controllers
 
         [Authorize]
         [HttpGet]
+        [Route("authenticate")]
+        [EndpointName("Authenticate")]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [EndpointDescription(
+            "The single use of this endpoint is to test your credentials. The request will return 202 if the credentials are ok, or 401 if the credentials are invalid.")]
+        public IActionResult Authenticate()
+        {
+            return Accepted();
+        }
+
+        [Authorize]
+        [HttpGet]
         [Route("providers/enabled")]
         [EndpointName("ListEnableProviders")]
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
