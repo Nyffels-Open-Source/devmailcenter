@@ -9,6 +9,7 @@ import {authenticationInterceptor} from './core/Interceptors/http-authentication
 import {DATE_PIPE_DEFAULT_OPTIONS} from '@angular/common';
 import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import {AuthenticatedGuard} from './core/guards/authenticated.guard';
 
 export function GetApiBaseUrl() {
   return environment.api.url;
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: DATE_PIPE_DEFAULT_OPTIONS,
       useValue: { dateFormat: "dd/MM/YYYY" }
-    }
+    },
+    AuthenticatedGuard
   ]
 };
