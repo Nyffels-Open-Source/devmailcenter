@@ -1,7 +1,9 @@
-<div class="w-dvw h-dvh bg-[#f2f2f2] pl-2 pr-2 flex justify-center items-center">
+<div class="w-dvw h-dvh bg-[url(/wallpapers/vintage.webp)] bg-no-repeat bg-cover content-center">
   <div class="max-w-[1080px] w-full ml-auto mr-auto pt-5 pb-5">
     <router-outlet/>
   </div>
 </div>
 
-<p-speeddial [model]="tooltipItems" className="speeddial-right" buttonClassName="p-button-secondary" direction="up" showIcon="pi pi-bars" hideIcon="pi pi-times"/>
+<div class="fixed bottom-2 right-2">
+  <p-speeddial [model]="tooltipItems" className="speeddial-right" buttonClassName="p-button-secondary" direction="up" showIcon="pi pi-bars" hideIcon="pi pi-times"/>
+</div>

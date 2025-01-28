@@ -42,7 +42,7 @@ public class DmcAuthenticationHandler : AuthenticationHandler<AuthenticationSche
             return AuthenticateResult.Fail("Unauthorized");
         }
         
-        string authorizationHeader = Request.Headers["Authorization"];
+            string authorizationHeader = Request.Headers["Authorization"];
         if (string.IsNullOrEmpty(authorizationHeader))
         {
             return AuthenticateResult.Fail("Unauthorized");
