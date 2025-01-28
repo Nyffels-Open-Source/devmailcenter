@@ -46,4 +46,22 @@ jobs:
       - name: Build API
         run: |
           dotnet restore
-          dotnet build -c Release -o /app/build
+          dotnet build -c Release -o ./app/build
+          cp ./Dockerfile ./app/Dockerfile
+          
+      - name: Set up QEMU
+        uses: docker/setup-buildx-action
+        
+      - name: Login to DockerHub
+        uses: docker/login-action
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}        
+          
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app
+          pull: true
+          push: true
+          tags: nyffels/devmailcenter:${{ needs.initialize.outputs.version }}
