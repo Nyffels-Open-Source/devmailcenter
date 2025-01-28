@@ -3,7 +3,8 @@ import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef, ViewEncapsul
 @Component({
   selector: 'form-row',
   imports: [],
-  template: `<ng-content></ng-content>`,
+  template: `
+    <ng-content></ng-content>`,
   styles: ``,
   encapsulation: ViewEncapsulation.None,
   host: {

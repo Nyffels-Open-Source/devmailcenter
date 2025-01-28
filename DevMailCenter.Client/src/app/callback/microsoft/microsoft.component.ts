@@ -1,26 +1,26 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { ProgressBarModule } from 'primeng/progressbar';
+import {ProgressBar, ProgressBarModule} from 'primeng/progressbar';
 import {CommonModule} from '@angular/common';
-import {CardModule} from 'primeng/card';
+import {Card, CardModule} from 'primeng/card';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
 import {MailServerClient, MicrosoftMailServerCreate} from '../../core/openapi/generated/openapi-client';
-import {ButtonModule} from 'primeng/button';
-import {InputTextModule} from 'primeng/inputtext';
-import {InputGroupModule} from 'primeng/inputgroup';
+import {Button, ButtonModule} from 'primeng/button';
+import {InputText, InputTextModule} from 'primeng/inputtext';
+import {InputGroup, InputGroupModule} from 'primeng/inputgroup';
 
 @Component({
-    selector: 'dmc-callback-microsoft',
-    imports: [
-      CommonModule,
-      ProgressBarModule,
-      CardModule,
-      ButtonModule,
-      InputTextModule,
-      InputGroupModule
-    ],
-    templateUrl: './microsoft.component.html',
-    styleUrl: './microsoft.component.scss'
+  selector: 'dmc-callback-microsoft',
+  imports: [
+    CommonModule,
+    ProgressBar,
+    Card,
+    Button,
+    InputText,
+    InputGroup
+  ],
+  templateUrl: './microsoft.component.html',
+  styleUrl: './microsoft.component.scss'
 })
 export class MicrosoftComponent implements OnInit, OnDestroy {
   private _destroy$ = new Subject<void>();
@@ -35,12 +35,13 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.route.fragment.pipe(takeUntil(this._destroy$)).subscribe((fragments) => {
-      const urlFragments = new URLSearchParams(fragments ?? "");
-      this.accessToken = urlFragments.get("access_token");
+    this.route.fragment.pipe(takeUntil(this._destroy$))
+      .subscribe((fragments) => {
+        const urlFragments = new URLSearchParams(fragments ?? "");
+        this.accessToken = urlFragments.get("access_token");
 
-      this.handleRequest();
-    });
+        this.handleRequest();
+      });
   }
 
   ngOnDestroy() {
@@ -49,16 +50,18 @@ export class MicrosoftComponent implements OnInit, OnDestroy {
   }
 
   handleRequest() {
-    this.mailServerClient.createMicrosoftMailServer(new MicrosoftMailServerCreate({code: this.accessToken ?? ""})).pipe(takeUntil(this._destroy$)).subscribe({
-      next: (guid) => {
-        this.state = 'success';
-        this.message = `Emailserver created with ID ${guid}.`;
-      },
-      error: (err) => {
-        this.state = 'error';
-        this.message = `Adding mailserver failed with error: ${err.message}.`;
-      }
-    });
+    this.mailServerClient.createMicrosoftMailServer(new MicrosoftMailServerCreate({code: this.accessToken ?? ""}))
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (guid) => {
+          this.state = 'success';
+          this.message = `Emailserver created with ID ${guid}.`;
+        },
+        error: (err) => {
+          this.state = 'error';
+          this.message = `Adding mailserver failed with error: ${err.message}.`;
+        }
+      });
   }
 
   setServerName(name: string) {

@@ -7,6 +7,8 @@ import {environment} from '../environments/environment';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authenticationInterceptor} from './core/Interceptors/http-authentication.interceptor';
 import {DATE_PIPE_DEFAULT_OPTIONS} from '@angular/common';
+import {providePrimeNG} from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 export function GetApiBaseUrl() {
   return environment.api.url;
@@ -17,10 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    // Enable on v18 release
-    // providePrimeNG({
-    //   theme: Aura
-    // }),
+    providePrimeNG({
+      theme: Aura
+    }),
     {
       provide: API_BASE_URL,
       useFactory: GetApiBaseUrl

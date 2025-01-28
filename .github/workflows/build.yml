@@ -1,0 +1,67 @@
+name: Build
+on:
+  push:
+    branches: [ 'main' ]
+
+env:
+  NODE_VERSION: 22
+  DOTNET_VERSION: 9
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ env.VERSION }}
+    
+    steps:
+      - name: Set Version
+        uses: Nyffels-IT/github-actions-calver-version-generator@v1.0.1
+
+      - name: Current version
+        run: 'echo Version: ${{ env.VERSION }}'
+        
+  build: 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}        
+        
+#      - name: Build client        
+#        run: |
+#          cd DevMailCenter.Client
+#          npm ci
+#          npm run build
+#          TODO Copy files to wwwroot
+        
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}     
+      
+      - name: Build API
+        run: |
+          dotnet restore
+          dotnet build -c Release -o ./app/build
+          cp ./Dockerfile ./app/Dockerfile
+          
+      - name: Set up QEMU
+        uses: docker/setup-buildx-action
+        
+      - name: Login to DockerHub
+        uses: docker/login-action
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}        
+          
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app
+          pull: true
+          push: true
+          tags: nyffels/devmailcenter:${{ needs.initialize.outputs.version }}
