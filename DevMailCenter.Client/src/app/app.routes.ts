@@ -64,6 +64,13 @@ export const routes: Routes = [{
       ],
     },
     {
+      path: 'authentication',
+      children: [{
+        path: 'login',
+        loadComponent: () => import('./authentication/login/login.component').then(c => c.AuthenticationLoginComponent)
+      }]
+    },
+    {
       path: 'callback',
       loadComponent: () => import('./callback/callback.component').then(c => c.CallbackComponent),
       children: [
