@@ -6,6 +6,8 @@ import {FormsModule} from '@angular/forms';
 import {FormField} from '../../components/field/field.component';
 import {FormLabel} from '../../components/label/label';
 import {Button} from 'primeng/button';
+import {ConfigClient} from '../../core/openapi/generated/openapi-client';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'dmc-auth-login',
@@ -28,7 +30,7 @@ export class AuthenticationLoginComponent implements OnInit, OnDestroy {
   login = "";
   password = "";
 
-  constructor() {
+  constructor(private configClient: ConfigClient, private router: Router) {
   }
 
   ngOnInit() {
@@ -40,6 +42,15 @@ export class AuthenticationLoginComponent implements OnInit, OnDestroy {
   }
 
   authenticate() {
-    // TODO
+    localStorage.setItem('authlgn', btoa(`${this.login}:${this.password}`));
+    this.configClient.authenticate().subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        alert("Incorrect credentials");
+        localStorage.removeItem('authlgn');
+      }
+    })
   }
 }

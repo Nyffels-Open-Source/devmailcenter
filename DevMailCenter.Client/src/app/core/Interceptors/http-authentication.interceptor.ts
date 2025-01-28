@@ -7,7 +7,7 @@ export const authenticationInterceptor: HttpInterceptorFn = (req, next) => {
   // Clone the request and add the authorization header
   const authReq = req.clone({
     setHeaders: {
-      Authorization: `Basic ${btoa(`${username}:${password}`)}`
+      Authorization: `Basic ${localStorage.getItem('authlgn')}`,
     }
   });
 
