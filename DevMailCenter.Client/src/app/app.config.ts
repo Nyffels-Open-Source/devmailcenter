@@ -21,7 +21,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     providePrimeNG({
-      theme: Aura
+      theme: {
+        preset: Aura
+      }
     }),
     {
       provide: API_BASE_URL,
