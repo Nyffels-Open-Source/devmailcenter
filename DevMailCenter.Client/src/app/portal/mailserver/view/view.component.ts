@@ -7,7 +7,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
 import {MailServer, MailServerClient} from '../../../core/openapi/generated/openapi-client';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {Location} from '@angular/common';
+import {DatePipe, Location} from '@angular/common';
+import {mailServerType} from '../../../shared/models/mailservertype.enum';
+import {FormRow} from '../../../components/field-row/field-row.component';
+import {FormField} from '../../../components/field/field.component';
+import {FormLabel} from '../../../components/label/label';
+import {InputText} from 'primeng/inputtext';
+import {FormsModule} from '@angular/forms';
+import {Tag} from 'primeng/tag';
 
 @Component({
   selector: 'dmc-mailserver-view',
@@ -16,7 +23,14 @@ import {Location} from '@angular/common';
     CardModule,
     PrimeTemplate,
     TooltipModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    FormRow,
+    FormField,
+    FormLabel,
+    InputText,
+    FormsModule,
+    Tag,
+    DatePipe
   ],
   templateUrl: './view.component.html',
   styleUrl: './view.component.scss',
@@ -25,6 +39,7 @@ import {Location} from '@angular/common';
 export class ViewComponent implements OnInit, OnDestroy {
   serverId!: string;
   server!: MailServer;
+  serverType!: string;
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -42,6 +57,7 @@ export class ViewComponent implements OnInit, OnDestroy {
           }
 
           this.server = data;
+          this.setType();
           console.log(this.server);
         })
       } else {
@@ -82,4 +98,20 @@ export class ViewComponent implements OnInit, OnDestroy {
       key: 'positionDialog'
     });
   }
+
+  setType() {
+    switch ((this.server.type as any) as string) {
+      case mailServerType.Smtp:
+        this.serverType = "SMTP";
+        break;
+      case mailServerType.Google:
+        this.serverType = "Google / Gmail";
+        break;
+      case mailServerType.MicrosoftExchange:
+        this.serverType = "Exchange / Outlook";
+        break;
+    }
+  }
+
+  protected readonly mailServerType = mailServerType;
 }
