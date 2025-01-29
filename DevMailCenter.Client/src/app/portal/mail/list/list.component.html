@@ -31,7 +31,7 @@
           <td>
             <p-tag [severity]="email.active ? 'success' : 'danger'">{{ email.active ? 'Active' : 'Deactivated' }}</p-tag>
           </td>
-          <td class="flex flex-row gap-1">
+          <td class="flex flex-row gap-1 min-h-[54px]">
             <p-button size="small" pTooltip="Details" tooltipPosition="bottom" [text]="true" severity="secondary" icon="pi pi-eye" (onClick)="viewEmail(email)"></p-button>
             <p-button size="small" pTooltip="Delete" tooltipPosition="bottom" [text]="true" severity="danger" icon="pi pi-trash" (onClick)="deleteEmail(email)"></p-button>
           </td>

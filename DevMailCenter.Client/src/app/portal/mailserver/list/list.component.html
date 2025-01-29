@@ -30,9 +30,9 @@
           <td>
             <p-tag [severity]="server.active ? 'success' : 'danger'">{{ server.active ? 'Active' : 'Deactivated' }}</p-tag>
           </td>
-          <td class="flex flex-row gap-1">
-            <button pButton pRipple size="small" pTooltip="Details" tooltipPosition="bottom" class="p-button-text p-button-icon p-button-secondary" icon="pi pi-eye" (click)="viewServer(server)"></button>
-            <button pButton pRipple size="small" pTooltip="Delete" tooltipPosition="bottom" class="p-button-text p-button-icon p-button p-button-danger" icon="pi pi-trash" (click)="deleteServer(server)"></button>
+          <td class="flex flex-row gap-1 min-h-[54px]">
+            <p-button size="small" pTooltip="Details" tooltipPosition="bottom" [text]="true" severity="secondary" icon="pi pi-eye" (onClick)="viewServer(server)"></p-button>
+            <p-button size="small" pTooltip="Delete" tooltipPosition="bottom" [text]="true" severity="danger" icon="pi pi-trash" (onClick)="deleteServer(server)"></p-button>
           </td>
         </tr>
       </ng-template>
