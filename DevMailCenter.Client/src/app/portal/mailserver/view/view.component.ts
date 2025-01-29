@@ -23,6 +23,7 @@ import {Location} from '@angular/common';
   providers: [ConfirmationService]
 })
 export class ViewComponent implements OnInit, OnDestroy {
+  serverId!: string;
   server!: MailServer;
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -30,7 +31,24 @@ export class ViewComponent implements OnInit, OnDestroy {
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private confirmationService: ConfirmationService, private mailServerClient: MailServerClient, private location: Location) {}
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      if (params['id']) {
+        this.serverId = params['id'];
+        this.mailServerClient.getMailServer(this.serverId, true).subscribe(data => {
+          if (!data) {
+            alert("No mailserver found for id: " + this.serverId);
+            this.router.navigate(['/portal/emailserver/list'], {replaceUrl: true});
+            return;
+          }
 
+          this.server = data;
+          console.log(this.server);
+        })
+      } else {
+        alert("No mailserverID found!");
+        this.router.navigate(['/portal/emailserver/list'], {replaceUrl: true});
+      }
+    })
   }
 
   ngOnDestroy() {
