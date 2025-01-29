@@ -15,6 +15,8 @@ import {FormLabel} from '../../../components/label/label';
 import {InputText} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {Tag} from 'primeng/tag';
+import {Divider} from 'primeng/divider';
+import {Skeleton} from 'primeng/skeleton';
 
 @Component({
   selector: 'dmc-mailserver-view',
@@ -30,7 +32,9 @@ import {Tag} from 'primeng/tag';
     InputText,
     FormsModule,
     Tag,
-    DatePipe
+    DatePipe,
+    Divider,
+    Skeleton
   ],
   templateUrl: './view.component.html',
   styleUrl: './view.component.scss',

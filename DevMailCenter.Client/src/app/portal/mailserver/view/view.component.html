@@ -43,17 +43,40 @@
             }
           </form-field>
         </form-row>
+
+        @if ($any(server.type) == mailServerType.Smtp) {
+          <p-divider>Settings</p-divider>
+        } @else if ($any(server.type) == mailServerType.MicrosoftExchange) {
+
+        } @else if ($any(server.type) == mailServerType.Google) {
+
+        }
+
       </div>
-
-      @if ($any(server.type) == mailServerType.Smtp) {
-
-      } @else if ($any(server.type) == mailServerType.MicrosoftExchange) {
-
-      } @else if ($any(server.type) == mailServerType.Google) {
-
-      }
     } @else {
+      <div class="flex flex-col gap-4">
+        <div class="justify-center flex flex-row gap-2">
+          <p-skeleton height="1.5rem" class="w-28"></p-skeleton>
+        </div>
 
+        <form-row>
+          <form-field>
+            <form-label>Name</form-label>
+            <p-skeleton height="2.5rem"></p-skeleton>
+          </form-field>
+        </form-row>
+
+        <form-row>
+          <form-field>
+            <form-label>Created</form-label>
+            <p-skeleton height="2.5rem"></p-skeleton>
+          </form-field>
+          <form-field>
+            <form-label>Last used</form-label>
+            <p-skeleton height="2.5rem"></p-skeleton>
+          </form-field>
+        </form-row>
+      </div>
     }
   </div>
 </p-card>
